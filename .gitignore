@@ -1,0 +1,10 @@
+.idea
+sportchef.iml
+target
+doc/sportchef_technical_documentation.aux
+doc/sportchef_technical_documentation.lof
+doc/sportchef_technical_documentation.log
+doc/sportchef_technical_documentation.lot
+doc/sportchef_technical_documentation.out
+doc/sportchef_technical_documentation.synctex.gz
+doc/sportchef_technical_documentation.toc
