@@ -1,0 +1,176 @@
+\documentclass[a4paper,openright,twoside]{report}
+
+\usepackage{hyperref}
+\usepackage{bera} % optional: just to have a nice mono-spaced font
+\usepackage{listings}
+\usepackage{lipsum} % just to automatically generate text
+\usepackage{tocbibind}
+\usepackage{xcolor}
+
+\addtolength{\hoffset}{-1cm}
+\addtolength{\textwidth}{2cm}
+\addtolength{\voffset}{-1cm}
+\addtolength{\textheight}{2cm}
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\lstset{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    tabsize=2,
+}
+\lstdefinelanguage{json}{
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+\makeatletter
+\newcommand\ackname{Acknowledgements}
+\if@titlepage
+  \newenvironment{acknowledgements}{%
+      \titlepage
+      \null\vfil
+      \@beginparpenalty\@lowpenalty
+      \begin{center}%
+        \bfseries \ackname
+        \@endparpenalty\@M
+      \end{center}}%
+     {\par\vfil\null\endtitlepage}
+\else
+  \newenvironment{acknowledgements}{%
+      \if@twocolumn
+        \section*{\abstractname}%
+      \else
+        \small
+        \begin{center}%
+          {\bfseries \ackname\vspace{-.5em}\vspace{\z@}}%
+        \end{center}%
+        \quotation
+      \fi}
+      {\if@twocolumn\else\endquotation\fi}
+\fi
+\makeatother
+
+\renewcommand{\listoffigures}{\begingroup
+	\tocchapter
+	\tocfile{\listfigurename}{lof}
+\endgroup}
+
+\renewcommand{\listoftables}{\begingroup
+	\tocchapter
+	\tocfile{\listtablename}{lot}
+\endgroup}
+
+\title{\huge SportChef \\[0.25cm] \LARGE Technical Documentation}
+\author{Marcus Fihlon}
+\date{October 14, 2015}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\begin{abstract}
+This document holds the technical documentation for SportChef, a suite of applications and services to organise sports events from registration through the execution to the ranking list publication, everything in real-time!
+
+Here you can find the definitions and specifications needed to develop all parts of SportChef and provide maintenance. Actually SportChef is under heavy development --- this means that this document is under heavy development, too!
+\end{abstract}
+\newpage
+
+\begin{acknowledgements}
+Firstly I would like to thank Christian Marbet, who had the initial idea for SportChef and helped me during the whole development process. I would like to thank Gunnar Donis for creating all the wireframes and for having put up with all the crazy hackers. Special thanks to all the people at all Hackergarten events all over the world for their engagement in helping us to make our idea of SportChef reality. Furthermore I would like to thank all other people for their support during the development of SportChef.
+\end{acknowledgements}
+\newpage
+
+\tableofcontents
+\newpage
+
+\chapter{Common}
+
+\section{Communication}\label{sec:Communication}
+The communication between the server and the clients is based on HTTP\footnote{\url{http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol}} requests and uses the REST\footnote{\url{http://en.wikipedia.org/wiki/Representational_state_transfer}} approach. Data that will be exchanged between the server and the clients has to be conform to the JSON\footnote{\url{http://en.wikipedia.org/wiki/JSON}} standard.
+
+\section{Security}
+While the first version is under development, the connections are not encrypted. SSL\footnote{\url{http://en.wikipedia.org/wiki/Transport_Layer_Security}} security (HTTPS\footnote{\url{http://en.wikipedia.org/wiki/HTTP_Secure}}) will be added later before the release. This decision is based on two reasons: First, a commercial SSL certificate is needed which is valid only for a limited time. Buying it before it is really needed makes no sense and wastes money. Second, adding security using SSL certificates adds additional complexity to development in a very early stage which makes the learning curve for new developers unnecessary steep.
+
+\section{Definitions}
+
+\subsection{Server}
+
+\subsubsection{Technical specifications}
+The SportChef server is written in Java\footnote{\url{http://en.wikipedia.org/wiki/Java_(programming_language)}} using JavaEE\footnote{\url{https://en.wikipedia.org/wiki/Java_Platform,_Enterprise_Edition}} technology and can be deployed to every application server \footnote{\url{https://en.wikipedia.org/wiki/Application_server}} which is Java EE 7 compatible.
+
+\subsection{Webinterface}
+
+\subsubsection{Technical specifications}
+The web client is written in Java using JSF\footnote{\url{https://en.wikipedia.org/wiki/JavaServer_Faces}} technology and the PrimeFaces\footnote{\url{http://www.primefaces.org}} framework.
+
+\subsubsection{Browser support}
+The SportChef web interface uses HTML 5, so every HTML 5 capable browser will do. The web interface can be accessed by desktop systems as well as by tablet computers and smartphones. The user interface is fully responsive.
+
+\chapter{Application Programming Interface}
+
+\section{General information}
+
+\subsection{JSON listings}
+The JSON listings in this documentation are reformatted for better readability. The server usually delivers a "compressed" variant without unnecessary spaces and line breaks.
+
+\section{User Resource}
+
+\subsection{Create a new user}
+Send a POST request with the following JSON to the URI: \url{/api/users}
+
+\begin{lstlisting}[language=json]
+{
+	"firstName" : "John",
+	"lastName" : "Doe",
+	"phone" : "+41 79 555 00 01",
+	"email" : "john.doe@sportchef.ch"
+}
+\end{lstlisting}
+
+The response usually is a "201 Created" with a "Location" header set to the URI of the newly created user or an error response.
+
+\begin{appendix}
+
+\listoffigures
+
+\listoftables
+
+\chapter{License}
+Copyright \copyright\ 2015 Marcus Fihlon
+\\[0.25cm]
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+\\[0.25cm]
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+\\[0.25cm]
+You should have received a copy of the GNU Affero General Public License along with this program. If not, see \texttt{http://www.gnu.org/licenses/}.
+
+\end{appendix}
+
+\end{document}
