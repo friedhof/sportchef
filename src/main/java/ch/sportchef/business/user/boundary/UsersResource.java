@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -23,11 +24,16 @@ public class UsersResource {
     private UserManager manager;
 
     @POST
-    public Response save(@Valid User user, @Context UriInfo info) {
+    public Response save(@Valid final User user, @Context final UriInfo info) {
         final User saved = manager.save(user);
-        final long id = saved.getId();
-        final URI uri = info.getAbsolutePathBuilder().path("/" + id).build();
+        final long userId = saved.getUserId();
+        final URI uri = info.getAbsolutePathBuilder().path("/" + userId).build();
         return Response.created(uri).build();
+    }
+
+    @Path("{userId}")
+    public UserResource find(@PathParam("userId") final long userId) {
+        return new UserResource(userId, manager);
     }
 
 }

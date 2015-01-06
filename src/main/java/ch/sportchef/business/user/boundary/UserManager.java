@@ -17,4 +17,7 @@ public class UserManager {
         return em.merge(user);
     }
 
+    public User findByUserId(final long userId) {
+        return em.find(User.class, userId);
+    }
 }
