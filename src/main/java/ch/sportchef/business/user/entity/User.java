@@ -17,7 +17,7 @@ public class User {
 
     @Id
     @GeneratedValue
-    private long id;
+    private long userId;
 
     @Version
     private long version;
@@ -49,12 +49,12 @@ public class User {
         this.email = email;
     }
 
-    public long getId() {
-        return id;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setUserId(long id) {
+        this.userId = id;
     }
 
     public String getFirstName() {

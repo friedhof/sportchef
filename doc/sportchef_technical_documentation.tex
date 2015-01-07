@@ -156,6 +156,21 @@ Send a POST request with the following JSON to the URI: \url{/api/users}
 
 The response usually is a "201 Created" with a "Location" header set to the URI of the newly created user or an error response.
 
+\subsection{Read an existing user}
+Send a GET request to the URI: \url{/api/users/{userId}}
+
+The response usually is a "200 OK" with the following JSON or an error response.
+
+\begin{lstlisting}[language=json]
+{
+	"userId" : 1,
+	"firstName" : "John",
+	"lastName" : "Doe",
+	"phone" : "+41 79 555 00 01",
+	"email" : "john.doe@sportchef.ch"
+}
+\end{lstlisting}
+
 \begin{appendix}
 
 \listoffigures
