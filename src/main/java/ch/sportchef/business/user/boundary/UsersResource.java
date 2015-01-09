@@ -5,6 +5,7 @@ import ch.sportchef.business.user.entity.User;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.List;
 
 @Stateless
 @Path("users")
@@ -29,6 +31,12 @@ public class UsersResource {
         final long userId = saved.getUserId();
         final URI uri = info.getAbsolutePathBuilder().path("/" + userId).build();
         return Response.created(uri).build();
+    }
+
+    @GET
+    public Response findAll() {
+        final List<User> allUsers = manager.findAll();
+        return Response.ok(allUsers).build();
     }
 
     @Path("{userId}")
