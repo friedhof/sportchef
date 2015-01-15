@@ -27,7 +27,7 @@ public class UsersResource {
 
     @POST
     public Response save(@Valid final User user, @Context final UriInfo info) {
-        final User saved = manager.save(user);
+        final User saved = this.manager.save(user);
         final long userId = saved.getUserId();
         final URI uri = info.getAbsolutePathBuilder().path("/" + userId).build();
         return Response.created(uri).build();
@@ -35,13 +35,13 @@ public class UsersResource {
 
     @GET
     public Response findAll() {
-        final List<User> allUsers = manager.findAll();
+        final List<User> allUsers = this.manager.findAll();
         return Response.ok(allUsers).build();
     }
 
     @Path("{userId}")
     public UserResource find(@PathParam("userId") final long userId) {
-        return new UserResource(userId, manager);
+        return new UserResource(userId, this.manager);
     }
 
 }

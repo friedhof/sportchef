@@ -27,16 +27,20 @@ public class UserResourceIT {
 
     @Test
     public void crud() {
-        // create a new user
+        // create
         final String location = createUserWithSuccess();
+        final String notFoundLocation = location.substring(0, location.lastIndexOf("/") + 1) + Long.MAX_VALUE;
         createUserWithBadRequest();
 
-        // read one user
+        // read
         readOneUserWithSuccess(location);
-        readOneUserWithNotFound(location.substring(0, location.lastIndexOf("/") + 1) + Long.MAX_VALUE);
-
-        // read all users
+        readOneUserWithNotFound(notFoundLocation);
         readAllUsers(location); // location of created user to do asserts
+
+        // update
+        final JsonObject userToConflict = updateUserWithSuccess(location);
+        updateUserWithConflict(location, userToConflict);
+        updateUserWithNotFound(notFoundLocation);
     }
 
     private long getUserId(final String location) {
@@ -53,10 +57,10 @@ public class UserResourceIT {
                 .build();
 
         // act
-        final Response response = this.provider.target().request().post(Entity.json(userToCreate));
+        final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(userToCreate));
 
         //assert
-        assertThat(response.getStatus(), is(201));
+        assertThat(response.getStatus(), is(Response.Status.CREATED.getStatusCode()));
         final String location = response.getHeaderString("Location");
         assertThat(location, notNullValue());
         final long id = Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
@@ -75,10 +79,10 @@ public class UserResourceIT {
                 .build();
 
         // act
-        final Response response = this.provider.target().request().post(Entity.json(userToCreate));
+        final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(userToCreate));
 
         //assert
-        assertThat(response.getStatus(), is(400));
+        assertThat(response.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
     }
 
     private void readOneUserWithSuccess(final String location) {
@@ -90,7 +94,7 @@ public class UserResourceIT {
         final JsonObject jsonObject = response.readEntity(JsonObject.class);
 
         // assert
-        assertThat(response.getStatus(), is(200));
+        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
         assertNotNull(jsonObject);
         assertThat(jsonObject.getJsonNumber("userId").longValue(), is(getUserId(location)));
         assertThat(jsonObject.getString("firstName"), is("John"));
@@ -108,7 +112,7 @@ public class UserResourceIT {
         final JsonObject jsonObject = response.readEntity(JsonObject.class);
 
         // assert
-        assertThat(response.getStatus(), is(404));
+        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
         assertNull(jsonObject);
     }
 
@@ -122,7 +126,7 @@ public class UserResourceIT {
         final JsonObject jsonObject = jsonArray.size() > 0 ? jsonArray.getJsonObject(jsonArray.size() - 1) : null;
 
         // assert
-        assertThat(response.getStatus(), is(200));
+        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
         assertFalse(jsonArray.isEmpty());
         assertNotNull(jsonObject);
         assertThat(jsonObject.getJsonNumber("userId").longValue(), is(getUserId(location)));
@@ -130,6 +134,52 @@ public class UserResourceIT {
         assertThat(jsonObject.getString("lastName"), is("Doe"));
         assertThat(jsonObject.getString("phone"), is("+41 79 555 00 01"));
         assertThat(jsonObject.getString("email"), is("john.doe@sportchef.ch"));
+    }
+
+    private JsonObject updateUserWithSuccess(final String location) {
+        // arrange
+        final JsonObject userToUpdate = Json.createObjectBuilder()
+                .add("userId", getUserId(location))
+                .add("firstName", "Jane")
+                .add("lastName", "Doe")
+                .add("phone", "+41 79 555 00 01")
+                .add("email", "jane.doe@sportchef.ch")
+                .build();
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(userToUpdate));
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+
+        return userToUpdate;
+    }
+
+    private void updateUserWithConflict(final String location, final JsonObject userToUpdate) {
+        // arrange
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(userToUpdate));
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.CONFLICT.getStatusCode()));
+    }
+
+    private void updateUserWithNotFound(final String location) {
+        // arrange
+        final JsonObject userToUpdate = Json.createObjectBuilder()
+                .add("userId", getUserId(location))
+                .add("firstName", "Jane")
+                .add("lastName", "Doe")
+                .add("phone", "+41 79 555 00 01")
+                .add("email", "jane.doe@sportchef.ch")
+                .build();
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(userToUpdate));
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
     }
 
 }
