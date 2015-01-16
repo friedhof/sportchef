@@ -34,4 +34,9 @@ public class UserManager {
         final TypedQuery<User> allQuery = this.em.createQuery(all);
         return allQuery.getResultList();
     }
+
+    public void delete(final long userId) {
+        final User reference = em.getReference(User.class, userId);
+        em.remove(reference);
+    }
 }

@@ -41,6 +41,10 @@ public class UserResourceIT {
         final JsonObject userToConflict = updateUserWithSuccess(location);
         updateUserWithConflict(location, userToConflict);
         updateUserWithNotFound(notFoundLocation);
+
+        // delete
+        deleteUserWithSuccess(location);
+        deleteUserWithNotFound(location);
     }
 
     private long getUserId(final String location) {
@@ -177,6 +181,26 @@ public class UserResourceIT {
 
         // act
         final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(userToUpdate));
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
+    }
+
+    private void deleteUserWithSuccess(final String location) {
+        // arrange
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).delete();
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.NO_CONTENT.getStatusCode()));
+    }
+
+    private void deleteUserWithNotFound(final String location) {
+        // arrange
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).delete();
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));

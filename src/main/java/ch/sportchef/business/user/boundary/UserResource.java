@@ -3,9 +3,11 @@ package ch.sportchef.business.user.boundary;
 import ch.sportchef.business.user.entity.User;
 
 import javax.validation.Valid;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PUT;
+import javax.ws.rs.core.Response;
 
 public class UserResource {
 
@@ -31,6 +33,13 @@ public class UserResource {
         find(); // only update existing users
         user.setUserId(this.userId);
         return this.manager.save(user);
+    }
+
+    @DELETE
+    public Response delete() {
+        final User user = find(); // only delete existing users
+        this.manager.delete(user.getUserId());
+        return Response.noContent().build();
     }
 
 }
