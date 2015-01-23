@@ -171,6 +171,30 @@ The response usually is a "200 OK" with the following JSON or an error response.
 }
 \end{lstlisting}
 
+\subsection{Rad all users}
+Send a GET request to the URI: \url{/api/users}
+
+The response usually is a "200 OK" with the following JSON or an error response.
+
+\begin{lstlisting}[language=json]
+[
+	{
+		"userId" : 1,
+		"firstName" : "John",
+		"lastName" : "Doe",
+		"phone" : "+41 79 555 00 01",
+		"email" : "john.doe@sportchef.ch"
+	},
+	{
+		"userId" : 2,
+		"firstName" : "Jane",
+		"lastName" : "Doe",
+		"phone" : "+41 79 555 00 02",
+		"email" : "jane.doe@sportchef.ch"
+	}
+]
+\end{lstlisting}
+
 \subsection{Update an existing user}
 Send a PUT request with the following JSON to the URI: \url{/api/users/{userId}}
 
