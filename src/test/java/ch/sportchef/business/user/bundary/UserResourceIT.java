@@ -155,6 +155,7 @@ public class UserResourceIT {
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(response.getHeaderString("Location"), is(location));
 
         return userToUpdate;
     }
