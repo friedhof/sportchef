@@ -7,7 +7,10 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PUT;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 
 public class UserResource {
 
@@ -29,10 +32,12 @@ public class UserResource {
     }
 
     @PUT
-    public User update(@Valid final User user) {
+    public Response update(@Valid final User user, @Context final UriInfo info) {
         find(); // only update existing users
         user.setUserId(this.userId);
-        return this.manager.save(user);
+        final User updatedUser = this.manager.save(user);
+        final URI uri = info.getAbsolutePathBuilder().build();
+        return Response.ok().header("Location", uri.toString()).build();
     }
 
     @DELETE
