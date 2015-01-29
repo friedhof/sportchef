@@ -37,7 +37,7 @@ public class UserResource {
         user.setUserId(this.userId);
         final User updatedUser = this.manager.save(user);
         final URI uri = info.getAbsolutePathBuilder().build();
-        return Response.ok().header("Location", uri.toString()).build();
+        return Response.ok(updatedUser).header("Location", uri.toString()).build();
     }
 
     @DELETE
