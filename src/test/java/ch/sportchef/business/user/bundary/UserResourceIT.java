@@ -67,8 +67,8 @@ public class UserResourceIT {
         assertThat(response.getStatus(), is(Response.Status.CREATED.getStatusCode()));
         final String location = response.getHeaderString("Location");
         assertThat(location, notNullValue());
-        final long id = Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
-        assertTrue(id > 0);
+        final long userId = getUserId(location);
+        assertTrue(userId > 0);
 
         return location;
     }
