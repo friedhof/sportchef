@@ -88,7 +88,7 @@
 
 \title{\huge SportChef \\[0.25cm] \LARGE Technical Documentation}
 \author{Marcus Fihlon}
-\date{October 15, 2015}
+\date{October 16, 2015}
 
 \begin{document}
 
@@ -140,6 +140,22 @@ The SportChef web interface uses HTML 5, so every HTML 5 capable browser will do
 \subsection{JSON listings}
 The JSON listings in this documentation are reformatted for better readability. The server usually delivers a "compressed" variant without unnecessary spaces and line breaks.
 
+\section{Event Resource}
+
+\subsection{Create a new event}
+Send a POST request with the following JSON to the URI: \url{/api/events}
+
+\begin{lstlisting}[language=json]
+{
+	"title" : "Christmas Party",
+	"location" : "Town Hall",
+	"date" : "2015-12-24",
+	"time" : "18:00"
+}
+\end{lstlisting}
+
+The response usually is a "201 Created" with a "Location" header set to the URI of the newly created event or an error response.
+
 \section{User Resource}
 
 \subsection{Create a new user}
@@ -171,7 +187,7 @@ The response usually is a "200 OK" with the following JSON or an error response.
 }
 \end{lstlisting}
 
-\subsection{Rad all users}
+\subsection{Read all users}
 Send a GET request to the URI: \url{/api/users}
 
 The response usually is a "200 OK" with the following JSON or an error response.
