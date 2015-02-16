@@ -88,7 +88,7 @@
 
 \title{\huge SportChef \\[0.25cm] \LARGE Technical Documentation}
 \author{Marcus Fihlon}
-\date{October 16, 2015}
+\date{October 18, 2015}
 
 \begin{document}
 
@@ -155,6 +155,21 @@ Send a POST request with the following JSON to the URI: \url{/api/events}
 \end{lstlisting}
 
 The response usually is a "201 Created" with a "Location" header set to the URI of the newly created event or an error response.
+
+\subsection{Read an existing event}
+Send a GET request to the URI: \url{/api/event/{eventId}}
+
+The response usually is a "200 OK" with the following JSON or an error response.
+
+\begin{lstlisting}[language=json]
+{
+	"eventId" : 1,
+	"title" : "Christmas Party",
+	"location" : "Town Hall",
+	"date" : "2015-12-24",
+	"time" : "18:00"
+}
+\end{lstlisting}
 
 \section{User Resource}
 

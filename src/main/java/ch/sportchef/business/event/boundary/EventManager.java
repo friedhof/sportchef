@@ -17,4 +17,7 @@ public class EventManager {
         return this.em.merge(event);
     }
 
+    public Event findByEventId(final long eventId) {
+        return this.em.find(Event.class, eventId);
+    }
 }

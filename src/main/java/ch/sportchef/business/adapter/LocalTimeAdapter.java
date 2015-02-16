@@ -7,7 +7,7 @@ public class LocalTimeAdapter extends XmlAdapter<String, LocalTime> {
 
     @Override
     public String marshal(final LocalTime localTime) throws Exception {
-        return String.format("%s:%s",
+        return String.format("%02d:%02d",
                 localTime.getHour(), localTime.getMinute());
     }
 

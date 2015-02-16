@@ -1,12 +1,14 @@
 package ch.sportchef.business.event.boundary;
 
 import ch.sportchef.business.event.entity.Event;
+import ch.sportchef.business.user.boundary.UserResource;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -29,4 +31,10 @@ public class EventsResource {
         final URI uri = info.getAbsolutePathBuilder().path("/" + eventId).build();
         return Response.created(uri).build();
     }
+
+    @Path("{eventId}")
+    public EventResource find(@PathParam("eventId") final long eventId) {
+        return new EventResource(eventId, this.manager);
+    }
+
 }
