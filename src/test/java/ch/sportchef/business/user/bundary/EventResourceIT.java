@@ -5,6 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
@@ -14,6 +15,7 @@ import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -33,6 +35,7 @@ public class EventResourceIT {
         // read
         readOneEventWithSuccess(location);
         readOneEventWithNotFound(notFoundLocation);
+        readAllEvents(location);
     }
 
     private long getEventId(final String location) {
@@ -106,6 +109,26 @@ public class EventResourceIT {
         // assert
         assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
         assertNull(jsonObject);
+    }
+
+    private void readAllEvents(final String location) {
+        // arrange
+
+        // act
+        final Response response = this.provider.target()
+                .request(MediaType.APPLICATION_JSON).get();
+        final JsonArray jsonArray = response.readEntity(JsonArray.class);
+        final JsonObject jsonObject = jsonArray.size() > 0 ? jsonArray.getJsonObject(jsonArray.size() - 1) : null;
+
+        // assert
+        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertFalse(jsonArray.isEmpty());
+        assertNotNull(jsonObject);
+        assertThat(jsonObject.getJsonNumber("eventId").longValue(), is(getEventId(location)));
+        assertThat(jsonObject.getString("title"), is("Christmas Party"));
+        assertThat(jsonObject.getString("location"), is("Town Hall"));
+        assertThat(jsonObject.getString("date"), is("2015-12-24"));
+        assertThat(jsonObject.getString("time"), is("18:00"));
     }
 
 }
