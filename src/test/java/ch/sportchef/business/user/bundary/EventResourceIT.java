@@ -39,6 +39,7 @@ public class EventResourceIT {
 
         // update
         final JsonObject eventToConflict = updateEventWithSuccess(location);
+        updateEventWithConflict(location, eventToConflict);
     }
 
     private long getEventId(final String location) {
@@ -159,6 +160,16 @@ public class EventResourceIT {
         assertThat(jsonObject.getString("time"), is("20:00"));
 
         return eventToUpdate;
+    }
+
+    private void updateEventWithConflict(final String location, final JsonObject eventToUpdate) {
+        // arrange
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(eventToUpdate));
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.CONFLICT.getStatusCode()));
     }
 
 }
