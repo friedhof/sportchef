@@ -40,6 +40,7 @@ public class EventResourceIT {
         // update
         final JsonObject eventToConflict = updateEventWithSuccess(location);
         updateEventWithConflict(location, eventToConflict);
+        updateEventWithNotFound(notFoundLocation);
     }
 
     private long getEventId(final String location) {
@@ -170,6 +171,23 @@ public class EventResourceIT {
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.CONFLICT.getStatusCode()));
+    }
+
+    private void updateEventWithNotFound(final String location) {
+        // arrange
+        final JsonObject eventToUpdate = Json.createObjectBuilder()
+                .add("eventId", getEventId(location))
+                .add("title", "New Year Party")
+                .add("location", "Town Hall")
+                .add("date", "2015-12-31")
+                .add("time", "20:00")
+                .build();
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(eventToUpdate));
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
     }
 
 }
