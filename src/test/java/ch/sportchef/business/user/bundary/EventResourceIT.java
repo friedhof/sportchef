@@ -36,6 +36,11 @@ public class EventResourceIT {
         readOneEventWithSuccess(location);
         readOneEventWithNotFound(notFoundLocation);
         readAllEvents(location);
+
+        // update
+        final JsonObject eventToConflict = updateEventWithSuccess(location);
+        updateEventWithConflict(location, eventToConflict);
+        updateEventWithNotFound(notFoundLocation);
     }
 
     private long getEventId(final String location) {
@@ -129,6 +134,60 @@ public class EventResourceIT {
         assertThat(jsonObject.getString("location"), is("Town Hall"));
         assertThat(jsonObject.getString("date"), is("2015-12-24"));
         assertThat(jsonObject.getString("time"), is("18:00"));
+    }
+
+    private JsonObject updateEventWithSuccess(final String location) {
+        // arrange
+        final JsonObject eventToUpdate = Json.createObjectBuilder()
+                .add("eventId", getEventId(location))
+                .add("title", "New Year Party")
+                .add("location", "Town Hall")
+                .add("date", "2015-12-31")
+                .add("time", "20:00")
+                .build();
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(eventToUpdate));
+        final JsonObject jsonObject = response.readEntity(JsonObject.class);
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(response.getHeaderString("Location"), is(location));
+        assertNotNull(jsonObject);
+        assertThat(jsonObject.getJsonNumber("eventId").longValue(), is(getEventId(location)));
+        assertThat(jsonObject.getString("title"), is("New Year Party"));
+        assertThat(jsonObject.getString("location"), is("Town Hall"));
+        assertThat(jsonObject.getString("date"), is("2015-12-31"));
+        assertThat(jsonObject.getString("time"), is("20:00"));
+
+        return eventToUpdate;
+    }
+
+    private void updateEventWithConflict(final String location, final JsonObject eventToUpdate) {
+        // arrange
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(eventToUpdate));
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.CONFLICT.getStatusCode()));
+    }
+
+    private void updateEventWithNotFound(final String location) {
+        // arrange
+        final JsonObject eventToUpdate = Json.createObjectBuilder()
+                .add("eventId", getEventId(location))
+                .add("title", "New Year Party")
+                .add("location", "Town Hall")
+                .add("date", "2015-12-31")
+                .add("time", "20:00")
+                .build();
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(eventToUpdate));
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
     }
 
 }

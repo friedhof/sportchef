@@ -2,8 +2,14 @@ package ch.sportchef.business.event.boundary;
 
 import ch.sportchef.business.event.entity.Event;
 
+import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.PUT;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 
 public class EventResource {
 
@@ -22,6 +28,15 @@ public class EventResource {
             throw new NotFoundException(String.format("event with id '%d' not found", eventId));
         }
         return event;
+    }
+
+    @PUT
+    public Response update(@Valid final Event event, @Context final UriInfo info) {
+        find(); // only update existing events
+        event.setEventId(this.eventId);
+        final Event updatedEvent = this.manager.save(event);
+        final URI uri = info.getAbsolutePathBuilder().build();
+        return Response.ok(updatedEvent).header("Location", uri.toString()).build();
     }
 
 }

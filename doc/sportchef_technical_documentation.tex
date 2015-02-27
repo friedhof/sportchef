@@ -195,6 +195,30 @@ The response usually is a "200 OK" with the following JSON or an error response.
 ]
 \end{lstlisting}
 
+\subsection{Update an existing event}
+Send a PUT request with the following JSON to the URI: \url{/api/events/{eventId}}
+
+\begin{lstlisting}[language=json]
+{
+	"title" : "New Year Party",
+	"location" : "Town Hall",
+	"date" : "2015-12-31",
+	"time" : "20:00"
+}
+\end{lstlisting}
+
+The data of the event with the specified ID will be replaced by the data specified in the JSON. The response usually is a "200 OK" with the following JSON and a "Location" header set to the URI of the modified event or an error response.
+
+\begin{lstlisting}[language=json]
+{
+	"eventId" : 1,
+	"title" : "New Year Party",
+	"location" : "Town Hall",
+	"date" : "2015-12-31",
+	"time" : "20:00"
+}
+\end{lstlisting}
+
 \section{User Resource}
 
 \subsection{Create a new user}
@@ -274,7 +298,7 @@ The data of the user with the specified ID will be replaced by the data specifie
 }
 \end{lstlisting}
 
-\subsection{Delete existing users}
+\subsection{Delete an existing user}
 Send a DELETE request to the URI: \url{/api/users/{userId}}
 
 The data of the user with the specified ID will be deleted. The response usually is a "204 No Content" or an error response.
