@@ -44,6 +44,7 @@ public class EventResourceIT {
 
         // delete
         deleteEventWithSuccess(location);
+        deleteEventWithNotFound(location);
     }
 
     private long getEventId(final String location) {
@@ -201,6 +202,16 @@ public class EventResourceIT {
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.NO_CONTENT.getStatusCode()));
+    }
+
+    private void deleteEventWithNotFound(final String location) {
+        // arrange
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).delete();
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
     }
 
 }
