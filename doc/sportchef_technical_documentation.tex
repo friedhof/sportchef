@@ -219,6 +219,11 @@ The data of the event with the specified ID will be replaced by the data specifi
 }
 \end{lstlisting}
 
+\subsection{Delete an existing event}
+Send a DELETE request to the URI: \url{/api/events/{eventId}}
+
+The data of the event with the specified ID will be deleted. The response usually is a "204 No Content" or an error response.
+
 \section{User Resource}
 
 \subsection{Create a new user}
