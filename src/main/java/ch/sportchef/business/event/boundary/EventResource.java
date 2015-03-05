@@ -3,6 +3,7 @@ package ch.sportchef.business.event.boundary;
 import ch.sportchef.business.event.entity.Event;
 
 import javax.validation.Valid;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PUT;
@@ -37,6 +38,13 @@ public class EventResource {
         final Event updatedEvent = this.manager.save(event);
         final URI uri = info.getAbsolutePathBuilder().build();
         return Response.ok(updatedEvent).header("Location", uri.toString()).build();
+    }
+
+    @DELETE
+    public Response delete() {
+        final Event event = find(); // only delete existing events
+        this.manager.delete(event.getEventId());
+        return Response.noContent().build();
     }
 
 }

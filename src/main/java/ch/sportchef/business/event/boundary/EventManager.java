@@ -34,4 +34,9 @@ public class EventManager {
         final TypedQuery<Event> allQuery = this.em.createQuery(all);
         return allQuery.getResultList();
     }
+
+    public void delete(final long eventId) {
+        final Event reference = em.getReference(Event.class, eventId);
+        em.remove(reference);
+    }
 }

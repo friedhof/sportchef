@@ -41,6 +41,10 @@ public class EventResourceIT {
         final JsonObject eventToConflict = updateEventWithSuccess(location);
         updateEventWithConflict(location, eventToConflict);
         updateEventWithNotFound(notFoundLocation);
+
+        // delete
+        deleteEventWithSuccess(location);
+        deleteEventWithNotFound(location);
     }
 
     private long getEventId(final String location) {
@@ -185,6 +189,26 @@ public class EventResourceIT {
 
         // act
         final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(eventToUpdate));
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
+    }
+
+    private void deleteEventWithSuccess(final String location) {
+        // arrange
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).delete();
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.NO_CONTENT.getStatusCode()));
+    }
+
+    private void deleteEventWithNotFound(final String location) {
+        // arrange
+
+        // act
+        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).delete();
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
