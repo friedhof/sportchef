@@ -4,6 +4,7 @@
   "description": "Sports Competition Management Software",
   "main": "",
   "moduleType": [],
+  "private": true,
   "license": "AGPL",
   "ignore": [
     "**/.*",
