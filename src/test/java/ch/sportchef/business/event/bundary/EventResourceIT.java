@@ -1,4 +1,4 @@
-package ch.sportchef.business.user.bundary;
+package ch.sportchef.business.event.bundary;
 
 import com.airhacks.rulz.jaxrsclient.JAXRSClientProvider;
 import org.junit.Rule;
