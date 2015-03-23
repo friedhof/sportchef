@@ -1,7 +1,7 @@
-*SportChef Server*
+*SportChef*
 ======
 
-[![Dependency Status](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/issue)](http://issuestats.com/github/McPringle/sportchef) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/pr)](http://issuestats.com/github/McPringle/sportchef)
+[![Dependency Status](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c) [![Dependency Status](https://www.versioneye.com/user/projects/562e699636d0ab00210013b8/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699636d0ab00210013b8) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/issue)](http://issuestats.com/github/McPringle/sportchef) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/pr)](http://issuestats.com/github/McPringle/sportchef)
 
 **Sports Competition Management Software with a modern and fast architecture. Java based backend with a RESTful JSON API and a HTML 5 client with a modern UI.**
 
@@ -31,7 +31,7 @@ We'll use [GitHub Pages](https://pages.github.com/) for hosting our upcoming pro
 
 We use a [Maven](https://maven.apache.org/) build to tie everything together. As a result this project is IDE independent (every state-of-the-art IDE should be able to import and/or use a Maven project). [VersionEye](https://www.versioneye.com/user/projects/55715899626264001e000000) is used to track out of date dependencies. To track our reaction time on issues and pull requests we use [Issue Stats](http://issuestats.com/github/McPringle/sportchef).
 
-# How to contribute to *SportChef Server*
+# How to contribute to *SportChef*
 
 ## Source code management
 
