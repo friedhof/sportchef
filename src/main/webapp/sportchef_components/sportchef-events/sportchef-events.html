@@ -1,0 +1,19 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html" />
+<link rel="import" href="../sportchef-event/sportchef-event.html" />
+
+<dom-module id="sportchef-events">
+    <template>
+        <iron-ajax auto url="/sportchef/api/events" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
+        <template is="dom-repeat" items="[[ajaxResponse]]">
+            <sportchef-event eventid="{{item.eventId}}"></sportchef-event>
+        </template>
+    </template>
+
+    <script>
+        // register a new element called sportchef-events
+        Polymer({
+            is: "sportchef-events"
+        });
+    </script>
+</dom-module>
