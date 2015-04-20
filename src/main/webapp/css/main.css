@@ -18,4 +18,10 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900);
 
 body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+}
+
+.header.paper-card .title-text.paper-card {
+    font-weight: 700;
 }
