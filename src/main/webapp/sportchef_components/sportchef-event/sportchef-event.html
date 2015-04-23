@@ -43,9 +43,8 @@
         <iron-ajax auto url="/sportchef/api/events/{{eventid}}" handle-as="json" last-response="{{event}}"></iron-ajax>
         <paper-card heading="{{event.title}}">
             <div class="card-content">
-                {{event.location}}<br/>
-                {{event.date}} {{event.time}}
-            </div>
+                <label>When:</label> {{event.date}} {{event.time}}<br />
+                <label>Where:</label> {{event.location}}
             </div>
         </paper-card>
     </template>
