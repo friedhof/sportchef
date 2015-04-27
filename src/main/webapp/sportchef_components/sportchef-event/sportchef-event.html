@@ -28,31 +28,20 @@
         <!-- scoped CSS for this element -->
         <style>
             paper-card {
-                background-image: url("../../images/sportler.jpg");
-                background-repeat: no-repeat;
-                background-size: cover;
-                background-position: center center;
                 margin: 0.5em;
             }
-
-            .card-actions {
-                background-color: white;
+            label {
+                display: inline-block;
+                width: 4em;
             }
         </style>
 
         <iron-ajax auto url="/sportchef/api/events/{{eventid}}" handle-as="json" last-response="{{event}}"></iron-ajax>
         <paper-card heading="{{event.title}}">
             <div class="card-content">
-                {{event.location}}<br/>
-                {{event.date}} {{event.time}}
+                <label>When:</label> {{event.date}} {{event.time}}<br />
+                <label>Where:</label> {{event.location}}
             </div>
-            <!--
-            <div class="card-actions">
-                <paper-button title="Attend"><iron-icon icon="icons:add-circle-outline"></iron-icon></paper-button>
-                <paper-button title="Show details"><iron-icon icon="icons:info-outline"></iron-icon></paper-button>
-                <paper-button title="Share"><iron-icon icon="social:share"></iron-icon></paper-button>
-            </div>
-            -->
         </paper-card>
     </template>
 
