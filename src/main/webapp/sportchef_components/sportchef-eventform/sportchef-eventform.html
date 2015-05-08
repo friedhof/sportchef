@@ -32,14 +32,14 @@
             }
         </style>
 
-        <paper-card heading="Neues Event">
+        <paper-card heading="New event">
             <div class="card-content">
                 <div id="waitForResponse"></div>
-                    <paper-input name="title" label="Titel"></paper-input>
-                    <paper-input name="location" label="Ort"></paper-input>
-                    <paper-input name="date" label="Datum"></paper-input>
-                    <paper-input name="time" label="Zeit"></paper-input>
                 <form is="iron-form" id="eventForm" method="post" content-type="application/json" action="/sportchef/api/events">
+                    <paper-input name="title" label="title"></paper-input>
+                    <paper-input name="location" label="location"></paper-input>
+                    <paper-input name="date" label="date"></paper-input>
+                    <paper-input name="time" label="time"></paper-input>
                     <paper-button raised onclick="submitForm()">Create</paper-button>
                 </form>
             </div>
@@ -65,7 +65,7 @@
             },
             formResponse: function(event) {
                 var pmn = document.querySelector('#waitForResponse');
-                pmn.innerHTML = "<strong>Event erstellt</strong><br /><span>Sie werden gleich weitergeleitet</span>";
+                messageElement.innerHTML = 'Event created';
                 setTimeout(function(){
                     document.location.href = "events.html";
                 }, 5000)
