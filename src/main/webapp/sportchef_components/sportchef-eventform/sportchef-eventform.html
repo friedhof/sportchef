@@ -34,7 +34,6 @@
 
         <paper-card heading="New event">
             <div class="card-content">
-                <div id="waitForResponse"></div>
                 <form is="iron-form" id="eventForm" method="post" content-type="application/json" action="/sportchef/api/events">
                     <paper-input name="title" label="title"></paper-input>
                     <paper-input name="location" label="location"></paper-input>
@@ -42,6 +41,7 @@
                     <paper-input name="time" label="time"></paper-input>
                     <paper-button raised onclick="submitForm()">Create</paper-button>
                 </form>
+                <div id="message"></div>
             </div>
         </paper-card>
     </template>
@@ -64,7 +64,8 @@
                 'iron-form-response': 'formResponse',
             },
             formResponse: function(event) {
-                var pmn = document.querySelector('#waitForResponse');
+                document.getElementById('eventForm').reset();
+                var messageElement = document.querySelector('#message');
                 messageElement.innerHTML = 'Event created';
                 setTimeout(function(){
                     document.location.href = "events.html";
