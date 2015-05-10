@@ -68,9 +68,9 @@
                 var messageElement = document.querySelector('#message');
                 messageElement.innerHTML = 'Event created';
                 setTimeout(function(){
-                    document.location.href = "events.html";
-                }, 5000)
-            },
+                    messageElement.innerHTML = '';
+                }, 5000);
+            }
         });
     </script>
 </dom-module>
