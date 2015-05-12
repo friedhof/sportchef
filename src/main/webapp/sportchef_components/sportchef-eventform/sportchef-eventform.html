@@ -1,0 +1,79 @@
+<!--
+    SportChef – Sports Competition Management Software
+    Copyright (C) 2015 Marcus Fihlon
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+<link rel="import" href="../../bower_components/paper-card/paper-card.html" />
+<link rel="import" href="../../bower_components/paper-input/paper-input.html" />
+<link rel="import" href="../../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../../bower_components/iron-form/iron-form.html" />
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html" />
+
+<dom-module id="sportchef-eventform">
+    <template>
+        <!-- scoped CSS for this element -->
+        <style>
+            paper-card {
+                margin: 0.5em;
+            }
+            #message {
+                color: rgb(0, 128, 0);
+                font-weight: bold;
+            }
+        </style>
+
+        <paper-card heading="New event">
+            <div class="card-content">
+                <form is="iron-form" id="eventForm" method="post" content-type="application/json" action="/sportchef/api/events">
+                    <paper-input name="title" label="title"></paper-input>
+                    <paper-input name="location" label="location"></paper-input>
+                    <paper-input name="date" label="date"></paper-input>
+                    <paper-input name="time" label="time"></paper-input>
+                    <paper-button raised onclick="submitForm()">Create</paper-button>
+                </form>
+                <div id="message"></div>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        function submitForm() {
+            document.getElementById('eventForm').submit();
+        }
+
+        // register a new element called sportchef-eventform
+        Polymer({
+            is: 'sportchef-eventform',
+            properties: {
+                contentType: {
+                    type: String,
+                    value: 'application/json'
+                },
+            },
+            listeners: {
+                'iron-form-response': 'formResponse',
+            },
+            formResponse: function(event) {
+                document.getElementById('eventForm').reset();
+                var messageElement = document.querySelector('#message');
+                messageElement.innerHTML = 'Event created';
+                setTimeout(function(){
+                    messageElement.innerHTML = '';
+                }, 5000);
+            }
+        });
+    </script>
+</dom-module>
