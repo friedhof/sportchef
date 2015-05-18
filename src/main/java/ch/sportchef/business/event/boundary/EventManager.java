@@ -19,13 +19,6 @@ package ch.sportchef.business.event.boundary;
 
 import ch.sportchef.business.event.entity.Event;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
