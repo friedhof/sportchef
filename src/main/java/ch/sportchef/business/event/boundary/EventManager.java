@@ -27,7 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-public class EventManager implements Serializable{
+public class EventManager implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Map<Long, Event> events = new ConcurrentHashMap<>();
 
