@@ -37,8 +37,10 @@ import java.time.LocalTime;
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Event implements Serializable{
+public class Event implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue
     private long eventId;
