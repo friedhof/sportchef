@@ -33,16 +33,17 @@ import java.net.URI;
 public class EventResource {
 
     private long eventId;
-    private SimpleController<EventManager> managerController;
 
-    public EventResource(final long eventId, final SimpleController<EventManager> managerController) {
+    private SimpleController<EventManager> manager;
+
+    public EventResource(final long eventId, final SimpleController<EventManager> manager) {
         this.eventId = eventId;
-        this.managerController = managerController;
+        this.manager = manager;
     }
 
     @GET
     public Event find() {
-        final Event event = this.managerController.readOnly().findByEventId(this.eventId);
+        final Event event = this.manager.readOnly().findByEventId(this.eventId);
         if (event == null) {
             throw new NotFoundException(String.format("event with id '%d' not found", eventId));
         }
@@ -53,7 +54,7 @@ public class EventResource {
     public Response update(@Valid final Event event, @Context final UriInfo info) {
         find(); // only update existing events
         event.setEventId(this.eventId);
-        final Event updatedEvent = this.managerController.executeAndQuery(  mgr -> mgr.update(event));
+        final Event updatedEvent = this.manager.executeAndQuery(mgr -> mgr.update(event));
         final URI uri = info.getAbsolutePathBuilder().build();
         return Response.ok(updatedEvent).header("Location", uri.toString()).build();
     }
@@ -61,8 +62,7 @@ public class EventResource {
     @DELETE
     public Response delete() {
         final Event event = find(); // only delete existing events
-        this.managerController.execute(  mgr -> mgr.delete(event.getEventId()));
+        this.manager.execute(mgr -> mgr.delete(event.getEventId()));
         return Response.noContent().build();
     }
-
 }
