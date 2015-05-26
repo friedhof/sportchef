@@ -36,10 +36,10 @@ public class EventManager implements Serializable {
     private final AtomicLong eventSeq = new AtomicLong(1);
 
 
-        final long newId = eventSeq.incrementAndGet();
-        event.setEventId(newId);
-        this.events.put(newId, event);
     public Event create(@NotNull final Event event) {
+        final long eventId = eventSeq.incrementAndGet();
+        event.setEventId(eventId);
+        this.events.put(eventId, event);
         return event;
     }
 
