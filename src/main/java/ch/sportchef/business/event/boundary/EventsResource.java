@@ -43,7 +43,7 @@ public class EventsResource {
 
     @POST
     public Response save(@Valid final Event event, @Context final UriInfo info) {
-        final Event saved = this.manager.executeAndQuery((mgr) -> mgr.createNew(event)) ;
+        final Event saved = this.manager.executeAndQuery((mgr) -> mgr.create(event));
         final long eventId = saved.getEventId();
         final URI uri = info.getAbsolutePathBuilder().path("/" + eventId).build();
         return Response.created(uri).build();
