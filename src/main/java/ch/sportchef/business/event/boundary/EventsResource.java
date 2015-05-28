@@ -51,8 +51,8 @@ public class EventsResource {
 
     @GET
     public Response findAll() {
-        final List<Event> allEvents = this.manager.readOnly().findAll();
-        return Response.ok(allEvents).build();
+        final List<Event> events = this.manager.readOnly().findAll();
+        return Response.ok(events).build();
     }
 
     @Path("{eventId}")
