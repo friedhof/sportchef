@@ -39,7 +39,7 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class EventsResource {
 
-    private SimpleController<EventManager> manager =  SimpleController.loadOptional("events", () -> new EventManager());
+    private SimpleController<EventManager> manager =  SimpleController.loadOptional(Event.class.getName(), () -> new EventManager());
 
     @POST
     public Response save(@Valid final Event event, @Context final UriInfo info) {
