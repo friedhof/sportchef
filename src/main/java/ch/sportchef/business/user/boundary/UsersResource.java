@@ -18,9 +18,9 @@
 package ch.sportchef.business.user.boundary;
 
 import ch.sportchef.business.user.entity.User;
+import pl.setblack.airomem.core.SimpleController;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -39,12 +39,11 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class UsersResource {
 
-    @Inject
-    private UserManager manager;
+    private SimpleController<UserManager> manager =  SimpleController.loadOptional(User.class.getName(), () -> new UserManager());
 
     @POST
     public Response save(@Valid final User user, @Context final UriInfo info) {
-        final User saved = this.manager.save(user);
+        final User saved = this.manager.executeAndQuery((mgr) -> mgr.create(user));
         final long userId = saved.getUserId();
         final URI uri = info.getAbsolutePathBuilder().path("/" + userId).build();
         return Response.created(uri).build();
@@ -52,8 +51,8 @@ public class UsersResource {
 
     @GET
     public Response findAll() {
-        final List<User> allUsers = this.manager.findAll();
-        return Response.ok(allUsers).build();
+        final List<User> users = this.manager.readOnly().findAll();
+        return Response.ok(users).build();
     }
 
     @Path("{userId}")
