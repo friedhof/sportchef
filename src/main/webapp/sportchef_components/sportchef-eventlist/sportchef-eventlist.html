@@ -21,6 +21,7 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html" />
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html" />
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html" />
+<link rel="import" href="../../sportchef_components/sportchef-jquery/sportchef-jquery.html" />
 
 <dom-module id="sportchef-eventlist">
     <template>
@@ -43,16 +44,19 @@
     </template>
 
     <script>
-        function deleteEvent(element){
-            var xhttp;
-            if (window.XMLHttpRequest) {
-                xhttp = new XMLHttpRequest();
-            } else {
-                // code for IE6, IE5
-                xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        function deleteEvent(button) {
+            var eventId = $(button).attr('data-event-id');
+                $.ajax({
+                    method: 'DELETE',
+                    url: '/sportchef/api/events/' + eventId
+                })
+                .error(function(jqXHR, textStatus, errorThrown){
+                    alert(textStatus);
+                })
+                .success(function(data, textStatus, jqXHR) {
+                    $('#paper-item-' + eventId).hide();
+                });
             }
-            xhttp.open("DELETE", "/sportchef/api/events/"+element.getAttribute("data-eventid"), true);
-            xhttp.send();
         }
 
         // register a new element called sportchef-events
