@@ -30,8 +30,7 @@
                 <paper-listbox>
                     <iron-ajax auto url="/sportchef/api/events" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
                     <template is="dom-repeat" items="[[ajaxResponse]]">
-
-                        <paper-item>
+                        <paper-item id="paper-item-{{item.eventId}}">
                             {{item.title}}
                             <paper-button data-eventid$="{{item.eventId}}" onclick="deleteEvent(this);">
                                 <iron-icon icon="icons:clear"></iron-icon>
@@ -46,6 +45,8 @@
     <script>
         function deleteEvent(button) {
             var eventId = $(button).attr('data-event-id');
+            var eventTitle = $(button).attr('data-event-title');
+            if (confirm('Are you shure you want delete event #' + eventId + ' "' + eventTitle + '"?')) {
                 $.ajax({
                     method: 'DELETE',
                     url: '/sportchef/api/events/' + eventId
