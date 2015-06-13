@@ -32,8 +32,8 @@
                     <template is="dom-repeat" items="[[ajaxResponse]]">
                         <paper-item id="paper-item-{{item.eventId}}">
                             {{item.title}}
-                            <paper-button data-eventid$="{{item.eventId}}" onclick="deleteEvent(this);">
-                                <iron-icon icon="icons:clear"></iron-icon>
+                            <paper-button data-event-id$="{{item.eventId}}" data-event-title$="{{item.title}}" onclick="deleteEvent(this);" title="Delete">
+                                <iron-icon icon="icons:delete"></iron-icon>
                             </paper-button>
                         </paper-item>
                     </template>
