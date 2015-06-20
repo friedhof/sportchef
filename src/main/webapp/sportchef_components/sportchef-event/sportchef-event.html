@@ -19,27 +19,62 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html"/>
 <link rel="import" href="../../bower_components/paper-button/paper-button.html"/>
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html"/>
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 <dom-module id="sportchef-event">
     <template>
         <!-- scoped CSS for this element -->
         <style>
             paper-card {
-                margin: 0;
-                color:  white;
+                margin:         0;
+                color:          white;
+                width:          24%;
+                vertical-align: top;
             }
 
             label {
                 display: inline-block;
                 width:   4em;
             }
+
+            .card-content h2 {
+                font-weight:   bold;
+                margin-bottom: 10px;
+                margin-top:    0;
+                font-size:     1.2em;
+            }
+
+            .card-content {
+                font-weight:      300;
+                min-height:       170px;
+                background-color: #0096dc;
+                text-align:       left;
+            }
+
+            .fav {
+                position: absolute;
+                top:      3%;
+                left:     4%;
+            }
+
+            .fav:hover {
+                cursor: pointer;
+                color:  #e7e7e7;
+            }
         </style>
 
         <iron-ajax auto url="/sportchef/api/events/{{eventid}}" handle-as="json" last-response="{{event}}"></iron-ajax>
-        <paper-card heading="{{event.title}}">
+        <paper-card image="http://placehold.it/350x200">
+            <div class="fav">
+                <iron-icon icon="icons:stars"></iron-icon>
+            </div>
             <div class="card-content">
-                <label>When:</label> {{event.date}} {{event.time}}<br/>
-                <label>Where:</label> {{event.location}}
+                <h2>{{event.title}}</h2>
+                <span><iron-icon icon="icons:event"></iron-icon> {{event.date}} {{event.time}}</span><br/>
+                <span><iron-icon icon="maps:place"></iron-icon> {{event.location}}</span>
             </div>
         </paper-card>
     </template>
