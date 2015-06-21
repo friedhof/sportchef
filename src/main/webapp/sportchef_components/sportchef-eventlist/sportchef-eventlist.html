@@ -46,7 +46,7 @@
         function deleteEvent(button) {
             var eventId = $(button).attr('data-event-id');
             var eventTitle = $(button).attr('data-event-title');
-            if (confirm('Are you shure you want delete event #' + eventId + ' "' + eventTitle + '"?')) {
+            if (confirm('Are you sure you want delete event #' + eventId + ' "' + eventTitle + '"?')) {
                 $.ajax({
                     method: 'DELETE',
                     url: '/sportchef/api/events/' + eventId
