@@ -53,8 +53,8 @@ public class UserResource {
     @PUT
     public Response update(@Valid final User user, @Context final UriInfo info) {
         find(); // only update existing users
-        user.setUserId(this.userId);
-        final User updatedUser = this.manager.executeAndQuery(mgr -> mgr.update(user));
+        final User userToUpdate = new User(this.userId, user.getFirstName(), user.getLastName(), user.getPhone(), user.getEmail());
+        final User updatedUser = this.manager.executeAndQuery(mgr -> mgr.update(userToUpdate));
         final URI uri = info.getAbsolutePathBuilder().build();
         return Response.ok(updatedUser).header("Location", uri.toString()).build();
     }

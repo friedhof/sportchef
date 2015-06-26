@@ -37,10 +37,10 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue
-    private long userId;
+    private Long userId;
 
     @Version
-    private long version;
+    private Long version;
 
     @Size(min = 1)
     private String firstName;
@@ -58,54 +58,36 @@ public class User implements Serializable {
         super();
     }
 
-    public User(@NotNull final String firstName,
+    public User(@NotNull final Long userId,
+                @NotNull final String firstName,
                 @NotNull final String lastName,
                 @NotNull final String phone,
                 @NotNull final String email) {
         this();
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
-    }
-
-    public void setUserId(final long id) {
-        this.userId = id;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(@NotNull final String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(@NotNull final String lastName) {
-        this.lastName = lastName;
     }
 
     public String getPhone() {
         return phone;
     }
 
-    public void setPhone(@NotNull final String phone) {
-        this.phone = phone;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(@NotNull final String email) {
-        this.email = email;
     }
 }
