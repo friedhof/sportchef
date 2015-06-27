@@ -38,10 +38,10 @@ public class UserManager implements Serializable {
     private final AtomicLong userSeq = new AtomicLong(1);
 
     public User create(@NotNull final User user) {
-        final long userId = userSeq.incrementAndGet();
-        user.setUserId(userId);
-        this.users.put(userId, user);
-        return user;
+        final Long userId = userSeq.incrementAndGet();
+        final User userToCreate = new User(userId, user.getFirstName(), user.getLastName(), user.getPhone(), user.getEmail());
+        this.users.put(userId, userToCreate);
+        return userToCreate;
     }
 
     public User update(@NotNull final User user) {
