@@ -53,8 +53,8 @@ public class EventResource {
     @PUT
     public Response update(@Valid final Event event, @Context final UriInfo info) {
         find(); // only update existing events
-        event.setEventId(this.eventId);
-        final Event updatedEvent = this.manager.executeAndQuery(mgr -> mgr.update(event));
+        final Event eventToUpdate = new Event(this.eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
+        final Event updatedEvent = this.manager.executeAndQuery(mgr -> mgr.update(eventToUpdate));
         final URI uri = info.getAbsolutePathBuilder().build();
         return Response.ok(updatedEvent).header("Location", uri.toString()).build();
     }
