@@ -33,7 +33,7 @@ public class EventManager implements Serializable {
 
     private final Map<Long, Event> events = new ConcurrentHashMap<>();
 
-    private final AtomicLong eventSeq = new AtomicLong(1);
+    private final AtomicLong eventSeq = new AtomicLong(0);
 
 
     public Event create(@NotNull final Event event) {
