@@ -65,4 +65,10 @@ public class EventResource {
         this.manager.execute(mgr -> mgr.delete(event.getEventId()));
         return Response.noContent().build();
     }
+
+    @Path("image")
+    public EventImageResource image() {
+        find(); // only existing events can have images
+        return new EventImageResource(this.eventId);
+    }
 }
