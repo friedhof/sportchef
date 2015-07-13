@@ -48,7 +48,9 @@ public class EventManager implements Serializable {
         return event;
     }
 
-    public Event findByEventId(final long eventId) { return this.events.get(eventId);}
+    public Event findByEventId(final long eventId) {
+        return this.events.get(eventId);
+    }
 
     public List<Event> findAll() {
        return this.events.values().stream().collect(Collectors.toList());
