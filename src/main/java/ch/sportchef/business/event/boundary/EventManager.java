@@ -53,7 +53,9 @@ public class EventManager implements Serializable {
     }
 
     public List<Event> findAll() {
-       return this.events.values().stream().collect(Collectors.toList());
+       return this.events.values().stream()
+               .sorted((e1, e2) -> e1.getEventId().compareTo(e2.getEventId()))
+               .collect(Collectors.toList());
     }
 
     public void delete(final long eventId) {
