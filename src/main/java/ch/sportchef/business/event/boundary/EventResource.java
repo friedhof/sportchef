@@ -21,6 +21,7 @@ import ch.sportchef.business.event.entity.Event;
 import pl.setblack.airomem.core.SimpleController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -36,7 +37,7 @@ public class EventResource {
 
     private SimpleController<EventManager> manager;
 
-    public EventResource(final long eventId, final SimpleController<EventManager> manager) {
+    public EventResource(@NotNull final Long eventId, @NotNull final SimpleController<EventManager> manager) {
         this.eventId = eventId;
         this.manager = manager;
     }
