@@ -33,7 +33,7 @@ import java.net.URI;
 
 public class EventResource {
 
-    private long eventId;
+    private Long eventId;
 
     private SimpleController<EventManager> manager;
 
