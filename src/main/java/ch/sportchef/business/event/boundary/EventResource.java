@@ -64,6 +64,11 @@ public class EventResource {
     @DELETE
     public Response delete() {
         final Event event = find(); // only delete existing events
+        try {
+            image().deleteImage();
+        } catch (final NotFoundException e) {
+            // ignore, this event has no images
+        }
         this.manager.execute(mgr -> mgr.delete(event.getEventId()));
         return Response.noContent().build();
     }
