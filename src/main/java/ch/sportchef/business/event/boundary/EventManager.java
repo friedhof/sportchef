@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparingLong;
+import static java.util.stream.Collectors.toList;
 
 public class EventManager implements Serializable {
 
@@ -54,8 +56,8 @@ public class EventManager implements Serializable {
 
     public List<Event> findAll() {
        return this.events.values().stream()
-               .sorted((e1, e2) -> e1.getEventId().compareTo(e2.getEventId()))
-               .collect(Collectors.toList());
+               .sorted(comparingLong(Event::getEventId))
+               .collect(toList());
     }
 
     public void delete(final long eventId) {
