@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparingLong;
+import static java.util.stream.Collectors.toList;
 
 @Stateless
 public class UserManager implements Serializable {
@@ -54,7 +56,9 @@ public class UserManager implements Serializable {
     }
 
     public List<User> findAll() {
-        return this.users.values().stream().collect(Collectors.toList());
+        return this.users.values().stream()
+                .sorted(comparingLong(User::getUserId))
+                .collect(toList());
     }
 
     public void delete(final long userId) {
