@@ -1,0 +1,65 @@
+<!--
+    SportChef – Sports Competition Management Software
+    Copyright (C) 2016 Marcus Fihlon
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<link rel="import" href="../../sportchef_components/sportchef-jquery/sportchef-jquery.html" />
+
+<script>
+    function i18n_findTranslation(translations, keys) {
+        var key = keys.shift();
+        var value = translations[key];
+        if (typeof value === 'string') {
+            return value;
+        } else if (typeof value === 'undefined') {
+            return null; // can' find translation
+        }
+        return i18n_findTranslation(value, keys);
+    }
+
+    $(function() {
+
+        // detect browser language
+        var browserLanguage = navigator.language || navigator.userLanguage;
+
+        // check for supported languages
+        if (browserLanguage === 'de') {
+
+            // load translation file
+            var url = 'sportchef_components/sportchef-i18n/translations.' + browserLanguage + '.json';
+            $.getJSON( url, {} )
+                .done(function (translations) {
+
+                    // start translation
+                    $('[data-i18n]').each(function () {
+                        var element = $(this);
+                        var key = element.attr('data-i18n');
+                        var keys = key.split('.');
+                        var translation = i18n_findTranslation(translations, keys);
+                        if (translation !== null && typeof translation !== 'undefined') {
+                            var attribute = element.attr('data-i18n-attribute');
+                            if (attribute !== null && typeof attribute !== 'undefined') {
+                                element.attr(attribute, translation);
+                            } else {
+                                element.html(translation);
+                            }
+                        } else {
+                            console.log('Can not find translation of "' + key + '" for language "' + browserLanguage + '"!');
+                        }
+                    });
+                });
+        }
+    });
+</script>
