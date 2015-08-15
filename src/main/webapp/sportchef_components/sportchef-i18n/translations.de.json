@@ -1,0 +1,12 @@
+{
+    "sportchef-layout-header" : {
+        "menu" : {
+            "events" :  "Veranstaltungen",
+            "admin" :   "Administration",
+            "imprint" : "Impressum"
+        },
+        "button" : {
+            "login" : "Anmelden"
+        }
+    }
+}
