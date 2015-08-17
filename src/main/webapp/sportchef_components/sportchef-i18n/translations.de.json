@@ -1,4 +1,7 @@
 {
+    "admin-eventimage" : {
+        "heading" : "Ein Bild hochladen"
+    },
     "admin-eventlist" : {
         "heading" : "Veranstaltungen löschen",
         "delete" :  "Löschen"
