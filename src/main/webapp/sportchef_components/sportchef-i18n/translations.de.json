@@ -1,4 +1,12 @@
 {
+    "admin-eventform" : {
+        "heading" :  "Neue Veranstaltung",
+        "title" :    "Titel",
+        "location" : "Ort",
+        "date" :     "Datum",
+        "time" :     "Uhrzeit",
+        "create" :   "Erstellen"
+    },
     "admin-eventimage" : {
         "heading" : "Ein Bild hochladen"
     },

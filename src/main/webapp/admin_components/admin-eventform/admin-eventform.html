@@ -35,14 +35,14 @@
             }
         </style>
 
-        <paper-card heading="New event">
+        <paper-card heading="New event" data-i18n="admin-eventform.heading" data-i18n-attribute="heading">
             <div class="card-content">
                 <form is="iron-form" id="eventForm" method="post" content-type="application/json" action="/sportchef/api/events">
-                    <paper-input name="title" label="title"></paper-input>
-                    <paper-input name="location" label="location"></paper-input>
-                    <paper-input name="date" label="date"></paper-input>
-                    <paper-input name="time" label="time"></paper-input>
-                    <paper-button raised onclick="submitForm()">Create</paper-button>
+                    <paper-input name="title" label="title" data-i18n="admin-eventform.title" data-i18n-attribute="label"></paper-input>
+                    <paper-input name="location" label="location" data-i18n="admin-eventform.location" data-i18n-attribute="label"></paper-input>
+                    <paper-input name="date" label="date" data-i18n="admin-eventform.date" data-i18n-attribute="label"></paper-input>
+                    <paper-input name="time" label="time" data-i18n="admin-eventform.time" data-i18n-attribute="label"></paper-input>
+                    <paper-button raised onclick="submitForm()" data-i18n="admin-eventform.create">Create</paper-button>
                 </form>
                 <div id="message"></div>
             </div>
