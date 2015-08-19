@@ -26,14 +26,14 @@
 
 <dom-module id="admin-eventimage">
     <template>
-        <paper-card heading="Event Image Upload">
+        <paper-card heading="Event Image Upload" data-i18n="admin-eventimage.heading" data-i18n-attribute="heading">
             <div class="card-content">
                 <paper-listbox>
                     <iron-ajax auto url="/sportchef/api/events" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
                     <template is="dom-repeat" items="[[ajaxResponse]]">
                         <paper-item id="paper-item-{{item.eventId}}">
                             {{item.title}}
-                            <file-upload accept="image/png" raised="true" target="/sportchef/api/events/{{item.eventId}}/image">Choose PNG (350x200)</file-upload>
+                            <file-upload accept="image/png" raised="true" target="/sportchef/api/events/{{item.eventId}}/image">PNG (350x200)</file-upload>
                         </paper-item>
                     </template>
                 </paper-listbox>
