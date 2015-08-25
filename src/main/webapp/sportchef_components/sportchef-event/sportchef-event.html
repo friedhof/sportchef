@@ -1,6 +1,6 @@
 <!--
     SportChef – Sports Competition Management Software
-    Copyright (C) 2015 Marcus Fihlon
+    Copyright (C) 2015, 2016 Marcus Fihlon
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -13,7 +13,7 @@
     GNU Affero General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 <link rel="import" href="../../bower_components/paper-card/paper-card.html" />
@@ -52,6 +52,14 @@
                 min-height:       170px;
                 background-color: #0096dc;
                 text-align:       left;
+            }
+
+            .card-content div.bottomFixed {
+                position: absolute;
+                height: 55px;
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
             }
 
             /*
@@ -95,8 +103,10 @@
             </div>-->
             <div class="card-content">
                 <h2>{{event.title}}</h2>
-                <span><iron-icon icon="icons:event"></iron-icon> {{event.date}} {{event.time}}</span><br />
-                <span><iron-icon icon="maps:place"></iron-icon> {{event.location}}</span>
+                <div class="bottomFixed">
+                    <span><iron-icon icon="icons:event"></iron-icon> {{event.date}} {{event.time}}</span><br />
+                    <span><iron-icon icon="maps:place"></iron-icon> {{event.location}}</span>
+                </div>
             </div>
         </paper-card>
     </template>
