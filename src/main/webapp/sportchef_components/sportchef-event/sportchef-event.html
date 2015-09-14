@@ -29,7 +29,7 @@
         <!-- scoped CSS for this element -->
         <style>
             paper-card {
-                margin:         0;
+                margin:         10px 0;
                 color:          white;
                 width:          24%;
                 vertical-align: top;
@@ -63,6 +63,27 @@
             .fav:hover {
                 cursor: pointer;
                 color:  #e7e7e7;
+            }
+
+            @media only screen
+            and (max-width: 1100px) {
+                paper-card {
+                    width: 32%;
+                }
+            }
+
+            @media only screen
+            and (max-width: 800px) {
+                paper-card {
+                    width: 49%;
+                }
+            }
+
+            @media only screen
+            and (max-width: 550px) {
+                paper-card {
+                    width: 100%;
+                }
             }
         </style>
 
