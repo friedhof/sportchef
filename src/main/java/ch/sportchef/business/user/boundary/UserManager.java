@@ -24,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -53,6 +54,10 @@ public class UserManager implements Serializable {
 
     public User findByUserId(final long userId) {
         return this.users.get(userId);
+    public Optional<User> findByEmail(@NotNull final String email) {
+        return this.users.values().stream()
+                .filter(user -> email.equals(user.getEmail()))
+                .findAny();
     }
 
     public List<User> findAll() {
