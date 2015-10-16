@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.user.boundary;
 
+import ch.sportchef.business.exception.ExpectationFailedException;
 import ch.sportchef.business.user.entity.User;
 
 import javax.ejb.Stateless;
@@ -41,6 +42,9 @@ public class UserManager implements Serializable {
     private final AtomicLong userSeq = new AtomicLong(0);
 
     public User create(@NotNull final User user) {
+        if (findByEmail(user.getEmail()).isPresent()) {
+            throw new ExpectationFailedException("Email address has to be unique");
+        }
         final Long userId = userSeq.incrementAndGet();
         final User userToCreate = new User(userId, user.getFirstName(), user.getLastName(), user.getPhone(), user.getEmail());
         this.users.put(userId, userToCreate);
