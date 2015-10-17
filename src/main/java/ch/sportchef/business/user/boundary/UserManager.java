@@ -70,7 +70,7 @@ public class UserManager implements Serializable {
                 .collect(toList());
     }
 
-    public void delete(final long userId) {
+    public void delete(final Long userId) {
         this.users.remove(userId);
     }
 }
