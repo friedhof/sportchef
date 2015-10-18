@@ -56,8 +56,10 @@ public class UserManager implements Serializable {
         return user;
     }
 
-    public User findByUserId(final long userId) {
-        return this.users.get(userId);
+    public Optional<User> findByUserId(@NotNull final Long userId) {
+        return Optional.ofNullable(this.users.get(userId));
+    }
+
     public Optional<User> findByEmail(@NotNull final String email) {
         return this.users.values().stream()
                 .filter(user -> email.equals(user.getEmail()))
