@@ -29,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
+import static javax.ws.rs.core.Response.Status.EXPECTATION_FAILED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -48,6 +49,7 @@ public class UserResourceIT {
         final String location = createUserWithSuccess();
         final String notFoundLocation = location.substring(0, location.lastIndexOf("/") + 1) + Long.MAX_VALUE;
         createUserWithBadRequest();
+        createUserWithExpectationFailed();
 
         // read
         readOneUserWithSuccess(location);
@@ -104,6 +106,24 @@ public class UserResourceIT {
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
+    }
+
+    private void createUserWithExpectationFailed() {
+        // arrange
+        final JsonObject userToCreate = Json.createObjectBuilder()
+                .add("firstName", "John")
+                .add("lastName", "Doe")
+                .add("phone", "+41 79 555 00 01")
+                .add("email", "john.doe@sportchef.ch")
+                .build();
+
+        // act
+        final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(userToCreate));
+
+        //assert
+        assertThat(response.getStatus(), is(EXPECTATION_FAILED.getStatusCode()));
+        final String expectation = response.getHeaderString("Expectation");
+        assertThat(expectation, is("Email address has to be unique"));
     }
 
     private void readOneUserWithSuccess(final String location) {
