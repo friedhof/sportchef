@@ -1,0 +1,20 @@
+{
+  "name": "SportChef",
+  "homepage": "https://github.com/McPringle/sportchef",
+  "description": "Sports Competition Management Software",
+  "main": "",
+  "moduleType": [],
+  "license": "AGPL",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/main/webapp",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.1.0",
+    "paper-elements": "PolymerElements/paper-elements#~1.0.1"
+  }
+}
