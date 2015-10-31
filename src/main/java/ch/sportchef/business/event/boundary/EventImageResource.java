@@ -1,6 +1,6 @@
 /**
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2015, 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,12 +13,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.event.boundary;
 
+import ch.sportchef.business.ImageResizer;
 import org.apache.commons.fileupload.MultipartStream;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -32,6 +34,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -41,11 +44,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+
+
 public class EventImageResource {
 
     private static final String IMAGE_PLACEHOLDER = "http://placehold.it/350x200";
     private static final String FILE_EXTENSION = ".png";
+    private static final String FILE_TYPE = "PNG";
     private static final File IMAGE_UPLOAD_PATH;
+    private static final int IMAGE_HEIGHT = 200;
+    private static final int IMAGE_WIDTH = 350;
 
     static {
         // build path to image upload folder
@@ -89,18 +99,34 @@ public class EventImageResource {
         final String contentType = request.getContentType();
         final byte[] boundary = contentType.substring(contentType.indexOf("boundary=") + 9).getBytes();
 
+        File file = null;
         try (final BufferedInputStream inputStream = new BufferedInputStream(request.getInputStream(), 8192)) {
             final MultipartStream multipartStream = new MultipartStream(inputStream, boundary, 8192, null);
             boolean nextPart = multipartStream.skipPreamble();
-            while(nextPart) {
+            while (nextPart) {
                 multipartStream.readHeaders(); // don't remove, strips headers off
-                final File file = new File(IMAGE_UPLOAD_PATH, this.eventId + FILE_EXTENSION);
+                file = new File(IMAGE_UPLOAD_PATH, this.eventId + FILE_EXTENSION);
                 file.createNewFile();
                 try (final BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file), 8192)) {
                     multipartStream.readBodyData(outputStream);
                     nextPart = multipartStream.readBoundary();
                 }
             }
+        }
+
+        if (file != null && file.exists()) {
+            try {
+                final BufferedImage inputImage = ImageIO.read(file);
+                final BufferedImage outputImage = ImageResizer.resizeAndCrop(inputImage, IMAGE_WIDTH, IMAGE_HEIGHT);
+                ImageIO.write(outputImage, FILE_TYPE, file);
+                inputImage.flush();
+                outputImage.flush();
+            } catch (final IOException e) {
+                return Response.status(INTERNAL_SERVER_ERROR).header("Cause", e.getMessage()).build();
+            }
+        } else {
+            // there was no image in the upload
+            return Response.status(BAD_REQUEST).build();
         }
 
         return Response.ok().build();
