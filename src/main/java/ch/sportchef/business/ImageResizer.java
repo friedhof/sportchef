@@ -1,4 +1,4 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
  * Copyright (C) 2016 Marcus Fihlon
  *
