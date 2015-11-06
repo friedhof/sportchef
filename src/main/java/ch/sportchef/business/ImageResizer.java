@@ -20,7 +20,8 @@ package ch.sportchef.business;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-public class ImageResizer {
+public enum ImageResizer {
+    ;
 
     public static BufferedImage resizeAndCrop(final BufferedImage inputImage,
                                               final int outputWidth, final int outputHeight) {
