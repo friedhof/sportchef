@@ -31,8 +31,10 @@ public enum ImageResizer {
         final int inputWidth = inputImage.getWidth();
         final int inputHeight = inputImage.getHeight();
 
+        BufferedImage outputImage;
+
         if (inputWidth == outputWidth && inputHeight == outputHeight) {
-            return inputImage;
+            outputImage = inputImage;
         }
 
         BufferedImage resizedImage = null;
@@ -54,9 +56,9 @@ public enum ImageResizer {
             resizedImage = inputImage;
         }
 
-        final BufferedImage croppedImage = crop(resizedImage, outputWidth, outputHeight);
+        outputImage = crop(resizedImage, outputWidth, outputHeight);
 
-        return croppedImage;
+        return outputImage;
     }
 
     public static BufferedImage resize(final BufferedImage inputImage,
