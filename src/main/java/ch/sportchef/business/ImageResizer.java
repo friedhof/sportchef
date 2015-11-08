@@ -31,32 +31,33 @@ public enum ImageResizer {
         final int inputWidth = inputImage.getWidth();
         final int inputHeight = inputImage.getHeight();
 
-        BufferedImage outputImage;
+        final BufferedImage outputImage;
 
         if (inputWidth == outputWidth && inputHeight == outputHeight) {
             outputImage = inputImage;
-        }
+        } else {
 
-        BufferedImage resizedImage = null;
-        if (inputWidth != outputWidth && inputHeight != outputHeight) {
-            final double inputAspectRatio = (inputWidth * 1.0) / (inputHeight * 1.0);
+            BufferedImage resizedImage = null;
+            if (inputWidth != outputWidth && inputHeight != outputHeight) {
+                final double inputAspectRatio = (inputWidth * 1.0) / (inputHeight * 1.0);
 
-            int scaleWidth = 0;
-            int scaleHeight = 0;
-            if (outputAspectRatio < inputAspectRatio) {
-                scaleWidth = outputWidth;
-                scaleHeight = inputHeight * outputWidth / inputWidth;
+                int scaleWidth = 0;
+                int scaleHeight = 0;
+                if (outputAspectRatio < inputAspectRatio) {
+                    scaleWidth = outputWidth;
+                    scaleHeight = inputHeight * outputWidth / inputWidth;
+                } else {
+                    scaleWidth = inputWidth * outputHeight / inputHeight;
+                    scaleHeight = outputHeight;
+                }
+
+                resizedImage = resize(inputImage, scaleWidth, scaleHeight);
             } else {
-                scaleWidth = inputWidth * outputHeight / inputHeight;
-                scaleHeight = outputHeight;
+                resizedImage = inputImage;
             }
 
-            resizedImage = resize(inputImage, scaleWidth, scaleHeight);
-        } else {
-            resizedImage = inputImage;
+            outputImage = crop(resizedImage, outputWidth, outputHeight);
         }
-
-        outputImage = crop(resizedImage, outputWidth, outputHeight);
 
         return outputImage;
     }
