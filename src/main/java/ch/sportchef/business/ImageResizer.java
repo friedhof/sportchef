@@ -26,7 +26,7 @@ public enum ImageResizer {
     public static BufferedImage resizeAndCrop(final BufferedImage inputImage,
                                               final int outputWidth, final int outputHeight) {
 
-        final double outputAspectRatio = outputWidth * 1.0 / (outputHeight * 1.0);
+        final double outputAspectRatio = outputWidth / (double) outputHeight;
 
         final int inputWidth = inputImage.getWidth();
         final int inputHeight = inputImage.getHeight();
@@ -39,7 +39,7 @@ public enum ImageResizer {
 
             BufferedImage resizedImage = null;
             if (inputWidth != outputWidth && inputHeight != outputHeight) {
-                final double inputAspectRatio = inputWidth * 1.0 / (inputHeight * 1.0);
+                final double inputAspectRatio = inputWidth / (double) inputHeight;
 
                 int scaleWidth = 0;
                 int scaleHeight = 0;
