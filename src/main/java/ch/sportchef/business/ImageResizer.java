@@ -37,7 +37,7 @@ public enum ImageResizer {
             outputImage = inputImage;
         } else {
 
-            BufferedImage resizedImage = null;
+            final BufferedImage resizedImage;
             if (inputWidth != outputWidth && inputHeight != outputHeight) {
                 final double inputAspectRatio = inputWidth / (double) inputHeight;
 
