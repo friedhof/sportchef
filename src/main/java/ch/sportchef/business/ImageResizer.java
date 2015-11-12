@@ -41,7 +41,7 @@ public enum ImageResizer {
             if (inputWidth != outputWidth && inputHeight != outputHeight) {
                 final double inputAspectRatio = inputWidth / (double) inputHeight;
 
-                int scaleWidth = 0;
+                int scaleWidth;
                 int scaleHeight = 0;
                 if (outputAspectRatio < inputAspectRatio) {
                     scaleWidth = outputWidth;
