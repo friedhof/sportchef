@@ -44,6 +44,7 @@
 
         <paper-card heading="Neues Event">
             <div class="card-content">
+                <div id="waitForResponse"></div>
                 <form is="iron-form" id="form" method="post" content-type="application/json" action="http://localhost:8080/sportchef/api/events">
                     <paper-input name="title" label="Titel"></paper-input>
                     <paper-input name="location" label="Ort"></paper-input>
@@ -75,7 +76,18 @@
                     type: String,
                     value: "application/json"
                 },
-            }
+            },
+            listeners: {
+                'iron-form-response': 'formResponse',
+            },
+            formResponse: function(event) {
+                console.log('There was a response');
+                var pmn = document.querySelector('#waitForResponse');
+                pmn.innerHTML = "<strong>Event erstellt</strong><br /><span>Sie werden gleich weitergeleitet</span>";
+                setTimeout(function(){
+                    document.location.href = "events.html";
+                }, 5000)
+            },
         });
     </script>
 </dom-module>
