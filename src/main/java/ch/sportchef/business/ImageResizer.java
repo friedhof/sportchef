@@ -42,7 +42,7 @@ public enum ImageResizer {
                 final double inputAspectRatio = inputWidth / (double) inputHeight;
 
                 final int scaleWidth;
-                int scaleHeight;
+                final int scaleHeight;
                 if (outputAspectRatio < inputAspectRatio) {
                     scaleWidth = outputWidth;
                     scaleHeight = inputHeight * outputWidth / inputWidth;
