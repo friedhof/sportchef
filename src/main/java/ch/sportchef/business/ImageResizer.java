@@ -1,4 +1,4 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
  * Copyright (C) 2016 Marcus Fihlon
  *
@@ -17,45 +17,49 @@
  */
 package ch.sportchef.business;
 
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-public class ImageResizer {
+public enum ImageResizer {
+    ;
 
     public static BufferedImage resizeAndCrop(final BufferedImage inputImage,
                                               final int outputWidth, final int outputHeight) {
 
-        final double outputAspectRatio = (outputWidth * 1.0) / (outputHeight * 1.0);
+        final double outputAspectRatio = outputWidth / (double) outputHeight;
 
         final int inputWidth = inputImage.getWidth();
         final int inputHeight = inputImage.getHeight();
 
+        final BufferedImage outputImage;
+
         if (inputWidth == outputWidth && inputHeight == outputHeight) {
-            return inputImage;
-        }
+            outputImage = inputImage;
+        } else {
 
-        BufferedImage resizedImage = null;
-        if (inputWidth != outputWidth && inputHeight != outputHeight) {
-            final double inputAspectRatio = (inputWidth * 1.0) / (inputHeight * 1.0);
+            final BufferedImage resizedImage;
+            if (inputWidth != outputWidth && inputHeight != outputHeight) {
+                final double inputAspectRatio = inputWidth / (double) inputHeight;
 
-            int scaleWidth = 0;
-            int scaleHeight = 0;
-            if (outputAspectRatio < inputAspectRatio) {
-                scaleWidth = outputWidth;
-                scaleHeight = inputHeight * outputWidth / inputWidth;
+                final int scaleWidth;
+                final int scaleHeight;
+                if (outputAspectRatio < inputAspectRatio) {
+                    scaleWidth = outputWidth;
+                    scaleHeight = inputHeight * outputWidth / inputWidth;
+                } else {
+                    scaleWidth = inputWidth * outputHeight / inputHeight;
+                    scaleHeight = outputHeight;
+                }
+
+                resizedImage = resize(inputImage, scaleWidth, scaleHeight);
             } else {
-                scaleWidth = inputWidth * outputHeight / inputHeight;
-                scaleHeight = outputHeight;
+                resizedImage = inputImage;
             }
 
-            resizedImage = resize(inputImage, scaleWidth, scaleHeight);
-        } else {
-            resizedImage = inputImage;
+            outputImage = crop(resizedImage, outputWidth, outputHeight);
         }
 
-        final BufferedImage croppedImage = crop(resizedImage, outputWidth, outputHeight);
-
-        return croppedImage;
+        return outputImage;
     }
 
     public static BufferedImage resize(final BufferedImage inputImage,
