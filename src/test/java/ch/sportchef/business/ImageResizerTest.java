@@ -40,7 +40,7 @@ public class ImageResizerTest {
     private static final int IMAGE_HEIGHT = 200;
 
     @Test
-    public void testResizeAndCrop() throws IOException, URISyntaxException {
+    public final void testResizeAndCrop() throws IOException, URISyntaxException {
         for (int i = 0; i < IMAGE_NAMES.length; i++) {
             // arrange
             final File file = new File(Thread.currentThread()
