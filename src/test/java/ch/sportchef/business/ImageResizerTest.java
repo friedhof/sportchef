@@ -41,10 +41,10 @@ public class ImageResizerTest {
 
     @Test
     public final void testResizeAndCrop() throws IOException, URISyntaxException {
-        for (int i = 0; i < IMAGE_NAMES.length; i++) {
+        for (String IMAGE_NAME : IMAGE_NAMES) {
             // arrange
             final File file = new File(Thread.currentThread()
-                    .getContextClassLoader().getResource(IMAGE_NAMES[i]).toURI());
+                    .getContextClassLoader().getResource(IMAGE_NAME).toURI());
             final BufferedImage inputImage = ImageIO.read(file);
 
             // act
