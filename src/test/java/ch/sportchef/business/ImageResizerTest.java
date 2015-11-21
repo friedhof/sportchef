@@ -41,7 +41,7 @@ public class ImageResizerTest {
 
     @Test
     public final void testResizeAndCrop() throws IOException, URISyntaxException {
-        for (String IMAGE_NAME : IMAGE_NAMES) {
+        for (final String IMAGE_NAME : IMAGE_NAMES) {
             // arrange
             final File file = new File(Thread.currentThread()
                     .getContextClassLoader().getResource(IMAGE_NAME).toURI());
