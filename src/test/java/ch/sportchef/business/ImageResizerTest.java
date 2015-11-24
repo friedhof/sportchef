@@ -1,4 +1,4 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
  * Copyright (C) 2016 Marcus Fihlon
  *
@@ -23,7 +23,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,28 +33,37 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class ImageResizerTest {
 
     private static final String[] IMAGE_NAMES = {
-            "test-350x200.png",
-            "test-350x550.png",
-            "test-525x300.png",
-            "test-550x200.png" };
+            "test-350x200.png", //NON-NLS
+            "test-350x550.png", //NON-NLS
+            "test-525x300.png", //NON-NLS
+            "test-550x200.png" }; //NON-NLS
 
     private static final int IMAGE_WIDTH = 350;
     private static final int IMAGE_HEIGHT = 200;
 
     @Test
-    public void testResizeAndCrop() throws IOException, URISyntaxException {
-        for (int i = 0; i < IMAGE_NAMES.length; i++) {
+    public final void testResizeAndCrop() throws IOException, URISyntaxException {
+        for (final String imageName : IMAGE_NAMES) {
             // arrange
-            final File file = new File(Thread.currentThread()
-                    .getContextClassLoader().getResource(IMAGE_NAMES[i]).toURI());
-            final BufferedImage inputImage = ImageIO.read(file);
+            final Thread currentThread = Thread.currentThread();
+            final ClassLoader classLoader = currentThread.getContextClassLoader();
+            final URL url = classLoader.getResource(imageName);
+            assert url != null;
+            final URI uri = url.toURI();
 
             // act
-            final BufferedImage outputImage = ImageResizer.resizeAndCrop(inputImage, IMAGE_WIDTH, IMAGE_HEIGHT);
+            final BufferedImage outputImage = testResizeAndCrop(uri);
 
             // assert
             assertThat(outputImage.getWidth(), is(IMAGE_WIDTH));
             assertThat(outputImage.getHeight(), is(IMAGE_HEIGHT));
         }
     }
+
+    private static BufferedImage testResizeAndCrop(final URI uri) throws IOException {
+        final File file = new File(uri);
+        final BufferedImage inputImage = ImageIO.read(file);
+        return ImageResizer.resizeAndCrop(inputImage, IMAGE_WIDTH, IMAGE_HEIGHT);
+    }
+
 }
