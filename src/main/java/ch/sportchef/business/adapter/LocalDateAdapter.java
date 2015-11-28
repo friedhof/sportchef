@@ -23,7 +23,7 @@ import java.time.LocalDate;
 public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
 
     @Override
-    public final String marshal(final LocalDate localDate) throws Exception {
+    public final String marshal(final LocalDate localDate) {
         return String.format("%04d-%02d-%02d",
                 localDate.getYear(), localDate.getMonth().getValue(), localDate.getDayOfMonth());
     }
