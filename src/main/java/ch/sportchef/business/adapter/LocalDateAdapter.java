@@ -29,8 +29,8 @@ public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
     }
 
     @Override
-    public final LocalDate unmarshal(final String string) {
-        final String[] data = string.split("\\-");
+    public final LocalDate unmarshal(final String dateString) {
+        final String[] data = dateString.split("\\-");
         final int year = Integer.parseInt(data[0]);
         final int month = Integer.parseInt(data[1]);
         final int dayOfMonth = Integer.parseInt(data[2]);
