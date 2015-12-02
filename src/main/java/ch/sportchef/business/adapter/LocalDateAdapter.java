@@ -22,9 +22,11 @@ import java.time.LocalDate;
 
 public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
 
+    private static final String LOCAL_DATE_FORMAT = "%04d-%02d-%02d"; //NON-NLS
+
     @Override
     public final String marshal(final LocalDate localDate) {
-        return String.format("%04d-%02d-%02d",
+        return String.format(LOCAL_DATE_FORMAT,
                 localDate.getYear(), localDate.getMonth().getValue(), localDate.getDayOfMonth());
     }
 
