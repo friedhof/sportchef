@@ -15,13 +15,180 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
 */
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900);
-
 body {
     font-family: 'Roboto', sans-serif;
     font-weight: 400;
+    margin:      0;
+    color:       #3c4143;
+    font-size:   19px;
 }
 
-.header.paper-card .title-text.paper-card {
-    font-weight: 700;
+main {
+    width:      88%;
+    padding:    0 8% 0 4%;
+    margin-top: 110px;
+    font-size:  20px;
+}
+
+section {
+    clear:      both;
+    margin-top: 25px;
+    display:    inline-block;
+}
+
+input[type=checkbox] {
+    visibility: hidden;
+}
+
+.nav-header {
+    background-color: #3c4143;
+    color:            #e5e8e6;
+    padding:          0 8% 0 4%;
+    box-shadow:       0 7px 20px 3px rgba(20, 20, 20, 0.25);
+    position:         fixed;
+    top:              0;
+    width:            88%;
+}
+
+.sub-header {
+    height: 30px;
+}
+
+.main-nav, .main-nav li {
+    display: inline;
+}
+
+.main-nav li a {
+    color:              #e5e8e6;
+    font-weight:        500;
+    padding:            40px 0 12px;
+    display:            inline-block;
+    border-bottom:      solid 4px #3c4143;
+    text-decoration:    none;
+    margin:             0 20px;
+    -moz-transition:    border 300ms ease-out;
+    -o-transition:      border 300ms ease-out;
+    -webkit-transition: border 300ms ease-out;
+    transition:         border 300ms ease-out;
+}
+
+.main-nav li a:hover, .main-nav li a:focus, .main-nav li a.active {
+    border-color: #ee8802;
+}
+
+.vertical-nav {
+    display: inline;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.button {
+    padding:         5px;
+    font-weight:     500;
+    width:           110px;
+    display:         inline-block;
+    text-decoration: none;
+    text-align:      center;
+}
+
+.button-login {
+    background-color: #2a2e2f;
+    color:            white;
+    float:            right;
+    margin-top:       35px;
+}
+
+
+
+.checkbox {
+    width: 28px;
+    height: 28px;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.checkbox label {
+    cursor: pointer;
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    left: 4px;
+
+    background-color: #EE8802;
+}
+
+.checkbox label:after {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+    opacity: 0;
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 8px;
+    background: transparent;
+    top: 4px;
+    left: 4px;
+    border: 4px solid #fcfff4;
+    border-top: none;
+    border-right: none;
+
+    -moz-transition: opacity 150ms;
+    -webkit-transition: opacity 150ms;
+    -o-transition: opacity 150ms;
+    transition: opacity 150ms;
+
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+.checkbox label:hover::after {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+    filter: alpha(opacity=30);
+    opacity: 0.3;
+}
+
+.checkbox input[type=checkbox]:checked + label:after {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: alpha(opacity=100);
+    opacity: 1;
+}
+
+
+
+
+
+
+
+
+#title {
+    display:        inline-block;
+    vertical-align: middle;
+    font-weight:    300;
+    margin:         0 35px 0 0;
+    padding:        0;
+    float:          left;
+}
+
+#title a {
+    padding:         5px;
+    color:           #e5e8e6;
+    text-decoration: none;
+    margin-top:      20px;
+    display:         block;
+}
+
+#logo {
+    display: inline;
+    float:   left;
+    margin:  15px 20px 0 0;
 }
