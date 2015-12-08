@@ -23,7 +23,7 @@ import java.time.LocalTime;
 public class LocalTimeAdapter extends XmlAdapter<String, LocalTime> {
 
     @Override
-    public final String marshal(final LocalTime localTime) throws Exception {
+    public final String marshal(final LocalTime localTime) {
         return String.format("%02d:%02d",
                 localTime.getHour(), localTime.getMinute());
     }
