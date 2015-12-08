@@ -22,9 +22,11 @@ import java.time.LocalTime;
 
 public class LocalTimeAdapter extends XmlAdapter<String, LocalTime> {
 
+    private static final String LOCAL_TIME_FORMAT = "%02d:%02d"; //NON-NLS
+
     @Override
     public final String marshal(final LocalTime localTime) {
-        return String.format("%02d:%02d",
+        return String.format(LOCAL_TIME_FORMAT,
                 localTime.getHour(), localTime.getMinute());
     }
 
