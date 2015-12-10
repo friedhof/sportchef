@@ -31,7 +31,7 @@ public class LocalTimeAdapter extends XmlAdapter<String, LocalTime> {
     }
 
     @Override
-    public final LocalTime unmarshal(final String string) throws NumberFormatException {
+    public final LocalTime unmarshal(final String string) {
         final String[] data = string.split("\\:");
         final int hour = Integer.parseInt(data[0]);
         final int minute = Integer.parseInt(data[1]);
