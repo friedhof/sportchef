@@ -1,0 +1,46 @@
+<!--
+    SportChef – Sports Competition Management Software
+    Copyright (C) 2015 Marcus Fihlon
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html" />
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html" />
+<link rel="import" href="../../bower_components/paper-item/paper-item.html" />
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html" />
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html" />
+
+<dom-module id="sportchef-eventlist">
+    <template>
+        <paper-card heading="Events">
+            <div class="card-content">
+                <paper-listbox>
+                    <iron-ajax auto url="/sportchef/api/events" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
+                    <template is="dom-repeat" items="[[ajaxResponse]]">
+                        <paper-item>{{item.title}} <paper-button title="Attend"><iron-icon icon="icons:clear"></iron-icon></paper-button></paper-item>
+                        <!--<sportchef-event eventid="{{item.eventId}}"></sportchef-event>-->
+                    </template>
+                </paper-listbox>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        // register a new element called sportchef-events
+        Polymer({
+            is: "sportchef-eventlist"
+        });
+    </script>
+</dom-module>
