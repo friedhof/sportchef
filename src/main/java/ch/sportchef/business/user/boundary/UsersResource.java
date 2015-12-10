@@ -1,9 +1,26 @@
+/**
+ * SportChef – Sports Competition Management Software
+ * Copyright (C) 2015 Marcus Fihlon
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ */
 package ch.sportchef.business.user.boundary;
 
 import ch.sportchef.business.user.entity.User;
+import pl.setblack.airomem.core.SimpleController;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -22,12 +39,11 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class UsersResource {
 
-    @Inject
-    private UserManager manager;
+    private SimpleController<UserManager> manager =  SimpleController.loadOptional(User.class.getName(), () -> new UserManager());
 
     @POST
     public Response save(@Valid final User user, @Context final UriInfo info) {
-        final User saved = this.manager.save(user);
+        final User saved = this.manager.executeAndQuery((mgr) -> mgr.create(user));
         final long userId = saved.getUserId();
         final URI uri = info.getAbsolutePathBuilder().path("/" + userId).build();
         return Response.created(uri).build();
@@ -35,8 +51,8 @@ public class UsersResource {
 
     @GET
     public Response findAll() {
-        final List<User> allUsers = this.manager.findAll();
-        return Response.ok(allUsers).build();
+        final List<User> users = this.manager.readOnly().findAll();
+        return Response.ok(users).build();
     }
 
     @Path("{userId}")

@@ -1,42 +1,60 @@
+/**
+ * SportChef – Sports Competition Management Software
+ * Copyright (C) 2015 Marcus Fihlon
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ */
 package ch.sportchef.business.event.boundary;
 
 import ch.sportchef.business.event.entity.Event;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
-@Stateless
-public class EventManager {
+public class EventManager implements Serializable {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final long serialVersionUID = 1L;
 
-    public Event save(@NotNull final Event event) {
-        return this.em.merge(event);
+    private final Map<Long, Event> events = new ConcurrentHashMap<>();
+
+    private final AtomicLong eventSeq = new AtomicLong(1);
+
+
+    public Event create(@NotNull final Event event) {
+        final long eventId = eventSeq.incrementAndGet();
+        event.setEventId(eventId);
+        this.events.put(eventId, event);
+        return event;
     }
 
-    public Event findByEventId(final long eventId) {
-        return this.em.find(Event.class, eventId);
+    public Event update(@NotNull final Event event) {
+        this.events.put(event.getEventId(), event);
+        return event;
     }
+
+    public Event findByEventId(final long eventId) { return this.events.get(eventId);}
 
     public List<Event> findAll() {
-        final CriteriaBuilder cb = this.em.getCriteriaBuilder();
-        final CriteriaQuery<Event> cq = cb.createQuery(Event.class);
-        final Root<Event> rootEntry = cq.from(Event.class);
-        final CriteriaQuery<Event> all = cq.select(rootEntry);
-        final TypedQuery<Event> allQuery = this.em.createQuery(all);
-        return allQuery.getResultList();
+       return this.events.values().stream().collect(Collectors.toList());
     }
 
     public void delete(final long eventId) {
-        final Event reference = em.getReference(Event.class, eventId);
-        em.remove(reference);
+        this.events.remove(eventId);
     }
 }

@@ -15,6 +15,13 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
 */
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900);
+
 body {
-    background-color: lightblue;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+}
+
+.header.paper-card .title-text.paper-card {
+    font-weight: 700;
 }
