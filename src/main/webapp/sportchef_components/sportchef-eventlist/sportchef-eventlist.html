@@ -29,8 +29,13 @@
                 <paper-listbox>
                     <iron-ajax auto url="/sportchef/api/events" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
                     <template is="dom-repeat" items="[[ajaxResponse]]">
-                        <paper-item>{{item.title}} <paper-button title="Attend"><iron-icon icon="icons:clear"></iron-icon></paper-button></paper-item>
-                        <!--<sportchef-event eventid="{{item.eventId}}"></sportchef-event>-->
+
+                        <paper-item>
+                            {{item.title}}
+                            <paper-button data-eventid$="{{item.eventId}}" onclick="deleteEvent(this);">
+                                <iron-icon icon="icons:clear"></iron-icon>
+                            </paper-button>
+                        </paper-item>
                     </template>
                 </paper-listbox>
             </div>
@@ -38,6 +43,18 @@
     </template>
 
     <script>
+        function deleteEvent(element){
+            var xhttp;
+            if (window.XMLHttpRequest) {
+                xhttp = new XMLHttpRequest();
+            } else {
+                // code for IE6, IE5
+                xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xhttp.open("DELETE", "/sportchef/api/events/"+element.getAttribute("data-eventid"), true);
+            xhttp.send();
+        }
+
         // register a new element called sportchef-events
         Polymer({
             is: "sportchef-eventlist"
