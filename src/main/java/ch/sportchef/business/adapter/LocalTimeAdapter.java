@@ -31,8 +31,8 @@ public class LocalTimeAdapter extends XmlAdapter<String, LocalTime> {
     }
 
     @Override
-    public final LocalTime unmarshal(final String string) {
-        final String[] data = string.split("\\:");
+    public final LocalTime unmarshal(final String timeString) {
+        final String[] data = timeString.split("\\:");
         final int hour = Integer.parseInt(data[0]);
         final int minute = Integer.parseInt(data[1]);
         return LocalTime.of(hour, minute);
