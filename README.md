@@ -1,6 +1,8 @@
 *SportChef*
 ======
 
+[![Join the chat at https://gitter.im/McPringle/sportchef](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/McPringle/sportchef?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Dependency Status](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c) [![Dependency Status](https://www.versioneye.com/user/projects/562e699636d0ab00210013b8/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699636d0ab00210013b8) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/issue)](http://issuestats.com/github/McPringle/sportchef) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/pr)](http://issuestats.com/github/McPringle/sportchef)
 
 **Sports Competition Management Software with a modern and fast architecture. Java based backend with a RESTful JSON API and a HTML 5 client with a modern UI.**
