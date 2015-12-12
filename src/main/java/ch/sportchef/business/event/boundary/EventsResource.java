@@ -18,9 +18,9 @@
 package ch.sportchef.business.event.boundary;
 
 import ch.sportchef.business.event.entity.Event;
+import pl.setblack.airomem.core.SimpleController;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -39,12 +39,11 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class EventsResource {
 
-    @Inject
-    private EventManager manager;
+    private SimpleController<EventManager> manager =  SimpleController.loadOptional(Event.class.getName(), () -> new EventManager());
 
     @POST
     public Response save(@Valid final Event event, @Context final UriInfo info) {
-        final Event saved = this.manager.save(event);
+        final Event saved = this.manager.executeAndQuery((mgr) -> mgr.create(event));
         final long eventId = saved.getEventId();
         final URI uri = info.getAbsolutePathBuilder().path("/" + eventId).build();
         return Response.created(uri).build();
@@ -52,8 +51,8 @@ public class EventsResource {
 
     @GET
     public Response findAll() {
-        final List<Event> allEvents = this.manager.findAll();
-        return Response.ok(allEvents).build();
+        final List<Event> events = this.manager.readOnly().findAll();
+        return Response.ok(events).build();
     }
 
     @Path("{eventId}")

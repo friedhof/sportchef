@@ -20,40 +20,44 @@ package ch.sportchef.business.user.boundary;
 import ch.sportchef.business.user.entity.User;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Stateless
-public class UserManager {
+public class UserManager implements Serializable {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final long serialVersionUID = 1L;
 
-    public User save(@NotNull final User user) {
-        return this.em.merge(user);
+    private final Map<Long, User> users = new ConcurrentHashMap<>();
+
+    private final AtomicLong userSeq = new AtomicLong(1);
+
+    public User create(@NotNull final User user) {
+        final long userId = userSeq.incrementAndGet();
+        user.setUserId(userId);
+        this.users.put(userId, user);
+        return user;
+    }
+
+    public User update(@NotNull final User user) {
+        this.users.put(user.getUserId(), user);
+        return user;
     }
 
     public User findByUserId(final long userId) {
-        return this.em.find(User.class, userId);
+        return this.users.get(userId);
     }
 
     public List<User> findAll() {
-        final CriteriaBuilder cb = this.em.getCriteriaBuilder();
-        final CriteriaQuery<User> cq = cb.createQuery(User.class);
-        final Root<User> rootEntry = cq.from(User.class);
-        final CriteriaQuery<User> all = cq.select(rootEntry);
-        final TypedQuery<User> allQuery = this.em.createQuery(all);
-        return allQuery.getResultList();
+        return this.users.values().stream().collect(Collectors.toList());
     }
 
     public void delete(final long userId) {
-        final User reference = em.getReference(User.class, userId);
-        em.remove(reference);
+        this.users.remove(userId);
     }
 }
