@@ -65,4 +65,11 @@ public class ConfigurationManager {
     public Configuration getConfiguration() {
         return this.configuration;
     }
+
+    @Override
+    public String toString() {
+        return "ConfigurationManager{" +
+                "configuration=" + configuration +
+                '}';
+    }
 }
