@@ -190,6 +190,10 @@ input[type=checkbox] {
     display:         block;
 }
 
+#events {
+    width: 100%;
+}
+
 #logo {
     display: inline;
     float:   left;
