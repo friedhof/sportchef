@@ -34,6 +34,7 @@ public class ConfigurationManager {
     private  static final String DEFAULT_CONFIGURATION_FILE = "cfg_default.properties"; //NON-NLS
     private  static final String CUSTOM_CONFIGURATION_FILE = "cfg_custom.properties"; //NON-NLS
 
+    @SuppressWarnings("InstanceVariableOfConcreteClass")
     private final Configuration configuration;
 
     public ConfigurationManager() {
