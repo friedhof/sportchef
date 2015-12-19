@@ -44,7 +44,7 @@ public class ConfigurationManager {
         properties.putAll(loadProperties("default", DEFAULT_CONFIGURATION_FILE)); //NON-NLS
 
         // load custom configuration
-        properties.putAll(loadProperties("custom", CUSTOM_CONFIGURATION_FILE));
+        properties.putAll(loadProperties("custom", CUSTOM_CONFIGURATION_FILE)); //NON-NLS
 
         this.configuration = new Configuration(properties);
     }
