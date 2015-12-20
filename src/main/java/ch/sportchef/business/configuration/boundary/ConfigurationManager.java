@@ -41,7 +41,8 @@ public class ConfigurationManager {
         final Properties properties = new Properties();
 
         // load default configuration first
-        properties.putAll(loadProperties("default", DEFAULT_CONFIGURATION_FILE)); //NON-NLS
+        loadProperties("default", DEFAULT_CONFIGURATION_FILE) //NON-NLS
+                .forEach((key, value) -> properties.put(key, value));
 
         // load custom configuration
         properties.putAll(loadProperties("custom", CUSTOM_CONFIGURATION_FILE)); //NON-NLS
