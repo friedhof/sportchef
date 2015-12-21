@@ -45,7 +45,8 @@ public class ConfigurationManager {
                 .forEach((key, value) -> properties.put(key, value));
 
         // load custom configuration
-        properties.putAll(loadProperties("custom", CUSTOM_CONFIGURATION_FILE)); //NON-NLS
+        loadProperties("custom", CUSTOM_CONFIGURATION_FILE) //NON-NLS
+                .forEach((key, value) -> properties.put(key, value));
 
         this.configuration = new Configuration(properties);
     }
