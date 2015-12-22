@@ -42,7 +42,7 @@ public class ConfigurationManager {
 
         // load default configuration first
         loadProperties("default", DEFAULT_CONFIGURATION_FILE) //NON-NLS
-                .forEach((key, value) -> properties.put(key, value));
+                .forEach(properties::put);
 
         // load custom configuration
         loadProperties("custom", CUSTOM_CONFIGURATION_FILE) //NON-NLS
