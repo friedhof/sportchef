@@ -25,45 +25,20 @@
     <title>SportChef Events</title>
 
     <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="bower_components/paper-input/paper-input.html" />
+    <link rel="import" href="sportchef_components/sportchef-layout-header/sportchef-layout-header.html"/>
+    <link rel="import" href="sportchef_components/sportchef-layout-filter/sportchef-layout-filter.html"/>
     <link rel="import" href="sportchef_components/sportchef-events/sportchef-events.html"/>
 
     <link rel="stylesheet" href="css/main.css"/>
 </head>
 <body unresolved>
-<header class="nav-header">
-    <img src="http://placehold.it/50x50" width="50px" height="50px" id="logo" rel="icon"/>
-
-    <h1 id="title"><a href="#">SportChef</a></h1>
-    <nav class="vertical-nav">
-        <ul class="main-nav">
-            <li><a href="events.html" class="active">Menulink</a></li>
-            <li><a href="#">Menulink</a></li>
-            <li><a href="#">Menulink</a></li>
-            <li><a href="#">Menulink</a></li>
-        </ul>
-        <paper-button class="button button-login">Login</paper-button>
-    </nav>
-</header>
-<main>
-    <header class="sub-header">
-        <div class="left">
-            <label>Datum <input type="date"></label>
-            <label>Ort <input type="#location"></label>
-            <label>Art <input type="#dropdown"></label>
-            <iron-icon icon="icons:dashboard" class="filter-icons active"></iron-icon>
-            <iron-icon icon="icons:view-list" class="filter-icons"></iron-icon>
-        </div>
-        <div class="right">
-            <span>Nur Favoriten zeigen</span>
-            <div class="checkbox">
-                <input type="checkbox" id="fav-only-box" name="check">
-                <label for="fav-only-box"></label>
-            </div>
-        </div>
-    </header>
-    <section id="events">
-        <sportchef-events></sportchef-events>
-    </section>
-</main>
+    <sportchef-layout-header site="events"></sportchef-layout-header>
+    <main>
+        <sportchef-layout-filter></sportchef-layout-filter>
+        <section id="events">
+            <sportchef-events></sportchef-events>
+        </section>
+    </main>
 </body>
 </html>

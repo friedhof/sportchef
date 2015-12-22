@@ -19,25 +19,28 @@
 -->
 
 <html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <title>SportChef Events</title>
 
-        <title>SportChef Events</title>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="sportchef_components/sportchef-layout-header/sportchef-layout-header.html"/>
+    <link rel="import" href="sportchef_components/sportchef-layout-filter/sportchef-layout-filter.html"/>
+    <link rel="import" href="sportchef_components/sportchef-eventform/sportchef-eventform.html" />
+    <link rel="import" href="sportchef_components/sportchef-eventlist/sportchef-eventlist.html" />
 
-        <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-        <link rel="import" href="sportchef_components/sportchef-eventform/sportchef-eventform.html" />
-        <link rel="import" href="sportchef_components/sportchef-eventlist/sportchef-eventlist.html" />
+    <link rel="stylesheet" href="css/main.css" />
+</head>
 
-        <link rel="stylesheet" href="css/main.css" />
-    </head>
-
-    <body unresolved>
+<body unresolved>
+    <sportchef-layout-header site="admin"></sportchef-layout-header>
+    <main>
         <sportchef-eventform></sportchef-eventform>
         <br clear="all" />
         <sportchef-eventlist></sportchef-eventlist>
-    </body>
-
+    </main>
+</body>
 </html>
