@@ -48,7 +48,7 @@ public class ConfigurationManager {
         loadProperties("custom", CUSTOM_CONFIGURATION_FILE) //NON-NLS
                 .forEach(properties::put);
 
-        this.configuration = new Configuration(properties);
+        configuration = new Configuration(properties);
     }
 
     private Properties loadProperties(@NotNull final String type, @NotNull final String fileName) {
