@@ -51,7 +51,7 @@ public class ConfigurationManager {
         configuration = new Configuration(properties);
     }
 
-    private Properties loadProperties(@NotNull final String type, @NotNull final String fileName) {
+    private static Properties loadProperties(@NotNull final String type, @NotNull final String fileName) {
         final Properties properties = new Properties();
         try (final InputStream stream =
                      Thread.currentThread().getContextClassLoader()
