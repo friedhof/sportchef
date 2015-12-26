@@ -23,6 +23,7 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -51,7 +52,7 @@ public class ConfigurationManager {
         configuration = new Configuration(properties);
     }
 
-    private static Properties loadProperties(@NotNull final String type, @NotNull final String fileName) {
+    private static Map loadProperties(@NotNull final String type, @NotNull final String fileName) {
         final Properties properties = new Properties();
         try (final InputStream stream =
                      Thread.currentThread().getContextClassLoader()
