@@ -23,7 +23,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html" />
 <link rel="import" href="../../sportchef_components/sportchef-jquery/sportchef-jquery.html" />
 
-<dom-module id="admin-eventlist">
+<dom-module id="admin-userlist">
     <template>
         <!-- scoped CSS for this element -->
         <style>
@@ -31,44 +31,52 @@
                 margin: 0.5em;
             }
         </style>
-        <paper-card heading="Events">
+        <paper-card heading="User">
             <div class="card-content">
-                <paper-listbox>
-                    <iron-ajax auto url="/sportchef/api/events" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
+                <table>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                    <iron-ajax auto url="/sportchef/api/users" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
                     <template is="dom-repeat" items="[[ajaxResponse]]">
-                        <paper-item id="paper-item-{{item.eventId}}">
-                            {{item.title}}
-                            <paper-button data-event-id$="{{item.eventId}}" data-event-title$="{{item.title}}" onclick="deleteEvent(this);" title="Delete">
-                                <iron-icon icon="icons:delete"></iron-icon>
-                            </paper-button>
-                        </paper-item>
+                        <tr id="table-item-{{item.userId}}">
+                            <td>{{item.userId}}</td>
+                            <td>{{item.firstName}} {{item.lastName}}</td>
+                            <td>
+                                <paper-button data-user-id$="{{item.userId}}" data-user-name$="{{item.firstName}} {{item.lastName}}" onclick="deleteUser(this);" title="Delete">
+                                    <iron-icon icon="icons:delete"></iron-icon>
+                                </paper-button>
+                            </td>
+                        </tr>
                     </template>
-                </paper-listbox>
+                </table>
             </div>
         </paper-card>
     </template>
 
     <script>
-        function deleteEvent(button) {
-            var eventId = $(button).attr('data-event-id');
-            var eventTitle = $(button).attr('data-event-title');
-            if (confirm('Are you sure you want delete event #' + eventId + ' "' + eventTitle + '"?')) {
+        function deleteUser(button) {
+            var userId = $(button).attr('data-user-id');
+            var userName = $(button).attr('data-user-name');
+            if (confirm('Are you sure you want delete user #' + userId + ' "' + userName + '"?')) {
                 $.ajax({
                     method: 'DELETE',
-                    url: '/sportchef/api/events/' + eventId
+                    url: '/sportchef/api/users/' + userId
                 })
                 .error(function(jqXHR, textStatus, errorThrown){
                     alert(textStatus);
                 })
                 .success(function(data, textStatus, jqXHR) {
-                    $('#paper-item-' + eventId).hide();
+                    $('#table-item-' + userId).hide();
                 });
             }
         }
 
         // register a new element called sportchef-events
         Polymer({
-            is: "admin-eventlist"
+            is: "admin-userlist"
         });
     </script>
 </dom-module>
