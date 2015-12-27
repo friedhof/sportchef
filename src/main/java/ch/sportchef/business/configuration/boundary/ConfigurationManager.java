@@ -52,7 +52,7 @@ public class ConfigurationManager {
         configuration = new Configuration(properties);
     }
 
-    private static Map loadProperties(@NotNull final String type, @NotNull final String fileName) {
+    private static Map<Object, Object> loadProperties(@NotNull final String type, @NotNull final String fileName) {
         final Properties properties = new Properties();
         try (final InputStream stream =
                      Thread.currentThread().getContextClassLoader()
