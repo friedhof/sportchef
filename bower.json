@@ -21,6 +21,8 @@
     "iron-form": "PolymerElements/iron-form#~1.0.11",
     "iron-icons": "PolymerElements/iron-icons#~1.0.5",
     "iron-icon": "PolymerElements/iron-icon#~1.0.7",
+    "gold-phone-input": "PolymerElements/gold-phone-input#~1.0.7",
+    "gold-email-input": "PolymerElements/gold-email-input#~1.0.6",
     "jquery": "~2.1.4"
   }
 }
