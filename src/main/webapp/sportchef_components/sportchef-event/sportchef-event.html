@@ -67,7 +67,7 @@
         </style>
 
         <iron-ajax auto url="/sportchef/api/events/{{eventid}}" handle-as="json" last-response="{{event}}"></iron-ajax>
-        <paper-card image="http://placehold.it/350x200">
+        <paper-card image="/sportchef/api/events/{{eventid}}/image">
             <div class="fav">
                 <iron-icon icon="icons:stars"></iron-icon>
             </div>

@@ -36,7 +36,7 @@ public class UserManager implements Serializable {
 
     private final Map<Long, User> users = new ConcurrentHashMap<>();
 
-    private final AtomicLong userSeq = new AtomicLong(1);
+    private final AtomicLong userSeq = new AtomicLong(0);
 
     public User create(@NotNull final User user) {
         final Long userId = userSeq.incrementAndGet();

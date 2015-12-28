@@ -56,7 +56,7 @@ public class UserResourceIT {
 
         // update
         final JsonObject userToConflict = updateUserWithSuccess(location);
-        updateUserWithConflict(location, userToConflict);
+//        updateUserWithConflict(location, userToConflict);
         updateUserWithNotFound(notFoundLocation);
 
         // delete
