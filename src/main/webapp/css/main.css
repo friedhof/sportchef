@@ -106,6 +106,7 @@ input[type=checkbox] {
     padding:         5px;
     font-weight:     500;
     width:           110px;
+    text-transform:  none;
     display:         inline-block;
     text-decoration: none;
     text-align:      center;
