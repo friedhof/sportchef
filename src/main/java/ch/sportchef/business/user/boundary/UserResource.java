@@ -33,6 +33,7 @@ import java.net.URI;
 public class UserResource {
 
     private long userId;
+    private String email;
 
     private SimpleController<UserManager> manager;
 
@@ -41,11 +42,25 @@ public class UserResource {
         this.manager = manager;
     }
 
+    public UserResource(final String email, final SimpleController<UserManager> manager) {
+        this.email = email;
+        this.manager = manager;
+    }
+
     @GET
     public User find() {
         final User user = this.manager.readOnly().findByUserId(this.userId);
         if (user == null) {
             throw new NotFoundException(String.format("user with id '%d' not found", userId));
+        }
+        return user;
+    }
+
+    @GET
+    public User findLogin() {
+        final User user = this.manager.readOnly().findByEmail(this.email);
+        if (user == null) {
+            throw new NotFoundException(String.format("user with email '%s' not found", email));
         }
         return user;
     }
