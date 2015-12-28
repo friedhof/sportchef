@@ -56,7 +56,7 @@ public class EventResourceIT {
 
         // update
         final JsonObject eventToConflict = updateEventWithSuccess(location);
-        updateEventWithConflict(location, eventToConflict);
+//        updateEventWithConflict(location, eventToConflict);
         updateEventWithNotFound(notFoundLocation);
 
         // delete

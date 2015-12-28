@@ -21,10 +21,12 @@ import ch.sportchef.business.event.entity.Event;
 import pl.setblack.airomem.core.SimpleController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -32,11 +34,11 @@ import java.net.URI;
 
 public class EventResource {
 
-    private long eventId;
+    private Long eventId;
 
     private SimpleController<EventManager> manager;
 
-    public EventResource(final long eventId, final SimpleController<EventManager> manager) {
+    public EventResource(@NotNull final Long eventId, @NotNull final SimpleController<EventManager> manager) {
         this.eventId = eventId;
         this.manager = manager;
     }
@@ -53,8 +55,8 @@ public class EventResource {
     @PUT
     public Response update(@Valid final Event event, @Context final UriInfo info) {
         find(); // only update existing events
-        event.setEventId(this.eventId);
-        final Event updatedEvent = this.manager.executeAndQuery(mgr -> mgr.update(event));
+        final Event eventToUpdate = new Event(this.eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
+        final Event updatedEvent = this.manager.executeAndQuery(mgr -> mgr.update(eventToUpdate));
         final URI uri = info.getAbsolutePathBuilder().build();
         return Response.ok(updatedEvent).header("Location", uri.toString()).build();
     }
@@ -62,7 +64,18 @@ public class EventResource {
     @DELETE
     public Response delete() {
         final Event event = find(); // only delete existing events
+        try {
+            image().deleteImage();
+        } catch (final NotFoundException e) {
+            // ignore, this event has no images
+        }
         this.manager.execute(mgr -> mgr.delete(event.getEventId()));
         return Response.noContent().build();
+    }
+
+    @Path("image")
+    public EventImageResource image() {
+        find(); // only existing events can have images
+        return new EventImageResource(this.eventId);
     }
 }

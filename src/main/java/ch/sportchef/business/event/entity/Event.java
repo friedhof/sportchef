@@ -43,10 +43,10 @@ public class Event implements Serializable {
 
     @Id
     @GeneratedValue
-    private long eventId;
+    private Long eventId;
 
     @Version
-    private long version;
+    private Long version;
 
     @Size(min = 1)
     private String title;
@@ -63,51 +63,36 @@ public class Event implements Serializable {
         super();
     }
 
-    public Event(final String title, final String location, final LocalDate date, final LocalTime time) {
+    public Event(@NotNull final Long eventId,
+                 @NotNull final String title,
+                 @NotNull final String location,
+                 @NotNull final LocalDate date,
+                 @NotNull final LocalTime time) {
+        this();
+        this.eventId = eventId;
         this.title = title;
         this.location = location;
         this.date = date;
         this.time = time;
     }
 
-    public long getEventId() {
+    public Long getEventId() {
         return eventId;
-    }
-
-    public void setEventId(final long eventId) {
-        this.eventId = eventId;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(@NotNull final String title) {
-        this.title = title;
-    }
-
     public String getLocation() {
         return location;
-    }
-
-    public void setLocation(final String location) {
-        this.location = location;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(final LocalDate date) {
-        this.date = date;
-    }
-
     public LocalTime getTime() {
         return time;
     }
-
-    public void setTime(final LocalTime time) {
-        this.time = time;
-    }
-
 }

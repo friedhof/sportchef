@@ -33,14 +33,14 @@ public class EventManager implements Serializable {
 
     private final Map<Long, Event> events = new ConcurrentHashMap<>();
 
-    private final AtomicLong eventSeq = new AtomicLong(1);
+    private final AtomicLong eventSeq = new AtomicLong(0);
 
 
     public Event create(@NotNull final Event event) {
-        final long eventId = eventSeq.incrementAndGet();
-        event.setEventId(eventId);
-        this.events.put(eventId, event);
-        return event;
+        final Long eventId = eventSeq.incrementAndGet();
+        final Event eventToCreate = new Event(eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
+        this.events.put(eventId, eventToCreate);
+        return eventToCreate;
     }
 
     public Event update(@NotNull final Event event) {
@@ -48,10 +48,14 @@ public class EventManager implements Serializable {
         return event;
     }
 
-    public Event findByEventId(final long eventId) { return this.events.get(eventId);}
+    public Event findByEventId(final long eventId) {
+        return this.events.get(eventId);
+    }
 
     public List<Event> findAll() {
-       return this.events.values().stream().collect(Collectors.toList());
+       return this.events.values().stream()
+               .sorted((e1, e2) -> e1.getEventId().compareTo(e2.getEventId()))
+               .collect(Collectors.toList());
     }
 
     public void delete(final long eventId) {
