@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html"/>
-<link rel="import" href="../../sportchef_components/sportchef-jquery/sportchef-jquery.html" />
+<link rel="import" href="../../sportchef_components/sportchef-jquery/sportchef-jquery.html"/>
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 <dom-module id="sportchef-layout-header">
@@ -26,6 +26,9 @@
 
             <h1 id="title"><a href="#">SportChef</a></h1>
             <nav class="vertical-nav">
+                <div class="nav-trigger" onclick="toggleNav(this);">
+                    <iron-icon icon="icons:menu" class="menu-burger"></iron-icon>
+                </div>
                 <ul class="main-nav">
                     <li><a href="events.html" class="active">Menulink</a></li>
                     <li><a href="#">Menulink</a></li>
@@ -39,6 +42,10 @@
 
 
     <script>
+        function toggleNav(button) {
+            $(button).siblings('.main-nav').slideToggle();
+        }
+
         // register a new element called sportchef-event
         Polymer({
             is: "sportchef-layout-header",
