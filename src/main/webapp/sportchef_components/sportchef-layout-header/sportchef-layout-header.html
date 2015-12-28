@@ -29,13 +29,15 @@
                 <div class="nav-trigger" onclick="toggleNav(this);">
                     <iron-icon icon="icons:menu" class="menu-burger"></iron-icon>
                 </div>
-                <ul class="main-nav">
-                    <li><a href="events.html" class="active">Menulink</a></li>
-                    <li><a href="#">Menulink</a></li>
-                    <li><a href="#">Menulink</a></li>
-                    <li><a href="#">Menulink</a></li>
-                </ul>
-                <paper-button class="button button-login">Login</paper-button>
+                <div class="nav-collapse">
+                    <ul class="main-nav">
+                        <li><a href="events.html" class="active">Menulink</a></li>
+                        <li><a href="#">Menulink</a></li>
+                        <li><a href="#">Menulink</a></li>
+                        <li><a href="#">Menulink</a></li>
+                    </ul>
+                    <paper-button class="button button-login">Login</paper-button>
+                </div>
             </nav>
         </header>
     </template>
@@ -43,7 +45,7 @@
 
     <script>
         function toggleNav(button) {
-            $(button).siblings('.main-nav').slideToggle();
+            $(button).siblings('.nav-collapse').slideToggle();
         }
 
         // register a new element called sportchef-event

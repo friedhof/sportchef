@@ -68,6 +68,10 @@ input[type=checkbox] {
     height: 30px;
 }
 
+.main-nav {
+    padding: 0;
+}
+
 .main-nav, .main-nav li {
     text-align:      center;
     display:         inline;
@@ -215,7 +219,7 @@ input[type=checkbox] {
 
 @media only screen
 and (max-width: 1100px) {
-    .main-nav, .button-login {
+    .nav-collapse {
         clear:   both;
         display: none;
     }
@@ -229,11 +233,21 @@ and (max-width: 1100px) {
         display: inline-block;
         float:   right;
     }
+
+    .button-login {
+        display: block;
+        margin:  12px auto;
+        float:   none;
+    }
 }
 
 @media only screen
 and (min-width: 1101px) {
     .main-nav {
         display: inline !important;
+    }
+
+    .nav-collapse {
+        display: initial !important;
     }
 }
