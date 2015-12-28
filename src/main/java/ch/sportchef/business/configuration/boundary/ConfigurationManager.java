@@ -60,7 +60,7 @@ public class ConfigurationManager {
             properties.load(stream);
         } catch (final IOException e) {
             LOGGER.severe(String.format(
-                    "Could not load %s configuration from file '%s'!",
+                    "Could not load %s configuration from file '%s'!", //NON-NLS
                     type, fileName));
         }
         return properties;
