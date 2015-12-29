@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
  */
-package ch.sportchef.business.user.service;
+package ch.sportchef.business.auth.service;
 
 import ch.sportchef.business.user.entity.User;
 
@@ -38,11 +38,13 @@ import org.apache.commons.mail.SimpleEmail;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.inject.Named;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+@Named
 public class LoginService {
     private static HashMap<String,User> loginUsers = new HashMap<>(); // Pending requests
     private static HashMap<String,User> activeUsers = new HashMap<>(); // Active (sessions)
@@ -87,14 +89,41 @@ public class LoginService {
         return activeUsers.get(token);
     }
 
+    public User checkLoginToken(String token, HashMap<String,String> cookie) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeySpecException {
+        System.out.println("Token: "+cookie.get("token"));
+        System.out.println("email: "+cookie.get("email"));
+        System.out.println("auth: "+token);
+        System.out.println("---");
+        if(generateMailToken(cookie.get("token"),cookie.get("email")).equals(token)){
+            /**
+             * @ToDo: check exception
+             */
+            try{
+                return getLoginRequest(token);
+            } catch(Exception e){
+            }
+        }
+        return null;
+    }
+
+    public String generateToken(){
+        String token = UUID.randomUUID().toString();
+        return token;
+    }
+
     public String loginRequest(User user) throws EmailException, InvalidKeySpecException, NoSuchAlgorithmException, UnsupportedEncodingException {
         /**
          * @ToDo: change mailMessage /@PReimers (2015-12-29)
          */
-        String loginToken = UUID.randomUUID().toString();
+        String loginToken = generateToken();
         String mailToken = generateMailToken(loginToken,user.getEmail());
         setLoginRequest(mailToken,user);
-        String mailMessage = "Hello "+user.getFirstName()+"\r\n\r\n"+"To complete your login please click the following link:"+"\r\n\r\n"+"Link: http://localhost:8080/sportchef/login/auth/"+mailToken+"\r\n\r\n"+"This link is valid for 10 minutes.";
+        System.out.println("Token: "+loginToken);
+        System.out.println("email: "+user.getEmail());
+        System.out.println("auth: "+mailToken);
+        System.out.println("---");
+
+        String mailMessage = "Hello "+user.getFirstName()+"\r\n\r\n"+"To complete your login please click the following link:"+"\r\n\r\n"+"Link: http://localhost:8080/sportchef/authenticate.html?token="+URLEncoder.encode(mailToken,"UTF-8")+"\r\n\r\n"+"This link is valid for 10 minutes.";
         sendMail(user.getEmail(),"Sportchef - Login",mailMessage);
 
         return loginToken;
@@ -106,7 +135,7 @@ public class LoginService {
         SecretKey key = f.generateSecret(new PBEKeySpec(
             token.toCharArray(), emailByteArray, (20*1000), 256)
         );
-        return URLEncoder.encode(Base64.encodeBase64String(key.getEncoded()),"UTF-8");
+        return Base64.encodeBase64String(key.getEncoded());
     }
 
     public Boolean sendMail(String recipient, String subject, String message) throws EmailException {

@@ -38,19 +38,41 @@
 
         <paper-card heading="Login">
             <div class="card-content">
-                <form is="iron-form" id="loginForm" method="post" content-type="application/json" action="">
-                    <gold-email-input name="email" id="email" label="E-Mail" autoValidate="true"></gold-email-input>
-                    <paper-button raised onclick="submitForm()">Login</paper-button>
-                </form>
+                <gold-email-input name="email" id="email" label="E-Mail" autoValidate="true"></gold-email-input>
+                <paper-button raised onclick="login()">Login</paper-button>
                 <div id="message"></div>
             </div>
         </paper-card>
     </template>
 
     <script>
-        function submitForm() {
-            $('#loginForm').attr("action","/sportchef/api/users/login/"+$('#email').val());
-            $('#loginForm').submit();
+        function setCookie(name, data, minutes){
+            var date = new Date();
+            date.setTime(date.getTime() + (minutes * 60 * 1000)); // cookie expires after X minutes
+            document.cookie = name + "=" + data + "; expires=" + date.toGMTString() + "; path=/";
+        }
+
+        function login() {
+            $.ajax({
+                url: "/sportchef/api/authenticate/login/"+$('#email').val(),
+                method: "POST",
+                contentType: "application/json",
+                success: function(success){
+                    // handle Message
+                    $('#message').html('Please check your E-Mail');
+                    setTimeout(function(){
+                        $('#message').html('');
+                    }, 5000);
+                    // set cookie
+                    setCookie('login',success.token + "|" + success.email,15);
+                },
+                error: function(error){
+                    $('#message').html('User not found');
+                    setTimeout(function(){
+                        $('#message').html('');
+                    }, 5000);
+                }
+            });
         }
 
         // register a new element called sportchef-eventform
@@ -66,15 +88,7 @@
                 'iron-form-response': 'formResponse'
             },
             formResponse: function(user) {
-                console.log(user.detail.response.token);
-                console.log(user.detail.response.email);
-                $('#message').html('Please check your E-Mail');
-                setTimeout(function(){
-                    $('#message').html('');
-                }, 5000);
-                var date = new Date();
-                date.setTime(date.getTime() + (10 * 60 * 1000)); // cookie expires after 10 minutes
-                document.cookie = "login=" + user.detail.response.token + "|" + user.detail.response.email + "; expires=" + date.toGMTString() + "; path=/";
+
             }
         });
     </script>
