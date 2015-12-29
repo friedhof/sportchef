@@ -134,11 +134,11 @@ public class LoginService {
          * @ToDo: save config vars in separate config-file /@PReimers (2015-12-29)
          */
         Email email = new SimpleEmail();
-        email.setHostName("mx01.tfnetworx.de");
+        email.setHostName("smtp.sportchef.ch");
         email.setSmtpPort(25);
-        email.setAuthenticator(new DefaultAuthenticator("sportchef@tfdev.de", "P@ssW0rd"));
-        //email.setSSLOnConnect(true);
-        email.setFrom("SportChef <sportchef@tfdev.de>");
+        email.setAuthenticator(new DefaultAuthenticator("no-reply@sportchef.ch", "secretPassword"));
+        email.setSSLOnConnect(true);
+        email.setFrom("SportChef <no-reply@sportchef.ch>");
         email.setSubject(subject);
         email.setMsg(message);
         email.addTo(recipient);
