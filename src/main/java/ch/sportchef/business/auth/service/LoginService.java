@@ -90,10 +90,6 @@ public class LoginService {
     }
 
     public User checkLoginToken(String token, HashMap<String,String> cookie) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeySpecException {
-        System.out.println("Token: "+cookie.get("token"));
-        System.out.println("email: "+cookie.get("email"));
-        System.out.println("auth: "+token);
-        System.out.println("---");
         if(generateMailToken(cookie.get("token"),cookie.get("email")).equals(token)){
             /**
              * @ToDo: check exception
@@ -118,11 +114,6 @@ public class LoginService {
         String loginToken = generateToken();
         String mailToken = generateMailToken(loginToken,user.getEmail());
         setLoginRequest(mailToken,user);
-        System.out.println("Token: "+loginToken);
-        System.out.println("email: "+user.getEmail());
-        System.out.println("auth: "+mailToken);
-        System.out.println("---");
-
         String mailMessage = "Hello "+user.getFirstName()+"\r\n\r\n"+"To complete your login please click the following link:"+"\r\n\r\n"+"Link: http://localhost:8080/sportchef/authenticate.html?token="+URLEncoder.encode(mailToken,"UTF-8")+"\r\n\r\n"+"This link is valid for 10 minutes.";
         sendMail(user.getEmail(),"Sportchef - Login",mailMessage);
 

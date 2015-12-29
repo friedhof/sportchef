@@ -35,7 +35,7 @@
 
         <paper-card heading="Login">
             <div class="card-content">
-                <div id="message"></div>
+                <div id="message">Checking Data</div>
             </div>
         </paper-card>
     </template>
@@ -73,7 +73,6 @@
             }
         });
 
-        $('#ajaxRequest').attr('url','/sportchef/api/authenticate/'+get('token'));
         // register a new element called sportchef-eventform
         Polymer({
             is: 'admin-authenticate'

@@ -76,10 +76,6 @@ public class LoginResource {
 
     @GET
     public Response authenticate() throws InvalidKeySpecException, NoSuchAlgorithmException, UnsupportedEncodingException {
-        System.out.println(this.cookie);
-        System.out.println(this.email);
-        System.out.println(this.token);
-        System.out.println("---");
         this.loginService = new LoginService();
         User user = this.loginService.checkLoginToken(this.token,this.cookie);
         String cookieToken = loginService.generateToken();
