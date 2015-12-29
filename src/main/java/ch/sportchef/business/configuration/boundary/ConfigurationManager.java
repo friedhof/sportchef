@@ -66,6 +66,7 @@ public class ConfigurationManager {
         return properties;
     }
 
+    @SuppressWarnings("MethodReturnOfConcreteClass")
     public final Configuration getConfiguration() {
         return this.configuration;
     }
