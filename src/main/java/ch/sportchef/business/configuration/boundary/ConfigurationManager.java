@@ -66,7 +66,7 @@ public class ConfigurationManager {
         return properties;
     }
 
-    public Configuration getConfiguration() {
+    public final Configuration getConfiguration() {
         return this.configuration;
     }
 
