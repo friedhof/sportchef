@@ -32,10 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 @Stateless
 @Path("users")
@@ -64,7 +61,7 @@ public class UsersResource {
     }
 
     @Path("login/{email}")
-    public UserResource findLogin(@PathParam("email") final String email) {
+    public UserResource login(@PathParam("email") final String email) {
         return new UserResource(email, this.manager);
     }
 

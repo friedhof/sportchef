@@ -18,24 +18,34 @@
 package ch.sportchef.business.user.boundary;
 
 import ch.sportchef.business.user.entity.User;
+import ch.sportchef.business.user.service.LoginService;
+import org.apache.commons.mail.EmailException;
 import pl.setblack.airomem.core.SimpleController;
 
+import javax.inject.Inject;
+import javax.json.*;
 import javax.validation.Valid;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.PUT;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class UserResource {
+
+    @Inject
+    private LoginService loginService;
 
     private long userId;
     private String email;
 
     private SimpleController<UserManager> manager;
+
+    public UserResource(){
+    }
 
     public UserResource(final long userId, final SimpleController<UserManager> manager) {
         this.userId = userId;
@@ -63,6 +73,19 @@ public class UserResource {
             throw new NotFoundException(String.format("user with email '%s' not found", email));
         }
         return user;
+    }
+
+    @POST
+    public Response login() throws EmailException, InvalidKeySpecException, NoSuchAlgorithmException, UnsupportedEncodingException {
+        final User user = findLogin();
+        System.out.println("User"+user.getEmail());
+        this.loginService = new LoginService();
+        String cookieToken = this.loginService.loginRequest(user);
+        JsonObject jsonObject = Json.createObjectBuilder()
+            .add("token", cookieToken)
+            .add("email",user.getEmail())
+            .build();
+        return Response.ok(jsonObject).build();
     }
 
     @PUT
