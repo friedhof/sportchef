@@ -51,13 +51,13 @@
         Polymer({
             is: "sportchef-layout-header",
             properties: {
-                site: {
+                page: {
                     type: String,
                     value: ''
                 }
             },
             ready: function(){
-                var activeNav = document.getElementById('nav-'+this.site);
+                var activeNav = document.getElementById('nav-'+this.page);
                 if (activeNav !== null && typeof activeNav !== 'undefined'){
                     activeNav.classList.add('active');
                 }
