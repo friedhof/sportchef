@@ -19,7 +19,6 @@
 "use strict";
 
 var locales = {
-    'de': 'deutsch',
     'en': 'english'
 };
 
@@ -27,8 +26,40 @@ var translations = {
     init: function(){
         for (var locale in locales){
             this[locale] = [];
-            // TODO: Get translations
+            var that = this;
+            this.loadTranslation(locale, function(data){
+                that[locale] = JSON.parse(data);
+            });
+            this.translate();
         }
+    },
+    translate: function(){
+        var untranslatedElements = document.querySelectorAll('[data-translate]');
+
+        for (var untranslatedElement in untranslatedElements){
+            if (!isNaN(parseFloat(untranslatedElement)) && isFinite(untranslatedElement)){ // If it is actual an element and not length or item property.
+                var el = untranslatedElements[untranslatedElement];
+                var desiredLocale = el.dataset.translate;
+                if (translations.exists(desiredLocale)){
+                    var possibleTranslation =  translations[desiredLocale][el.textContent];
+                    if (typeof possibleTranslation === 'string'){
+                        el.textContent = possibleTranslation;
+                    }
+                }
+            }
+        }
+    },
+    loadTranslation: function(locale, callback){
+        var xobj = new XMLHttpRequest();
+        xobj.overrideMimeType("application/json");
+        xobj.open('GET', 'js/translations.'+locale+'.json', false); // Replace 'my_data' with the path to your file
+        xobj.onreadystatechange = function () {
+            if (xobj.readyState == 4 && xobj.status == "200") {
+                // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+                callback(xobj.responseText);
+            }
+        };
+        xobj.send(null);
     },
     exists: function(locale){
         return this[locale] !== null && typeof this[locale] !== 'undefined';
@@ -36,20 +67,3 @@ var translations = {
 };
 
 translations.init();
-
-
-var untranslatedElements = document.querySelectorAll('[data-translate]');
-
-
-for (var untranslatedElement in untranslatedElements){
-    if (!isNaN(parseFloat(untranslatedElement)) && isFinite(untranslatedElement)){ // If it is actual an element and not length or item property.
-        var el = untranslatedElements[untranslatedElement];
-        var desiredLocale = el.dataset.translate;
-        if (translations.exists(desiredLocale)){
-            var possibleTranslation =  translations[desiredLocale][el.textContent];
-            if (typeof possibleTranslation === 'string'){
-                el.textContent = possibleTranslation;
-            }
-        }
-    }
-}
