@@ -68,7 +68,7 @@ public class ConfigurationManager {
 
     @SuppressWarnings("MethodReturnOfConcreteClass")
     public final Configuration getConfiguration() {
-        return this.configuration;
+        return configuration;
     }
 
     @Override
