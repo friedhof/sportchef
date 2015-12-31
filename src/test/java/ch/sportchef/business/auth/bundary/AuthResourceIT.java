@@ -100,6 +100,7 @@ public class AuthResourceIT {
         Object cookieData = response.getEntity();
         System.out.println(cookieData.toString());
 //        final String cookie = cookieData.toString();
+        // .cookie("Login", "1234-1234-1234-1234|"+email) // reminder
 
     }
 
