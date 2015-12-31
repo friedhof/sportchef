@@ -1,0 +1,81 @@
+<!--
+    SportChef – Sports Competition Management Software
+    Copyright (C) 2015 Marcus Fihlon
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+<link rel="import" href="../../bower_components/paper-card/paper-card.html" />
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html" />
+<link rel="import" href="../../sportchef_components/sportchef-jquery/sportchef-jquery.html" />
+
+<dom-module id="admin-authenticate">
+    <template>
+        <!-- scoped CSS for this element -->
+        <style>
+            paper-card {
+                margin: 0.5em;
+            }
+            #message {
+                color: rgb(0, 128, 0);
+                font-weight: bold;
+            }
+        </style>
+
+        <paper-card heading="Login">
+            <div class="card-content">
+                <div id="message">Checking Data</div>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        // get request-parametes from URI
+        function get(name){
+            if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+                return name[1];
+        }
+
+        function setCookie(name, data, days){
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // cookie expires after X days
+            document.cookie = name + "=" + data + "; expires=" + date.toGMTString() + "; path=/";
+        }
+
+        $.ajax({
+            url: '/sportchef/api/authenticate/'+get('token'),
+            contentType: "application/json",
+            success: function(success){
+                // Invalidate login-cookie
+                setCookie('login','',-1);
+                // generate sportchef-cookie
+                setCookie('sportchef',success.token + "|" + success.email,7);
+            },
+            error: function(error){
+                // Invalidate login-cookie
+                setCookie('login','',-1);
+                $('#message').html('Login failed');
+                setTimeout(function(){
+                    $('#message').html('');
+                }, 5000);
+
+            }
+        });
+
+        // register a new element called sportchef-eventform
+        Polymer({
+            is: 'admin-authenticate'
+        });
+    </script>
+</dom-module>

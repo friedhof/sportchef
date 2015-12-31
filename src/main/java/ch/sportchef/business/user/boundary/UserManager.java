@@ -22,6 +22,7 @@ import ch.sportchef.business.user.entity.User;
 
 import javax.ejb.Stateless;
 import javax.validation.constraints.NotNull;
+import java.io.Console;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,12 @@ public class UserManager implements Serializable {
         return this.users.values().stream()
                 .filter(user -> email.equals(user.getEmail()))
                 .findAny();
+    }
+
+    public User findByEmail(@NotNull final String email) {
+        return this.users.values().stream()
+                .filter(u -> email.equals(u.getEmail()))
+                .findFirst().orElse(null);
     }
 
     public List<User> findAll() {
