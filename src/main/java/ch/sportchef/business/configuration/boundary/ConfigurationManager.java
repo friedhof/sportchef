@@ -72,7 +72,7 @@ public class ConfigurationManager {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "ConfigurationManager{" +
                 "configuration=" + configuration +
                 '}';
