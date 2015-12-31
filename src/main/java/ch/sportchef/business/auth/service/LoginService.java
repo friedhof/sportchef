@@ -17,6 +17,8 @@
  */
 package ch.sportchef.business.auth.service;
 
+import ch.sportchef.business.configuration.boundary.ConfigurationManager;
+import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.entity.User;
 
 import java.io.UnsupportedEncodingException;
@@ -38,6 +40,7 @@ import org.apache.commons.mail.SimpleEmail;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
@@ -46,6 +49,10 @@ import javax.ws.rs.core.UriInfo;
 
 @Named
 public class LoginService {
+
+    @Inject
+    private ConfigurationManager configurationManager;
+
     private static HashMap<String,User> loginUsers = new HashMap<>(); // Pending requests
     private static HashMap<String,User> activeUsers = new HashMap<>(); // Active (sessions)
 
@@ -108,13 +115,17 @@ public class LoginService {
     }
 
     public String loginRequest(User user) throws EmailException, InvalidKeySpecException, NoSuchAlgorithmException, UnsupportedEncodingException {
-        /**
-         * @ToDo: change mailMessage /@PReimers (2015-12-29)
-         */
+        final Configuration configuration = configurationManager.getConfiguration();
+
         String loginToken = generateToken();
         String mailToken = generateMailToken(loginToken,user.getEmail());
         setLoginRequest(mailToken,user);
-        String mailMessage = "Hello "+user.getFirstName()+"\r\n\r\n"+"To complete your login please click the following link:"+"\r\n\r\n"+"Link: http://localhost:8080/sportchef/authenticate.html?token="+URLEncoder.encode(mailToken,"UTF-8")+"\r\n\r\n"+"This link is valid for 10 minutes.";
+
+        /**
+         * @ToDo: change mailMessage /@PReimers (2015-12-29)
+         */
+        String mailMessage = "Hello "+user.getFirstName()+"\r\n\r\n"+"To complete your login please click the following link:"+"\r\n\r\n"+"Link: "+configuration.getAppDomain()+"/authenticate.html?token="+URLEncoder.encode(mailToken,"UTF-8")+"\r\n\r\n"+"This link is valid for 10 minutes.";
+
         sendMail(user.getEmail(),"Sportchef - Login",mailMessage);
 
         return loginToken;
@@ -130,15 +141,14 @@ public class LoginService {
     }
 
     public Boolean sendMail(String recipient, String subject, String message) throws EmailException {
-        /**
-         * @ToDo: save config vars in separate config-file /@PReimers (2015-12-29)
-         */
+        final Configuration configuration = configurationManager.getConfiguration();
+
         Email email = new SimpleEmail();
-        email.setHostName("smtp.sportchef.ch");
-        email.setSmtpPort(25);
-        email.setAuthenticator(new DefaultAuthenticator("no-reply@sportchef.ch", "secretPassword"));
-        email.setSSLOnConnect(true);
-        email.setFrom("SportChef <no-reply@sportchef.ch>");
+        email.setHostName(configuration.getSMTPServer());
+        email.setSmtpPort(configuration.getSMTPPort());
+        email.setAuthenticator(new DefaultAuthenticator(configuration.getSMTPUser(), configuration.getSMTPPassword()));
+        email.setSSLOnConnect(configuration.getSMTPSSL());
+        email.setFrom(configuration.getSMTPFrom());
         email.setSubject(subject);
         email.setMsg(message);
         email.addTo(recipient);

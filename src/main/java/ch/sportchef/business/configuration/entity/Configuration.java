@@ -28,6 +28,18 @@ public class Configuration {
         this.properties = properties;
     }
 
+    public String getAppDomain() {
+        return this.properties.getProperty("app.domain", null);
+    }
+
+    public String getAppAuthenticationCookieExpireAfter() {
+        return this.properties.getProperty("app.authenticationCookie.expireAfter", null);
+    }
+
+    public String getApploginCookieExpireAfter() {
+        return this.properties.getProperty("app.loginCookie.expireAfter", null);
+    }
+
     public String getContactCompany() {
         return this.properties.getProperty("contact.company", null);
     }
@@ -54,5 +66,29 @@ public class Configuration {
 
     public String getContactWeb() {
         return this.properties.getProperty("contact.web", null);
+    }
+
+    public String getSMTPServer() {
+        return this.properties.getProperty("smtp.server", null);
+    }
+
+    public Integer getSMTPPort() {
+        return Integer.valueOf(this.properties.getProperty("smtp.port", "25"));
+    }
+
+    public String getSMTPUser() {
+        return this.properties.getProperty("smtp.user", null);
+    }
+
+    public String getSMTPPassword() {
+        return this.properties.getProperty("smtp.password", null);
+    }
+
+    public Boolean getSMTPSSL() {
+        return Boolean.valueOf(this.properties.getProperty("smtp.useSSL", "false"));
+    }
+
+    public String getSMTPFrom() {
+        return this.properties.getProperty("smtp.from", null);
     }
 }
