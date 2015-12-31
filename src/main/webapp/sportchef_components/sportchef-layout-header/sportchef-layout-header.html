@@ -31,9 +31,9 @@
                 </div>
                 <div class="nav-collapse">
                     <ul class="main-nav">
-                        <li><a href="../../events.html" class="active">Events</a></li>
-                        <li><a href="../../admin.html">Admin</a></li>
-                        <li><a href="../../imprint.html">Impressum</a></li>
+                        <li><a href="../../events.html" id="nav-events">Events</a></li>
+                        <li><a href="../../admin.html" id="nav-admin">Admin</a></li>
+                        <li><a href="../../imprint.html" id="nav-imprint">Impressum</a></li>
                     </ul>
                     <paper-button class="button button-login">Login</paper-button>
                 </div>
@@ -51,9 +51,15 @@
         Polymer({
             is: "sportchef-layout-header",
             properties: {
-                site: {
+                page: {
                     type: String,
                     value: ''
+                }
+            },
+            ready: function(){
+                var activeNav = document.getElementById('nav-'+this.page);
+                if (activeNav !== null && typeof activeNav !== 'undefined'){
+                    activeNav.classList.add('active');
                 }
             }
         });

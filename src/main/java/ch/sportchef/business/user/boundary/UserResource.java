@@ -26,6 +26,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.Optional;
 
 public class UserResource {
 
@@ -39,11 +40,11 @@ public class UserResource {
 
     @GET
     public User find() {
-        final User user = this.manager.readOnly().findByUserId(this.userId);
-        if (user == null) {
-            throw new NotFoundException(String.format("user with id '%d' not found", userId));
+        final Optional<User> user = this.manager.readOnly().findByUserId(this.userId);
+        if (user.isPresent()) {
+            return user.get();
         }
-        return user;
+        throw new NotFoundException(String.format("user with id '%d' not found", userId));
     }
 
     @PUT

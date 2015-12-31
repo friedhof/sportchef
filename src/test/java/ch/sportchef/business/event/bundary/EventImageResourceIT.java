@@ -24,7 +24,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.glassfish.jersey.client.ClientProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -102,7 +102,7 @@ public class EventImageResourceIT {
         // arrange
         final File file = new File(Thread.currentThread()
                 .getContextClassLoader().getResource("test.png").toURI());
-        final HttpClient httpClient = new DefaultHttpClient();
+        final HttpClient httpClient = HttpClientBuilder.create().build();
         final HttpPut httpPut = new HttpPut(this.imageLocation);
         final FileBody fileBody = new FileBody(file);
         final HttpEntity entity = MultipartEntityBuilder.create()
