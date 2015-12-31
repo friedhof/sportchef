@@ -144,6 +144,10 @@ input[type=checkbox] {
     height: 33px;
 }
 
+.translation-link{
+    margin: 0 5px;
+}
+
 .checkbox label {
     cursor:           pointer;
     position:         absolute;
@@ -209,6 +213,10 @@ input[type=checkbox] {
 
 #events {
     width: 100%;
+}
+
+#translation-container{
+    text-align: right;
 }
 
 #logo {
