@@ -29,6 +29,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.CONFLICT;
+import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.EXPECTATION_FAILED;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.NO_CONTENT;
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -48,6 +55,7 @@ public class UserResourceIT {
         final String location = createUserWithSuccess();
         final String notFoundLocation = location.substring(0, location.lastIndexOf("/") + 1) + Long.MAX_VALUE;
         createUserWithBadRequest();
+        createUserWithExpectationFailed();
 
         // read
         readOneUserWithSuccess(location);
@@ -81,7 +89,7 @@ public class UserResourceIT {
         final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(userToCreate));
 
         //assert
-        assertThat(response.getStatus(), is(Response.Status.CREATED.getStatusCode()));
+        assertThat(response.getStatus(), is(CREATED.getStatusCode()));
         final String location = response.getHeaderString("Location");
         assertThat(location, notNullValue());
         final long userId = getUserId(location);
@@ -103,7 +111,25 @@ public class UserResourceIT {
         final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(userToCreate));
 
         //assert
-        assertThat(response.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
+        assertThat(response.getStatus(), is(BAD_REQUEST.getStatusCode()));
+    }
+
+    private void createUserWithExpectationFailed() {
+        // arrange
+        final JsonObject userToCreate = Json.createObjectBuilder()
+                .add("firstName", "John")
+                .add("lastName", "Doe")
+                .add("phone", "+41 79 555 00 01")
+                .add("email", "john.doe@sportchef.ch")
+                .build();
+
+        // act
+        final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(userToCreate));
+
+        //assert
+        assertThat(response.getStatus(), is(EXPECTATION_FAILED.getStatusCode()));
+        final String expectation = response.getHeaderString("Expectation");
+        assertThat(expectation, is("Email address has to be unique"));
     }
 
     private void readOneUserWithSuccess(final String location) {
@@ -115,7 +141,7 @@ public class UserResourceIT {
         final JsonObject jsonObject = response.readEntity(JsonObject.class);
 
         // assert
-        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(response.getStatus(), is(OK.getStatusCode()));
         assertNotNull(jsonObject);
         assertThat(jsonObject.getJsonNumber("userId").longValue(), is(getUserId(location)));
         assertThat(jsonObject.getString("firstName"), is("John"));
@@ -133,7 +159,7 @@ public class UserResourceIT {
         final JsonObject jsonObject = response.readEntity(JsonObject.class);
 
         // assert
-        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
+        assertThat(response.getStatus(), is(NOT_FOUND.getStatusCode()));
         assertNull(jsonObject);
     }
 
@@ -147,7 +173,7 @@ public class UserResourceIT {
         final JsonObject jsonObject = jsonArray.size() > 0 ? jsonArray.getJsonObject(jsonArray.size() - 1) : null;
 
         // assert
-        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(response.getStatus(), is(OK.getStatusCode()));
         assertFalse(jsonArray.isEmpty());
         assertNotNull(jsonObject);
         assertThat(jsonObject.getJsonNumber("userId").longValue(), is(getUserId(location)));
@@ -172,7 +198,7 @@ public class UserResourceIT {
         final JsonObject jsonObject = response.readEntity(JsonObject.class);
 
         //assert
-        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(response.getStatus(), is(OK.getStatusCode()));
         assertThat(response.getHeaderString("Location"), is(location));
         assertNotNull(jsonObject);
         assertThat(jsonObject.getJsonNumber("userId").longValue(), is(getUserId(location)));
@@ -191,7 +217,7 @@ public class UserResourceIT {
         final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(userToUpdate));
 
         //assert
-        assertThat(response.getStatus(), is(Response.Status.CONFLICT.getStatusCode()));
+        assertThat(response.getStatus(), is(CONFLICT.getStatusCode()));
     }
 
     private void updateUserWithNotFound(final String location) {
@@ -208,7 +234,7 @@ public class UserResourceIT {
         final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(userToUpdate));
 
         //assert
-        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
+        assertThat(response.getStatus(), is(NOT_FOUND.getStatusCode()));
     }
 
     private void deleteUserWithSuccess(final String location) {
@@ -218,7 +244,7 @@ public class UserResourceIT {
         final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).delete();
 
         //assert
-        assertThat(response.getStatus(), is(Response.Status.NO_CONTENT.getStatusCode()));
+        assertThat(response.getStatus(), is(NO_CONTENT.getStatusCode()));
     }
 
     private void deleteUserWithNotFound(final String location) {
@@ -228,7 +254,7 @@ public class UserResourceIT {
         final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).delete();
 
         //assert
-        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
+        assertThat(response.getStatus(), is(NOT_FOUND.getStatusCode()));
     }
 
 }

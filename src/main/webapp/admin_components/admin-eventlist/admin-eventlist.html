@@ -25,14 +25,14 @@
 
 <dom-module id="admin-eventlist">
     <template>
-        <paper-card heading="Events">
+        <paper-card heading="Delete Events" data-i18n="admin-eventlist.heading" data-i18n-attribute="heading">
             <div class="card-content">
                 <paper-listbox>
                     <iron-ajax auto url="/sportchef/api/events" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
                     <template is="dom-repeat" items="[[ajaxResponse]]">
                         <paper-item id="paper-item-{{item.eventId}}">
                             {{item.title}}
-                            <paper-button data-event-id$="{{item.eventId}}" data-event-title$="{{item.title}}" onclick="deleteEvent(this);" title="Delete">
+                            <paper-button data-event-id$="{{item.eventId}}" data-event-title$="{{item.title}}" onclick="deleteEvent(this);" title="Delete" data-i18n="admin-eventlist.delete" data-i18n-attribute="title">
                                 <iron-icon icon="icons:delete"></iron-icon>
                             </paper-button>
                         </paper-item>

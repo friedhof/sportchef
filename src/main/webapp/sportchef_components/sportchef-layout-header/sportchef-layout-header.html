@@ -1,6 +1,6 @@
 <!--
     SportChef – Sports Competition Management Software
-    Copyright (C) 2015 Marcus Fihlon
+    Copyright (C) 2015, 2016 Marcus Fihlon
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -13,11 +13,12 @@
     GNU Affero General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
-<link rel="import" href="../../sportchef_components/sportchef-jquery/sportchef-jquery.html" />
 <link rel="import" href="../../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../../sportchef_components/sportchef-jquery/sportchef-jquery.html" />
+<link rel="import" href="../../sportchef_components/sportchef-i18n/sportchef-i18n.html" />
 
 <dom-module id="sportchef-layout-header">
     <template>
@@ -31,11 +32,11 @@
                 </div>
                 <div class="nav-collapse">
                     <ul class="main-nav">
-                        <li><a href="../../events.html" id="nav-events" data-translatable="translatable" lang="de">Veranstaltungen</a></li>
-                        <li><a href="../../admin.html" id="nav-admin">Admin</a></li>
-                        <li><a href="../../imprint.html" id="nav-imprint" data-translatable="translatable" lang="de">Impressum</a></li>
+                        <li><a href="../../events.html" id="nav-events" data-i18n="sportchef-layout-header.menu.events">Events</a></li>
+                        <li><a href="../../admin.html" id="nav-admin" data-i18n="sportchef-layout-header.menu.admin">Admin</a></li>
+                        <li><a href="../../imprint.html" id="nav-imprint" data-i18n="sportchef-layout-header.menu.imprint">Imprint</a></li>
                     </ul>
-                    <paper-button class="button button-login" data-translatable="translatable" lang="de">Anmelden</paper-button>
+                    <paper-button class="button button-login" data-i18n="sportchef-layout-header.button.login">Login</paper-button>
                 </div>
             </nav>
         </header>
