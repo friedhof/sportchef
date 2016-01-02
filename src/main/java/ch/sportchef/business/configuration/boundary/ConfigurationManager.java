@@ -74,7 +74,7 @@ public class ConfigurationManager {
     @Override
     public final String toString() {
         return "ConfigurationManager{" + //NON-NLS
-                "configuration=" + configuration +
+                "configuration=" + configuration + //NON-NLS
                 '}';
     }
 }
