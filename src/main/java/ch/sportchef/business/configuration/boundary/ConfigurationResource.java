@@ -55,4 +55,10 @@ public class ConfigurationResource {
         return Response.ok(contact).build();
     }
 
+    @Override
+    public String toString() {
+        return "ConfigurationResource{" +
+                "configurationManager=" + configurationManager +
+                '}';
+    }
 }
