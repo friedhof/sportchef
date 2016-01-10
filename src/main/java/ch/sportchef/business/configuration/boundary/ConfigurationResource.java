@@ -35,6 +35,7 @@ import javax.ws.rs.core.Response;
 public class ConfigurationResource {
 
     @Inject
+    @SuppressWarnings("InstanceVariableOfConcreteClass")
     private ConfigurationManager configurationManager;
 
     @GET
