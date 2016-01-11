@@ -40,7 +40,7 @@ public class ConfigurationResource {
 
     @GET
     @Path("contact")
-    public Response getContact() {
+    public final Response getContact() {
         final Configuration configuration = configurationManager.getConfiguration();
 
         JsonObject contact = Json.createObjectBuilder()
