@@ -41,7 +41,7 @@ public class ConfigurationResource {
     @GET
     @Path("contact")
     public final Response getContact() {
-        final Configuration configuration = configurationManager.getConfiguration();
+        @SuppressWarnings("LocalVariableOfConcreteClass") final Configuration configuration = configurationManager.getConfiguration();
 
         JsonObject contact = Json.createObjectBuilder()
                 .add("company", configuration.getContactCompany())
