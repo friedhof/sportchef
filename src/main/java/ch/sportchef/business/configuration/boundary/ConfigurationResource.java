@@ -40,8 +40,9 @@ public class ConfigurationResource {
 
     @GET
     @Path("contact")
+    @SuppressWarnings("FeatureEnvy")
     public final Response getContact() {
-        
+
         @SuppressWarnings("LocalVariableOfConcreteClass")
         final Configuration configuration = configurationManager.getConfiguration();
 
