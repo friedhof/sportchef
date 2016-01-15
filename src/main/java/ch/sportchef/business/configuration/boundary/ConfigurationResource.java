@@ -46,7 +46,7 @@ public class ConfigurationResource {
         @SuppressWarnings("LocalVariableOfConcreteClass")
         final Configuration configuration = configurationManager.getConfiguration();
 
-        JsonObject contact = Json.createObjectBuilder()
+        final JsonObject contact = Json.createObjectBuilder()
                 .add("company", configuration.getContactCompany())
                 .add("name", configuration.getContactName())
                 .add("street", configuration.getContactStreet())
