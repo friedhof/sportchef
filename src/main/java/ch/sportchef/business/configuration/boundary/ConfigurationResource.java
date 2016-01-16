@@ -34,6 +34,8 @@ import javax.ws.rs.core.Response;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class ConfigurationResource {
 
+    private static final String CONTACT_JSON_COMPANY = "company"; //NON-NLS
+
     @Inject
     @SuppressWarnings("InstanceVariableOfConcreteClass")
     private ConfigurationManager configurationManager;
@@ -47,7 +49,7 @@ public class ConfigurationResource {
         final Configuration configuration = configurationManager.getConfiguration();
 
         final JsonObject contact = Json.createObjectBuilder()
-                .add("company", configuration.getContactCompany())
+                .add(CONTACT_JSON_COMPANY, configuration.getContactCompany())
                 .add("name", configuration.getContactName())
                 .add("street", configuration.getContactStreet())
                 .add("city", configuration.getContactCity())
