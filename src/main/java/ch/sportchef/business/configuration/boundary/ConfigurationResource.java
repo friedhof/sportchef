@@ -38,6 +38,7 @@ public class ConfigurationResource {
     private static final String CONTACT_JSON_NAME = "name"; //NON-NLS
     private static final String CONTACT_JSON_STREET = "street"; //NON-NLS
     private static final String CONTACT_JSON_CITY = "city"; //NON-NLS
+    private static final String CONTACT_JSON_PHONE = "phone"; //NON-NLS
 
     @Inject
     @SuppressWarnings("InstanceVariableOfConcreteClass")
@@ -56,7 +57,7 @@ public class ConfigurationResource {
                 .add(CONTACT_JSON_NAME, configuration.getContactName())
                 .add(CONTACT_JSON_STREET, configuration.getContactStreet())
                 .add(CONTACT_JSON_CITY, configuration.getContactCity())
-                .add("phone", configuration.getContactPhone())
+                .add(CONTACT_JSON_PHONE, configuration.getContactPhone())
                 .add("web", configuration.getContactWeb())
                 .add("email", configuration.getContactEmail())
                 .build();
