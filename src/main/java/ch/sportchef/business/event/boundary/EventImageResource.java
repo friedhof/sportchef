@@ -17,7 +17,13 @@
  */
 package ch.sportchef.business.event.boundary;
 
-import org.apache.commons.fileupload.MultipartStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -32,14 +38,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
+
+import org.apache.commons.fileupload.MultipartStream;
+
+import com.google.common.io.Resources;
 
 public class EventImageResource {
 
@@ -70,17 +72,16 @@ public class EventImageResource {
     @GET
     @Produces({"image/png"})
     public Response getImage() throws URISyntaxException, IOException {
-        final File file = new File(IMAGE_UPLOAD_PATH, this.eventId + FILE_EXTENSION);
-        if (file.exists()) {
-            final byte[] image = Files.readAllBytes(file.toPath());
-            return Response.ok().entity((StreamingOutput) stream -> {
-                stream.write(image);
-                stream.flush();
-            }).build();
+        File file = new File(IMAGE_UPLOAD_PATH, this.eventId + FILE_EXTENSION);
+        if (!file.exists()) {
+            file = new File(Resources.getResource("favicon_sportchef.ico").toURI().getPath());
         }
 
-        final URI location = new URI(IMAGE_PLACEHOLDER);
-        return Response.temporaryRedirect(location).build();
+        final byte[] image = Files.readAllBytes(file.toPath());
+        return Response.ok().entity((StreamingOutput) stream -> {
+            stream.write(image);
+            stream.flush();
+        }).build();
     }
 
     @PUT
