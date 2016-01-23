@@ -68,7 +68,7 @@ public class ConfigurationResource {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "ConfigurationResource{" +
                 "configurationManager=" + configurationManager +
                 '}';
