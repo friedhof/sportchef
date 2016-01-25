@@ -70,7 +70,7 @@ public class ConfigurationResource {
     @Override
     public final String toString() {
         return "ConfigurationResource{" + //NON-NLS
-                "configurationManager=" + configurationManager +
+                "configurationManager=" + configurationManager + //NON-NLS
                 '}';
     }
 }
