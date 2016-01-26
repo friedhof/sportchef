@@ -69,6 +69,7 @@ public class ConfigurationResource {
 
     @Override
     public final String toString() {
+        //noinspection MagicCharacter
         return "ConfigurationResource{" + //NON-NLS
                 "configurationManager=" + configurationManager + //NON-NLS
                 '}';
