@@ -1,0 +1,27 @@
+{
+    "admin-eventform" : {
+        "heading" :  "Neue Veranstaltung",
+        "title" :    "Titel",
+        "location" : "Ort",
+        "date" :     "Datum",
+        "time" :     "Uhrzeit",
+        "create" :   "Erstellen"
+    },
+    "admin-eventimage" : {
+        "heading" : "Ein Bild hochladen"
+    },
+    "admin-eventlist" : {
+        "heading" : "Veranstaltungen löschen",
+        "delete" :  "Löschen"
+    },
+    "sportchef-layout-header" : {
+        "menu" : {
+            "events" :  "Veranstaltungen",
+            "admin" :   "Administration",
+            "imprint" : "Impressum"
+        },
+        "button" : {
+            "login" : "Anmelden"
+        }
+    }
+}

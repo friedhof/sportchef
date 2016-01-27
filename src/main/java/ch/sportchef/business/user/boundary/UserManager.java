@@ -17,43 +17,62 @@
  */
 package ch.sportchef.business.user.boundary;
 
+import ch.sportchef.business.exception.ExpectationFailedException;
 import ch.sportchef.business.user.entity.User;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static java.util.Comparator.comparingLong;
+import static java.util.stream.Collectors.toList;
 
 @Stateless
-public class UserManager {
+public class UserManager implements Serializable {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final long serialVersionUID = 1L;
 
-    public User save(@NotNull final User user) {
-        return this.em.merge(user);
+    private final Map<Long, User> users = new ConcurrentHashMap<>();
+
+    private final AtomicLong userSeq = new AtomicLong(0);
+
+    public User create(@NotNull final User user) {
+        if (findByEmail(user.getEmail()).isPresent()) {
+            throw new ExpectationFailedException("Email address has to be unique");
+        }
+        final Long userId = userSeq.incrementAndGet();
+        final User userToCreate = new User(userId, user.getFirstName(), user.getLastName(), user.getPhone(), user.getEmail());
+        this.users.put(userId, userToCreate);
+        return userToCreate;
     }
 
-    public User findByUserId(final long userId) {
-        return this.em.find(User.class, userId);
+    public User update(@NotNull final User user) {
+        this.users.put(user.getUserId(), user);
+        return user;
+    }
+
+    public Optional<User> findByUserId(@NotNull final Long userId) {
+        return Optional.ofNullable(this.users.get(userId));
+    }
+
+    public Optional<User> findByEmail(@NotNull final String email) {
+        return this.users.values().stream()
+                .filter(user -> email.equals(user.getEmail()))
+                .findAny();
     }
 
     public List<User> findAll() {
-        final CriteriaBuilder cb = this.em.getCriteriaBuilder();
-        final CriteriaQuery<User> cq = cb.createQuery(User.class);
-        final Root<User> rootEntry = cq.from(User.class);
-        final CriteriaQuery<User> all = cq.select(rootEntry);
-        final TypedQuery<User> allQuery = this.em.createQuery(all);
-        return allQuery.getResultList();
+        return this.users.values().stream()
+                .sorted(comparingLong(User::getUserId))
+                .collect(toList());
     }
 
-    public void delete(final long userId) {
-        final User reference = em.getReference(User.class, userId);
-        em.remove(reference);
+    public void delete(final Long userId) {
+        this.users.remove(userId);
     }
 }

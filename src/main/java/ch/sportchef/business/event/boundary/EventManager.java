@@ -19,33 +19,30 @@ package ch.sportchef.business.event.boundary;
 
 import ch.sportchef.business.event.entity.Event;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
-public class EventManager implements Serializable{
+import static java.util.Comparator.comparingLong;
+import static java.util.stream.Collectors.toList;
+
+public class EventManager implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Map<Long, Event> events = new ConcurrentHashMap<>();
 
-    private final AtomicLong eventSeq = new AtomicLong(1);
+    private final AtomicLong eventSeq = new AtomicLong(0);
 
 
-    public Event createNew(@NotNull final Event event) {
-        final long newId = eventSeq.incrementAndGet();
-        event.setEventId(newId);
-        this.events.put(newId, event);
-        return event;
+    public Event create(@NotNull final Event event) {
+        final Long eventId = eventSeq.incrementAndGet();
+        final Event eventToCreate = new Event(eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
+        this.events.put(eventId, eventToCreate);
+        return eventToCreate;
     }
 
     public Event update(@NotNull final Event event) {
@@ -53,10 +50,14 @@ public class EventManager implements Serializable{
         return event;
     }
 
-    public Event findByEventId(final long eventId) { return this.events.get(eventId);}
+    public Event findByEventId(final long eventId) {
+        return this.events.get(eventId);
+    }
 
     public List<Event> findAll() {
-       return this.events.values().stream().collect(Collectors.toList());
+       return this.events.values().stream()
+               .sorted(comparingLong(Event::getEventId))
+               .collect(toList());
     }
 
     public void delete(final long eventId) {
