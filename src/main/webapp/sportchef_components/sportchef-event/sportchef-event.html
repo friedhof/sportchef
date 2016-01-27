@@ -32,6 +32,7 @@
                 margin:         10px 0;
                 color:          white;
                 width:          24%;
+                cursor:         pointer;
                 vertical-align: top;
             }
 
@@ -47,19 +48,78 @@
                 font-size:     1.2em;
             }
 
-            .card-content {
-                font-weight:      300;
-                min-height:       170px;
+            .electricBlue {
                 background-color: #0096dc;
-                text-align:       left;
+            }
+
+            .electricBlue:after {
+                border-color: #0096dc transparent;
+            }
+
+            .kellyGreen {
+                background-color: #5cb023;
+            }
+
+            .kellyGreen:after {
+                border-color: #5cb023 transparent;
+            }
+
+            .tangerine {
+                background-color: #f08a00;
+            }
+
+            .tangerine:after {
+                border-color: #f08a00 transparent;
+            }
+
+            .harleyDavidsonOrange {
+                background-color: #de2600;
+            }
+
+            .harleyDavidsonOrange:after {
+                border-color: #de2600 transparent;
+            }
+
+            .card-content {
+                will-change: border;
+                font-weight: 300;
+                min-height:  170px;
+                text-align:  left;
             }
 
             .card-content div.bottomFixed {
                 position: absolute;
-                height: 55px;
-                left: 16px;
-                right: 16px;
-                bottom: 16px;
+                height:   55px;
+                left:     16px;
+                right:    16px;
+                bottom:   16px;
+            }
+
+            .card-content:after {
+                content:            '';
+                position:           absolute;
+                left:               50%;
+                display:            block;
+                width:              0;
+                bottom:             0;
+                z-index:            1;
+                margin-left:        -20px;
+                border-style:       solid;
+                -webkit-transition: bottom 0.5s ease-out;
+                border-width:       26px 20px 0;
+                -moz-transition:    bottom 0.3s ease-out;
+                -ms-transition:     bottom 0.3s ease-out;
+                -o-transition:      bottom 0.3s ease-out;
+                transition:         bottom 0.3s ease-out;
+            }
+
+            .card-content.active:after {
+                bottom:             -26px;
+                -webkit-transition: bottom 0.3s ease-in;
+                -moz-transition:    bottom 0.3s ease-in;
+                -ms-transition:     bottom 0.3s ease-in;
+                -o-transition:      bottom 0.3s ease-in;
+                transition:         bottom 0.3s ease-in;
             }
 
             /*
@@ -121,6 +181,33 @@
                     type: Number,
                     value: 0
                 }
+            },
+            ready: function () {
+                var $cardContent = $(this).find('.card-content');
+                var style;
+                switch (this.eventid % 4) {
+                    case 1:
+                        style = "electricBlue";
+                        break;
+                    case 2:
+                        style = "kellyGreen";
+                        break;
+                    case 3:
+                        style = "tangerine";
+                        break;
+                    case 0:
+                        style = "harleyDavidsonOrange";
+                        break;
+                    default:
+
+                        break;
+                }
+
+                $cardContent.addClass(style);
+
+                this.addEventListener('click', function () {
+                    $cardContent.toggleClass('active');
+                })
             }
         });
     </script>

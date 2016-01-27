@@ -147,6 +147,10 @@ paper-button.sportchef-layout-header {
     height: 33px;
 }
 
+.translation-link{
+    margin: 0 5px;
+}
+
 .checkbox label {
     cursor:           pointer;
     position:         absolute;
@@ -212,6 +216,10 @@ paper-button.sportchef-layout-header {
 
 #events {
     width: 100%;
+}
+
+#translation-container{
+    text-align: right;
 }
 
 #logo {
