@@ -38,8 +38,10 @@ public class ConfigurationResource {
     private static final String CONTACT_JSON_NAME = "name"; //NON-NLS
     private static final String CONTACT_JSON_STREET = "street"; //NON-NLS
     private static final String CONTACT_JSON_CITY = "city"; //NON-NLS
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String CONTACT_JSON_PHONE = "phone"; //NON-NLS
     private static final String CONTACT_JSON_WEB = "web"; //NON-NLS
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String CONTACT_JSON_EMAIL = "email"; //NON-NLS
 
     @Inject
