@@ -25,13 +25,13 @@ public class LocalTimeAdapter extends XmlAdapter<String, LocalTime> {
     private static final String LOCAL_TIME_FORMAT = "%02d:%02d"; //NON-NLS
 
     @Override
-    public final String marshal(final LocalTime localTime) {
+    public String marshal(final LocalTime localTime) {
         return String.format(LOCAL_TIME_FORMAT,
                 localTime.getHour(), localTime.getMinute());
     }
 
     @Override
-    public final LocalTime unmarshal(final String timeString) {
+    public LocalTime unmarshal(final String timeString) {
         final String[] data = timeString.split("\\:");
         final int hour = Integer.parseInt(data[0]);
         final int minute = Integer.parseInt(data[1]);
