@@ -67,12 +67,12 @@ public class ConfigurationManager {
     }
 
     @SuppressWarnings("MethodReturnOfConcreteClass")
-    public final Configuration getConfiguration() {
+    public Configuration getConfiguration() {
         return configuration;
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return String.format("ConfigurationManager{configuration=%s}", configuration); //NON-NLS
     }
 }
