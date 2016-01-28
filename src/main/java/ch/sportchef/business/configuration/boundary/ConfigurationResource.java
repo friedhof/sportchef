@@ -51,7 +51,7 @@ public class ConfigurationResource {
     @GET
     @Path("contact")
     @SuppressWarnings("FeatureEnvy")
-    public final Response getContact() {
+    public Response getContact() {
 
         @SuppressWarnings("LocalVariableOfConcreteClass")
         final Configuration configuration = configurationManager.getConfiguration();
@@ -70,7 +70,7 @@ public class ConfigurationResource {
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return String.format("ConfigurationResource{configurationManager=%s}", configurationManager); //NON-NLS
     }
 }
