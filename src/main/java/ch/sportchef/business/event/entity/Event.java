@@ -41,6 +41,8 @@ public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private static final String DEFAULT_CSS_BACKGROUND_COLOR = "#0096dc";
+
     @Id
     @GeneratedValue
     private Long eventId;
@@ -59,6 +61,8 @@ public class Event implements Serializable {
     @XmlJavaTypeAdapter(LocalTimeAdapter.class)
     private LocalTime time;
 
+    private String cssBackgroundColor = DEFAULT_CSS_BACKGROUND_COLOR;
+
     public Event() {
         super();
     }
@@ -68,12 +72,22 @@ public class Event implements Serializable {
                  @NotNull final String location,
                  @NotNull final LocalDate date,
                  @NotNull final LocalTime time) {
+        this(eventId, title, location, date, time, DEFAULT_CSS_BACKGROUND_COLOR);
+    }
+
+    public Event(@NotNull final Long eventId,
+                 @NotNull final String title,
+                 @NotNull final String location,
+                 @NotNull final LocalDate date,
+                 @NotNull final LocalTime time,
+                 final String cssBackgroundColor) {
         this();
         this.eventId = eventId;
         this.title = title;
         this.location = location;
         this.date = date;
         this.time = time;
+        this.cssBackgroundColor = cssBackgroundColor;
     }
 
     public Long getEventId() {
@@ -94,5 +108,9 @@ public class Event implements Serializable {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public String getCssBackgroundColor() {
+        return cssBackgroundColor;
     }
 }
