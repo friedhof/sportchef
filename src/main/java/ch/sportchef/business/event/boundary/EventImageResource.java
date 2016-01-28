@@ -17,8 +17,11 @@
  */
 package ch.sportchef.business.event.boundary;
 
+import ch.sportchef.business.AverageColorCalculator;
 import ch.sportchef.business.ImageResizer;
+import ch.sportchef.business.event.entity.Event;
 import org.apache.commons.fileupload.MultipartStream;
+import pl.setblack.airomem.core.SimpleController;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -72,8 +75,10 @@ public class EventImageResource {
     }
 
     private final Long eventId;
+    private final SimpleController<EventManager> manager;
 
-    public EventImageResource(@NotNull final Long eventId) {
+    public EventImageResource(final SimpleController<EventManager> manager, @NotNull final Long eventId) {
+        this.manager = manager;
         this.eventId = eventId;
     }
 
@@ -114,11 +119,13 @@ public class EventImageResource {
             }
         }
 
+        final String averageColor;
         if (file != null && file.exists()) {
             try {
                 final BufferedImage inputImage = ImageIO.read(file);
                 final BufferedImage outputImage = ImageResizer.resizeAndCrop(inputImage, IMAGE_WIDTH, IMAGE_HEIGHT);
                 ImageIO.write(outputImage, FILE_TYPE, file);
+                averageColor = AverageColorCalculator.getAverageColorAsHex(outputImage);
                 inputImage.flush();
                 outputImage.flush();
             } catch (final IOException e) {
@@ -128,6 +135,10 @@ public class EventImageResource {
             // there was no image in the upload
             return Response.status(BAD_REQUEST).build();
         }
+
+        final Event event = manager.readOnly().findByEventId(eventId);
+        final Event eventToUpdate = new Event(event.getEventId(), event.getTitle(), event.getLocation(), event.getDate(), event.getTime(), averageColor);
+        final Event updatedEvent = this.manager.executeAndQuery(mgr -> mgr.update(eventToUpdate));
 
         return Response.ok().build();
     }
