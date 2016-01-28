@@ -36,7 +36,8 @@ public class ImageResizerTest {
             "test-350x200.png", //NON-NLS
             "test-350x550.png", //NON-NLS
             "test-525x300.png", //NON-NLS
-            "test-550x200.png" }; //NON-NLS
+            "test-550x200.png", //NON-NLS
+            "test-550x550.png" }; //NON-NLS
 
     private static final int IMAGE_WIDTH = 350;
     private static final int IMAGE_HEIGHT = 200;
