@@ -1,6 +1,6 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2015, 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,46 +13,52 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.configuration.entity;
 
 import javax.validation.constraints.NotNull;
+import java.util.Map;
 import java.util.Properties;
 
 public class Configuration {
 
-    private final Properties properties;
+    private final Properties properties = new Properties();
 
-    public Configuration(@NotNull final Properties properties) {
-        this.properties = properties;
+    public Configuration(@NotNull final Map<Object, Object> properties) {
+        properties.forEach(this.properties::put);
     }
 
     public String getContactCompany() {
-        return this.properties.getProperty("contact.company", null);
+        return properties.getProperty("contact.company", null);
     }
 
     public String getContactName() {
-        return this.properties.getProperty("contact.name", null);
+        return properties.getProperty("contact.name", null);
     }
 
     public String getContactStreet() {
-        return this.properties.getProperty("contact.street", null);
+        return properties.getProperty("contact.street", null);
     }
 
     public String getContactCity() {
-        return this.properties.getProperty("contact.city", null);
+        return properties.getProperty("contact.city", null);
     }
 
     public String getContactPhone() {
-        return this.properties.getProperty("contact.phone", null);
+        return properties.getProperty("contact.phone", null);
     }
 
     public String getContactEmail() {
-        return this.properties.getProperty("contact.email", null);
+        return properties.getProperty("contact.email", null);
     }
 
     public String getContactWeb() {
-        return this.properties.getProperty("contact.web", null);
+        return properties.getProperty("contact.web", null);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Configuration{properties=%s}", properties); //NON-NLS
     }
 }
