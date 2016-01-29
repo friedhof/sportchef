@@ -43,7 +43,7 @@ public class EventsResource {
 
     @POST
     public Response save(@Valid final Event event, @Context final UriInfo info) {
-        final Event saved = this.manager.executeAndQuery((mgr) -> mgr.create(event));
+        final Event saved = manager.executeAndQuery(mgr -> mgr.create(event));
         final long eventId = saved.getEventId();
         final URI uri = info.getAbsolutePathBuilder().path("/" + eventId).build();
         return Response.created(uri).build();
@@ -51,13 +51,13 @@ public class EventsResource {
 
     @GET
     public Response findAll() {
-        final List<Event> events = this.manager.readOnly().findAll();
+        final List<Event> events = manager.readOnly().findAll();
         return Response.ok(events).build();
     }
 
     @Path("{eventId}")
     public EventResource find(@PathParam("eventId") final long eventId) {
-        return new EventResource(eventId, this.manager);
+        return new EventResource(eventId, manager);
     }
 
 }
