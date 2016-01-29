@@ -22,10 +22,10 @@ import java.util.Properties;
 
 public class Configuration {
 
-    private final Properties properties;
-
+    private final Properties properties = new Properties();
+    
     public Configuration(@NotNull final Properties properties) {
-        this.properties = properties;
+        properties.forEach(this.properties::put);
     }
 
     public String getContactCompany() {
