@@ -50,7 +50,6 @@
             .card-content {
                 font-weight:      300;
                 min-height:       170px;
-                background-color: #0096dc;
                 text-align:       left;
             }
 
@@ -101,7 +100,7 @@
             <!--<div class="fav">
                 <iron-icon icon="icons:stars"></iron-icon>
             </div>-->
-            <div class="card-content">
+            <div class="card-content" style$="background-color: {{event.cssBackgroundColor}};">
                 <h2>{{event.title}}</h2>
                 <div class="bottomFixed">
                     <span><iron-icon icon="icons:event"></iron-icon> {{event.date}} {{event.time}}</span><br />

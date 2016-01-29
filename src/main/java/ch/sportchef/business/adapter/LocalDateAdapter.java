@@ -1,6 +1,6 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2015, 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,7 +13,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.adapter;
 
@@ -22,15 +22,17 @@ import java.time.LocalDate;
 
 public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
 
+    private static final String LOCAL_DATE_FORMAT = "%04d-%02d-%02d"; //NON-NLS
+
     @Override
-    public String marshal(final LocalDate localDate) throws Exception {
-        return String.format("%04d-%02d-%02d",
+    public String marshal(final LocalDate localDate) {
+        return String.format(LOCAL_DATE_FORMAT,
                 localDate.getYear(), localDate.getMonth().getValue(), localDate.getDayOfMonth());
     }
 
     @Override
-    public LocalDate unmarshal(final String string) throws Exception {
-        final String[] data = string.split("\\-");
+    public LocalDate unmarshal(final String dateString) {
+        final String[] data = dateString.split("\\-");
         final int year = Integer.parseInt(data[0]);
         final int month = Integer.parseInt(data[1]);
         final int dayOfMonth = Integer.parseInt(data[2]);

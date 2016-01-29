@@ -1,6 +1,6 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2015, 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,7 +13,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.configuration.boundary;
 
@@ -23,6 +23,7 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -31,24 +32,27 @@ public class ConfigurationManager {
 
     private static final Logger LOGGER = Logger.getLogger(ConfigurationManager.class.getName());
 
-    private  static final String DEFAULT_CONFIGURATION_FILE = "cfg_default.properties";
-    private  static final String CUSTOM_CONFIGURATION_FILE = "cfg_custom.properties";
+    private  static final String DEFAULT_CONFIGURATION_FILE = "cfg_default.properties"; //NON-NLS
+    private  static final String CUSTOM_CONFIGURATION_FILE = "cfg_custom.properties"; //NON-NLS
 
+    @SuppressWarnings("InstanceVariableOfConcreteClass")
     private final Configuration configuration;
 
     public ConfigurationManager() {
         final Properties properties = new Properties();
 
         // load default configuration first
-        properties.putAll(loadProperties("default", DEFAULT_CONFIGURATION_FILE));
+        loadProperties("default", DEFAULT_CONFIGURATION_FILE) //NON-NLS
+                .forEach(properties::put);
 
         // load custom configuration
-        properties.putAll(loadProperties("custom", CUSTOM_CONFIGURATION_FILE));
+        loadProperties("custom", CUSTOM_CONFIGURATION_FILE) //NON-NLS
+                .forEach(properties::put);
 
-        this.configuration = new Configuration(properties);
+        configuration = new Configuration(properties);
     }
 
-    private Properties loadProperties(@NotNull final String type, @NotNull final String fileName) {
+    private static Map<Object, Object> loadProperties(@NotNull final String type, @NotNull final String fileName) {
         final Properties properties = new Properties();
         try (final InputStream stream =
                      Thread.currentThread().getContextClassLoader()
@@ -56,13 +60,19 @@ public class ConfigurationManager {
             properties.load(stream);
         } catch (final IOException e) {
             LOGGER.severe(String.format(
-                    "Could not load %s configuration from file '%s'!",
-                    type, fileName));
+                    "Could not load %s configuration from file '%s': %s", //NON-NLS
+                    type, fileName, e.getMessage()));
         }
         return properties;
     }
 
+    @SuppressWarnings("MethodReturnOfConcreteClass")
     public Configuration getConfiguration() {
-        return this.configuration;
+        return configuration;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ConfigurationManager{configuration=%s}", configuration); //NON-NLS
     }
 }

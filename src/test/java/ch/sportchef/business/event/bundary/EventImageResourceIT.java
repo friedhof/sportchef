@@ -101,7 +101,7 @@ public class EventImageResourceIT {
     private void uploadImage() throws IOException, URISyntaxException {
         // arrange
         final File file = new File(Thread.currentThread()
-                .getContextClassLoader().getResource("test.png").toURI());
+                .getContextClassLoader().getResource("test-350x200.png").toURI());
         final HttpClient httpClient = HttpClientBuilder.create().build();
         final HttpPut httpPut = new HttpPut(this.imageLocation);
         final FileBody fileBody = new FileBody(file);

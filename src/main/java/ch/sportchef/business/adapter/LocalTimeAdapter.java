@@ -1,6 +1,6 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2015, 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,7 +13,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.adapter;
 
@@ -22,15 +22,17 @@ import java.time.LocalTime;
 
 public class LocalTimeAdapter extends XmlAdapter<String, LocalTime> {
 
+    private static final String LOCAL_TIME_FORMAT = "%02d:%02d"; //NON-NLS
+
     @Override
-    public String marshal(final LocalTime localTime) throws Exception {
-        return String.format("%02d:%02d",
+    public String marshal(final LocalTime localTime) {
+        return String.format(LOCAL_TIME_FORMAT,
                 localTime.getHour(), localTime.getMinute());
     }
 
     @Override
-    public LocalTime unmarshal(final String string) throws Exception {
-        final String[] data = string.split("\\:");
+    public LocalTime unmarshal(final String timeString) {
+        final String[] data = timeString.split("\\:");
         final int hour = Integer.parseInt(data[0]);
         final int minute = Integer.parseInt(data[1]);
         return LocalTime.of(hour, minute);
