@@ -30,31 +30,31 @@ public class Configuration {
     }
 
     public String getContactCompany() {
-        return this.properties.getProperty("contact.company", null);
+        return properties.getProperty("contact.company", null);
     }
 
     public String getContactName() {
-        return this.properties.getProperty("contact.name", null);
+        return properties.getProperty("contact.name", null);
     }
 
     public String getContactStreet() {
-        return this.properties.getProperty("contact.street", null);
+        return properties.getProperty("contact.street", null);
     }
 
     public String getContactCity() {
-        return this.properties.getProperty("contact.city", null);
+        return properties.getProperty("contact.city", null);
     }
 
     public String getContactPhone() {
-        return this.properties.getProperty("contact.phone", null);
+        return properties.getProperty("contact.phone", null);
     }
 
     public String getContactEmail() {
-        return this.properties.getProperty("contact.email", null);
+        return properties.getProperty("contact.email", null);
     }
 
     public String getContactWeb() {
-        return this.properties.getProperty("contact.web", null);
+        return properties.getProperty("contact.web", null);
     }
 
     @Override
