@@ -18,13 +18,14 @@
 package ch.sportchef.business.configuration.entity;
 
 import javax.validation.constraints.NotNull;
+import java.util.Map;
 import java.util.Properties;
 
 public class Configuration {
 
     private final Properties properties = new Properties();
-    
-    public Configuration(@NotNull final Properties properties) {
+
+    public Configuration(@NotNull final Map<Object, Object> properties) {
         properties.forEach(this.properties::put);
     }
 
