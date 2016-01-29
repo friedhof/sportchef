@@ -55,4 +55,9 @@ public class Configuration {
     public String getContactWeb() {
         return this.properties.getProperty("contact.web", null);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Configuration{properties=%s}", properties); //NON-NLS
+    }
 }
