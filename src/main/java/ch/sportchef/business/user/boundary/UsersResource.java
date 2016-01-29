@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.user.boundary;
 
+import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.user.entity.User;
 import pl.setblack.airomem.core.SimpleController;
 
@@ -39,7 +40,8 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class UsersResource {
 
-    private SimpleController<UserManager> manager =  SimpleController.loadOptional(User.class.getName(), () -> new UserManager());
+    private SimpleController<UserManager> manager =
+            PersistenceManager.createSimpleController(User.class, UserManager::new);
 
     @POST
     public Response save(@Valid final User user, @Context final UriInfo info) {

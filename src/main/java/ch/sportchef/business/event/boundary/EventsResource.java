@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.event.boundary;
 
+import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.event.entity.Event;
 import pl.setblack.airomem.core.SimpleController;
 
@@ -31,6 +32,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.File;
 import java.net.URI;
 import java.util.List;
 
@@ -39,25 +41,26 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class EventsResource {
 
-    private SimpleController<EventManager> manager =  SimpleController.loadOptional(Event.class.getName(), () -> new EventManager());
+    private final SimpleController<EventManager> manager =
+            PersistenceManager.createSimpleController(Event.class, EventManager::new);
 
     @POST
     public Response save(@Valid final Event event, @Context final UriInfo info) {
-        final Event saved = this.manager.executeAndQuery((mgr) -> mgr.create(event));
+        final Event saved = manager.executeAndQuery(mgr -> mgr.create(event));
         final long eventId = saved.getEventId();
-        final URI uri = info.getAbsolutePathBuilder().path("/" + eventId).build();
+        final URI uri = info.getAbsolutePathBuilder().path(File.separator + eventId).build();
         return Response.created(uri).build();
     }
 
     @GET
     public Response findAll() {
-        final List<Event> events = this.manager.readOnly().findAll();
+        final List<Event> events = manager.readOnly().findAll();
         return Response.ok(events).build();
     }
 
     @Path("{eventId}")
     public EventResource find(@PathParam("eventId") final long eventId) {
-        return new EventResource(eventId, this.manager);
+        return new EventResource(eventId, manager);
     }
 
 }
