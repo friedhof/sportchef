@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.event.boundary;
 
+import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.event.entity.Event;
 import pl.setblack.airomem.core.SimpleController;
 
@@ -40,7 +41,8 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class EventsResource {
 
-    private final SimpleController<EventManager> manager =  SimpleController.loadOptional(Event.class.getName(), () -> new EventManager());
+    private final SimpleController<EventManager> manager =
+            PersistenceManager.createSimpleController(Event.class, EventManager::new);
 
     @POST
     public Response save(@Valid final Event event, @Context final UriInfo info) {
