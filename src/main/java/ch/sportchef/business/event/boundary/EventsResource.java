@@ -31,6 +31,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.File;
 import java.net.URI;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class EventsResource {
     public Response save(@Valid final Event event, @Context final UriInfo info) {
         final Event saved = manager.executeAndQuery(mgr -> mgr.create(event));
         final long eventId = saved.getEventId();
-        final URI uri = info.getAbsolutePathBuilder().path("/" + eventId).build();
+        final URI uri = info.getAbsolutePathBuilder().path(File.separator + eventId).build();
         return Response.created(uri).build();
     }
 
