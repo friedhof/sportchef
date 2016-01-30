@@ -62,10 +62,10 @@ public class EventImageResource {
 
     static {
         // build path to image upload folder
-        final String imageUploadFolder = System.getProperty("jboss.server.data.dir") +
-                File.separator + "sportchef" +
-                File.separator + "events" +
-                File.separator + "images";
+        final String imageUploadFolder = System.getProperty("user.home") +
+                File.separator + ".sportchef" +
+                File.separator + "images" +
+                File.separator + "events";
 
         // create the image upload folder if it does not exist
         IMAGE_UPLOAD_PATH = new File(imageUploadFolder);
