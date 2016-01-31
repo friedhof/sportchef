@@ -17,9 +17,11 @@
  */
 package ch.sportchef.business.event.bundary;
 
+import ch.sportchef.test.IntegrationTests;
 import com.airhacks.rulz.jaxrsclient.JAXRSClientProvider;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -37,6 +39,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+@Category(IntegrationTests.class)
 public class EventResourceIT {
 
     @Rule

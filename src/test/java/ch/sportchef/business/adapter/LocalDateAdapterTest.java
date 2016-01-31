@@ -17,9 +17,11 @@
  */
 package ch.sportchef.business.adapter;
 
+import ch.sportchef.test.UnitTests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.time.LocalDate;
 
@@ -27,6 +29,7 @@ import static java.time.Month.AUGUST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+@Category(UnitTests.class)
 public class LocalDateAdapterTest {
 
     private static final String DATE_TEST_STRING = "2015-08-31";

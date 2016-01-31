@@ -17,7 +17,9 @@
  */
 package ch.sportchef.business;
 
+import ch.sportchef.test.UnitTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,6 +32,7 @@ import java.net.URL;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Category(UnitTests.class)
 public class ImageResizerTest {
 
     private static final String[] IMAGE_NAMES = {
