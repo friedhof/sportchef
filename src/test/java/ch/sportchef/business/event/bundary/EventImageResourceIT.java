@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.event.bundary;
 
+import ch.sportchef.test.IntegrationTests;
 import com.airhacks.rulz.jaxrsclient.JAXRSClientProvider;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -30,6 +31,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -46,6 +48,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Category(IntegrationTests.class)
 public class EventImageResourceIT {
 
     @ClassRule
