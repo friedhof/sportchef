@@ -29,34 +29,6 @@ public class Configuration {
         properties.forEach(this.properties::put);
     }
 
-    public String getContactCompany() {
-        return properties.getProperty("contact.company", null);
-    }
-
-    public String getContactName() {
-        return properties.getProperty("contact.name", null);
-    }
-
-    public String getContactStreet() {
-        return properties.getProperty("contact.street", null);
-    }
-
-    public String getContactCity() {
-        return properties.getProperty("contact.city", null);
-    }
-
-    public String getContactPhone() {
-        return properties.getProperty("contact.phone", null);
-    }
-
-    public String getContactEmail() {
-        return properties.getProperty("contact.email", null);
-    }
-
-    public String getContactWeb() {
-        return properties.getProperty("contact.web", null);
-    }
-
     @Override
     public String toString() {
         return String.format("Configuration{properties=%s}", properties); //NON-NLS
