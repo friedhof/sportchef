@@ -23,5 +23,6 @@
     "iron-icon": "PolymerElements/iron-icon#~1.0.7",
     "file-upload": "~1.6.3",
     "jquery": "~2.2.0"
+    "marked-element": "PolymerElements/marked-element#^1.x.x",
   }
 }
