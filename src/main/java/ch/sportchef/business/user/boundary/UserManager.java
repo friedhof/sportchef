@@ -67,12 +67,6 @@ public class UserManager implements Serializable {
                 .findAny();
     }
 
-    public User findByEmail(@NotNull final String email) {
-        return this.users.values().stream()
-                .filter(u -> email.equals(u.getEmail()))
-                .findFirst().orElse(null);
-    }
-
     public List<User> findAll() {
         return this.users.values().stream()
                 .sorted(comparingLong(User::getUserId))

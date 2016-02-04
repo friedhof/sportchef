@@ -40,6 +40,7 @@ import org.apache.commons.mail.SimpleEmail;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.MultivaluedMap;

@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.auth.boundary;
 
+import ch.sportchef.business.configuration.boundary.ConfigurationManager;
 import ch.sportchef.business.user.boundary.UserManager;
 import ch.sportchef.business.user.entity.User;
 import ch.sportchef.business.auth.service.LoginService;
@@ -30,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.apache.commons.mail.EmailException;
 
@@ -37,6 +39,8 @@ public class LoginResource {
 
     @Inject
     private LoginService loginService;
+    @Inject
+    private ConfigurationManager configurationManager;
 
     private String email;
     private String token;
@@ -55,11 +59,11 @@ public class LoginResource {
     }
 
     public User findLogin() {
-        final User user = this.manager.readOnly().findByEmail(this.email);
-        if (user == null) {
-            throw new NotFoundException(String.format("user with email '%s' not found", email));
+        final Optional<User> user = this.manager.readOnly().findByEmail(this.email);
+        if (user.isPresent()) {
+            return user.get();
         }
-        return user;
+        throw new NotFoundException(String.format("user with email '%s' not found", email));
     }
 
     @POST
