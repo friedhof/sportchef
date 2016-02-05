@@ -33,12 +33,14 @@
             }
         </style>
 
-        <section onclick="showImprintDialog()">
+        <section onclick="document.getElementById('dialog-imprint').open();">
             <paper-button class="button">Imprint</paper-button>
         </section>
+
+        <iron-ajax auto url="/sportchef/imprint.md" handle-as="text" last-response="{{imprint}}"></iron-ajax>
         <paper-dialog id="dialog-imprint" modal>
             <paper-dialog-scrollable class="can-scroll">
-                <marked-element id="md-imprint">
+                <marked-element markdown$="{{imprint}}">
                     <div class="markdown-html"></div>
                 </marked-element>
             </paper-dialog-scrollable>
@@ -49,14 +51,6 @@
     </template>
 
     <script>
-        function showImprintDialog() {
-            $.get("/sportchef/imprint.md", function(md) {
-                // jQuery will not werk here!
-                document.getElementById("md-imprint").setAttribute("markdown", md);
-                document.getElementById("dialog-imprint").open();
-             });
-        }
-
         // register a new element called sportchef-imprint
         Polymer({
             is: "sportchef-imprint"
