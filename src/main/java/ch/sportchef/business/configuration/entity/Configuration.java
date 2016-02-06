@@ -23,10 +23,16 @@ import java.util.Properties;
 
 public class Configuration {
 
+    private static final String ADMIN_PASSWORD_KEY = "admin.password";
+
     private final Properties properties = new Properties();
 
     public Configuration(@NotNull final Map<Object, Object> properties) {
         properties.forEach(this.properties::put);
+    }
+
+    public String getAdminPassword() {
+        return properties.getProperty(ADMIN_PASSWORD_KEY);
     }
 
     @Override
