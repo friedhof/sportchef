@@ -33,6 +33,23 @@ We use a [Maven](https://maven.apache.org/) build to tie everything together. As
 
 # How to contribute to *SportChef*
 
+## Milestones
+
+| Version | Planned Release Date  |
+| ------- | --------------------- |
+|    v1.0 | End of January 2016   |
+|    v1.1 | End of February 2016  |
+|    v1.2 | End of March 2016     |
+|    v2.0 | End of April 2016     |
+|    v2.1 | End of May 2016       |
+|    v2.2 | End of June 2016      |
+|    v3.0 | End of July 2016      |
+|    v3.1 | End of August 2016    |
+|    v3.2 | End of September 2016 |
+|    v4.0 | End of October 2016   |
+|    v4.1 | End of November 2016  |
+|    v4.2 | End of December 2016  |
+
 ## Source code management
 
 ### GIT Workflow Rules
