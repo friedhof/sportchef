@@ -1,0 +1,28 @@
+{
+  "name": "SportChef",
+  "homepage": "https://github.com/McPringle/sportchef",
+  "description": "Sports Competition Management Software",
+  "main": "",
+  "moduleType": [],
+  "private": true,
+  "license": "AGPL",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/main/webapp",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~1.2.4",
+    "paper-elements": "PolymerElements/paper-elements#~1.0.7",
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.7",
+    "iron-form": "PolymerElements/iron-form#~1.0.11",
+    "iron-icons": "PolymerElements/iron-icons#~1.0.5",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.7",
+    "file-upload": "~1.6.3",
+    "jquery": "~2.2.0",
+    "marked-element": "PolymerElements/marked-element#^1.x.x"
+  }
+}

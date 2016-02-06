@@ -1,0 +1,126 @@
+<!--
+    SportChef – Sports Competition Management Software
+    Copyright (C) 2015, 2016 Marcus Fihlon
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+<link rel="import" href="../../bower_components/paper-card/paper-card.html" />
+<link rel="import" href="../../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html" />
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html" />
+<link rel="import" href="../../bower_components/iron-icons/maps-icons.html" />
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html" />
+<link rel="import" href="../../bower_components/paper-button/paper-button.html" />
+
+<dom-module id="sportchef-event">
+    <template>
+        <!-- scoped CSS for this element -->
+        <style>
+            paper-card {
+                margin:         10px 0;
+                color:          white;
+                width:          24%;
+                vertical-align: top;
+            }
+
+            label {
+                display: inline-block;
+                width:   4em;
+            }
+
+            .card-content h2 {
+                font-weight:   bold;
+                margin-bottom: 10px;
+                margin-top:    0;
+                font-size:     1.2em;
+            }
+
+            .card-content {
+                font-weight:      300;
+                min-height:       170px;
+                text-align:       left;
+            }
+
+            .card-content div.bottomFixed {
+                position: absolute;
+                height: 55px;
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+            }
+
+            /*
+            .fav {
+                position: absolute;
+                top:      3%;
+                left:     4%;
+            }
+
+            .fav:hover {
+                cursor: pointer;
+                color:  #e7e7e7;
+            }*/
+
+            @media only screen
+            and (max-width: 1100px) {
+                paper-card {
+                    width: 32%;
+                }
+            }
+
+            @media only screen
+            and (max-width: 800px) {
+                paper-card {
+                    width: 49%;
+                }
+            }
+
+            @media only screen
+            and (max-width: 550px) {
+                paper-card {
+                    width: 100%;
+                }
+            }
+        </style>
+
+        <iron-ajax auto url="/sportchef/api/events/{{eventid}}" handle-as="json" last-response="{{event}}"></iron-ajax>
+        <paper-card image="/sportchef/api/events/{{eventid}}/image">
+            <!--<div class="fav">
+                <iron-icon icon="icons:stars"></iron-icon>
+            </div>-->
+            <div class="card-content" style$="background-color: {{event.cssBackgroundColor}};">
+                <h2>{{event.title}}</h2>
+                <div class="bottomFixed">
+                    <span><iron-icon icon="icons:event"></iron-icon> {{event.date}} {{event.time}}</span><br />
+                    <span><iron-icon icon="maps:place"></iron-icon> {{event.location}}</span>
+                </div>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        // register a new element called sportchef-event
+        Polymer({
+            is: "sportchef-event",
+            properties: {
+                // declare the eventid property
+                eventid: {
+                    type: Number,
+                    value: 0
+                }
+            }
+        });
+    </script>
+</dom-module>
