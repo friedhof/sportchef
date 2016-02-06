@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ch.sportchef</groupId>
     <artifactId>sportchef</artifactId>
-    <version>0.1</version>
+    <version>1.0</version>
     <packaging>war</packaging>
     <dependencies>
         <dependency>
