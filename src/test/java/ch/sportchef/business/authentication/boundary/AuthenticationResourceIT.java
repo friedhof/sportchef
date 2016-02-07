@@ -40,25 +40,7 @@ public class AuthenticationResourceIT {
     public final JAXRSClientProvider provider = buildWithURI("http://localhost:8080/sportchef/api/authentication");
 
     @Test
-    public void authenticateWithUsernamePasswordForbidden() {
-        // arrange
-        final JsonObject credential = Json.createObjectBuilder()
-                .add("userId", "john")
-                .add("password", "foobar")
-                .build();
-
-        // act
-        final Response response = provider.target()
-                .request()
-                .accept(MediaType.APPLICATION_JSON)
-                .post(Entity.json(credential));
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.FORBIDDEN.getStatusCode()));
-    }
-
-    @Test
-    public void authenticateWithUsernamePasswordSuccessful() {
+    public void authenticateWithUsernamePasswordNotSupported() {
         // arrange
         final JsonObject credential = Json.createObjectBuilder()
                 .add("userId", "jane")
@@ -72,7 +54,7 @@ public class AuthenticationResourceIT {
                 .post(Entity.json(credential));
 
         //assert
-        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(response.getStatus(), is(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode()));
     }
 
     @Test

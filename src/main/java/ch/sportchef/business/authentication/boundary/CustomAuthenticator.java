@@ -21,7 +21,6 @@ import ch.sportchef.business.authentication.entity.SimpleTokenCredential;
 import org.picketlink.annotations.PicketLink;
 import org.picketlink.authentication.BaseAuthenticator;
 import org.picketlink.credential.DefaultLoginCredentials;
-import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.model.basic.User;
 
 import javax.enterprise.context.RequestScoped;
@@ -43,29 +42,12 @@ public class CustomAuthenticator extends BaseAuthenticator {
             return;
         }
 
-        if (isUsernamePasswordCredential()) {
-            final String userId = credentials.getUserId();
-            final Password password = (Password) credentials.getCredential();
+        final SimpleTokenCredential customCredential = (SimpleTokenCredential) credentials.getCredential();
+        final String token = customCredential.getToken();
 
-            if ("jane".equals(userId) && "abcd1234".equals(String.valueOf(password.getValue()))) {
-                successfulAuthentication();
-            }
-        } else if (isCustomCredential()) {
-            final SimpleTokenCredential customCredential = (SimpleTokenCredential) credentials.getCredential();
-            final String token = customCredential.getToken();
-
-            if ("valid_token".equals(token)) {
-                successfulAuthentication();
-            }
+        if ("valid_token".equals(token)) {
+            successfulAuthentication();
         }
-    }
-
-    private boolean isUsernamePasswordCredential() {
-        return Password.class.equals(credentials.getCredential().getClass()) && credentials.getUserId() != null;
-    }
-
-    private boolean isCustomCredential() {
-        return SimpleTokenCredential.class.equals(credentials.getCredential().getClass());
     }
 
     private User getDefaultUser() {

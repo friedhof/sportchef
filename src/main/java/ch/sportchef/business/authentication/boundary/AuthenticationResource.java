@@ -47,22 +47,6 @@ public class AuthenticationResource {
     @Inject
     private DefaultLoginCredentials credentials;
 
-    @POST
-    @Consumes({MediaType.APPLICATION_JSON})
-    public Response authenticate(final DefaultLoginCredentials credential) {
-        if (!identity.isLoggedIn()) {
-            credentials.setUserId(credential.getUserId());
-            credentials.setPassword(credential.getPassword());
-            identity.login();
-        }
-
-        final Account account = identity.getAccount();
-
-        @SuppressWarnings("VariableNotUsedInsideIf")
-        final ResponseBuilder responseBuilder = account == null ? Response.status(Status.FORBIDDEN) : Response.ok();
-        return responseBuilder.entity(account).type(MediaType.APPLICATION_JSON_TYPE).build();
-    }
-
     @GET
     public Response requestToken(@QueryParam("email") final String email) {
         if (email == null || email.trim().length() == 0) {
