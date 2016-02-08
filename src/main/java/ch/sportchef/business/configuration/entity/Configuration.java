@@ -38,6 +38,30 @@ public class Configuration {
         return properties.getProperty(ADMIN_PASSWORD_KEY);
     }
 
+    public String getSMTPServer() {
+        return properties.getProperty("smtp.server", null);
+    }
+
+    public Integer getSMTPPort() {
+        return Integer.valueOf(properties.getProperty("smtp.port", "25"));
+    }
+
+    public String getSMTPUser() {
+        return properties.getProperty("smtp.user", null);
+    }
+
+    public String getSMTPPassword() {
+        return properties.getProperty("smtp.password", null);
+    }
+
+    public Boolean getSMTPSSL() {
+        return Boolean.valueOf(properties.getProperty("smtp.useSSL", "false"));
+    }
+
+    public String getSMTPFrom() {
+        return properties.getProperty("smtp.from", null);
+    }
+
     @Override
     public String toString() {
         return String.format("Configuration{properties=%s}", properties); //NON-NLS

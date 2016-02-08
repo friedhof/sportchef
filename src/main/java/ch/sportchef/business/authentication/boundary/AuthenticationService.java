@@ -1,6 +1,8 @@
 package ch.sportchef.business.authentication.boundary;
 
 import ch.sportchef.business.authentication.entity.SimpleTokenCredential;
+import ch.sportchef.business.configuration.boundary.ConfigurationManager;
+import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.boundary.UserService;
 import ch.sportchef.business.user.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,6 +12,10 @@ import com.google.common.cache.CacheBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
 import org.picketlink.Identity;
 import org.picketlink.credential.DefaultLoginCredentials;
 
@@ -37,24 +43,29 @@ public class AuthenticationService {
 
     private final Key jwtSigningKey = MacProvider.generateKey();
 
+    @Inject
+    private UserService userService;
+
+    @Inject
+    private ConfigurationManager configurationManager;
+    private Configuration configuration;
+
     private Cache<String, String> challengeCache;
 
     @PostConstruct
     private void init() {
+        configuration = configurationManager.getConfiguration();
         challengeCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
     }
 
-    @Inject
-    private UserService userService;
-
-    public boolean requestChallenge(@NotNull final String email) {
+    public boolean requestChallenge(@NotNull final String email) throws EmailException {
         final Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()) {
             final String challenge = generateChallenge();
             challengeCache.put(email, challenge);
-            // TODO send challenge via email
+            sendChallenge(email, challenge);
             return true;
         }
         return false;
@@ -74,6 +85,19 @@ public class AuthenticationService {
             challengeCount++;
         }
         return challenge.toString();
+    }
+
+    private void sendChallenge(@NotNull final String email, @NotNull final String challenge) throws EmailException {
+        final Email mail = new SimpleEmail();
+        mail.setHostName(configuration.getSMTPServer());
+        mail.setSmtpPort(configuration.getSMTPPort());
+        mail.setAuthenticator(new DefaultAuthenticator(configuration.getSMTPUser(), configuration.getSMTPPassword()));
+        mail.setSSLOnConnect(configuration.getSMTPSSL());
+        mail.setFrom(configuration.getSMTPFrom());
+        mail.setSubject("Your challenge to login to SportChef");
+        mail.setMsg(String.format("Challenge = %s", challenge));
+        mail.addTo(email);
+        mail.send();
     }
 
     public Optional<String> validateChallenge(@NotNull final Identity identity,
@@ -98,9 +122,7 @@ public class AuthenticationService {
                                            @NotNull final String token) {
         if (!identity.isLoggedIn()) {
             final SimpleTokenCredential credential = new SimpleTokenCredential(token);
-
             credentials.setCredential(credential);
-
             identity.login();
         }
 

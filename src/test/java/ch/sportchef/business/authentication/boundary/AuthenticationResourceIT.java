@@ -97,7 +97,8 @@ public class AuthenticationResourceIT {
     public void testChallengeAndResponse() {
         requestChallengeWithSuccess();
         // TODO check email for challenge
-        // TODO check challenge and get token
+        // TODO check challenge with wrong email
+        // TODO check challenge with correct email and get token
         // authenticateWithTokenSuccessful(token);
     }
 

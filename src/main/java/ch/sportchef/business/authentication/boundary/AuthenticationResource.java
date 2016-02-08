@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.authentication.boundary;
 
+import org.apache.commons.mail.EmailException;
 import org.picketlink.Identity;
 import org.picketlink.credential.DefaultLoginCredentials;
 
@@ -51,7 +52,7 @@ public class AuthenticationResource {
 
     @GET
     @Consumes({MediaType.WILDCARD})
-    public Response requestChallenge(@QueryParam("email") final String email) {
+    public Response requestChallenge(@QueryParam("email") final String email) throws EmailException {
         if (email == null || email.trim().isEmpty()) {
             return Response.status(Status.BAD_REQUEST).build();
         }
