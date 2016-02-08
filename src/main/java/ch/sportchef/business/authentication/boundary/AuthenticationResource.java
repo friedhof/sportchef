@@ -17,10 +17,8 @@
  */
 package ch.sportchef.business.authentication.boundary;
 
-import ch.sportchef.business.authentication.entity.SimpleTokenCredential;
 import org.picketlink.Identity;
 import org.picketlink.credential.DefaultLoginCredentials;
-import org.picketlink.idm.model.Account;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -31,11 +29,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import java.util.Optional;
 
 @Path("authentication")
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -47,34 +46,41 @@ public class AuthenticationResource {
     @Inject
     private DefaultLoginCredentials credentials;
 
+    @Inject
+    private AuthenticationService authenticationService;
+
     @GET
-    public Response requestToken(@QueryParam("email") final String email) {
-        if (email == null || email.trim().length() == 0) {
+    @Consumes({MediaType.WILDCARD})
+    public Response requestChallenge(@QueryParam("email") final String email) {
+        if (email == null || email.trim().isEmpty()) {
             return Response.status(Status.BAD_REQUEST).build();
         }
-        return Response.ok().build();
+
+        return authenticationService.requestChallenge(email) ?
+                Response.ok().build() :
+                Response.status(Status.NOT_FOUND).build();
+    }
+
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    public Response authenticate(final DefaultLoginCredentials credential) {
+        final Optional<String> token = authenticationService.validateChallenge(identity, credential);
+
+        return token.isPresent() ?
+                Response.ok(Entity.text(token)).build() :
+                Response.status(Status.FORBIDDEN).build();
     }
 
     @POST
     @Consumes({MediaType.TEXT_PLAIN})
     public Response authenticate(final String token) {
-        if (!identity.isLoggedIn()) {
-            final SimpleTokenCredential credential = new SimpleTokenCredential(token);
-
-            credentials.setCredential(credential);
-
-            identity.login();
-        }
-
-        final Account account = identity.getAccount();
-
-        @SuppressWarnings("VariableNotUsedInsideIf")
-        final ResponseBuilder responseBuilder = account == null ? Response.status(Status.FORBIDDEN) : Response.ok();
-        return responseBuilder.entity(account).type(MediaType.APPLICATION_JSON_TYPE).build();
+        return authenticationService.authentication(identity, credentials, token).isPresent() ?
+                Response.ok(Entity.text(token)).build() :
+                Response.status(Status.UNAUTHORIZED).build();
     }
 
     @POST
-    @Consumes({ "*/*" })
+    @Consumes({MediaType.WILDCARD})
     public Response unsupportedCredentialType(@Context HttpServletRequest request) {
         final String ct = request.getHeader("Content-Type");
         return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).build();
@@ -82,9 +88,7 @@ public class AuthenticationResource {
 
     @DELETE
     public Response logout() {
-        if (identity.isLoggedIn()) {
-            identity.logout();
-        }
+        authenticationService.logout(identity);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 

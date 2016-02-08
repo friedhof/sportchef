@@ -20,11 +20,13 @@ package ch.sportchef.business.user.boundary;
 import ch.sportchef.business.user.entity.User;
 
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -60,6 +62,7 @@ public class UserResource {
     }
 
     @DELETE
+    @Consumes({MediaType.WILDCARD})
     public Response delete() {
         final User user = find(); // only delete existing users
         userService.delete(user.getUserId());
