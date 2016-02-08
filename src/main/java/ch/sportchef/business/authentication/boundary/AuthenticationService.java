@@ -5,7 +5,6 @@ import ch.sportchef.business.configuration.boundary.ConfigurationManager;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.boundary.UserService;
 import ch.sportchef.business.user.entity.User;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -21,6 +20,8 @@ import org.picketlink.credential.DefaultLoginCredentials;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.security.Key;
 import java.time.Duration;
@@ -34,6 +35,8 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+@Named
+@Singleton
 public class AuthenticationService {
 
     private static final Logger LOGGER = Logger.getLogger(AuthenticationService.class.getName());
@@ -132,25 +135,20 @@ public class AuthenticationService {
     public Optional<String> generateToken(@NotNull final String email) {
         String token = null;
 
-        try {
-            final Optional<User> user = userService.findByEmail(email);
-            if (user.isPresent()) {
-                final LocalDateTime expiration = LocalDateTime.now().plus(TOKEN_EXPIRATION_TIME);
-                final Instant expirationInstant = expiration.atZone(ZoneId.systemDefault()).toInstant();
-                final Date expirationDate = Date.from(expirationInstant);
+        final Optional<User> user = userService.findByEmail(email);
+        if (user.isPresent()) {
+            final LocalDateTime expiration = LocalDateTime.now().plus(TOKEN_EXPIRATION_TIME);
+            final Instant expirationInstant = expiration.atZone(ZoneId.systemDefault()).toInstant();
+            final Date expirationDate = Date.from(expirationInstant);
 
-                final ObjectMapper mapper = new ObjectMapper();
-                final String payload = mapper.writeValueAsString(user.get());
+            final ObjectMapper mapper = new ObjectMapper();
+            final String subject = user.get().getUserId().toString();
 
-                token = Jwts.builder()
-                        .setSubject("SportChef")
-                        .setPayload(payload)
-                        .setExpiration(expirationDate)
-                        .signWith(SignatureAlgorithm.HS512, jwtSigningKey)
-                        .compact();
-            }
-        } catch (@NotNull final JsonProcessingException e) {
-            LOGGER.severe(String.format("Unable to map user object to JSON: %s", e.getMessage()));
+            token = Jwts.builder()
+                    .setSubject(subject)
+                    .setExpiration(expirationDate)
+                    .signWith(SignatureAlgorithm.HS512, jwtSigningKey)
+                    .compact();
         }
 
         return Optional.ofNullable(token);
