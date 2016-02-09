@@ -22,11 +22,13 @@ import ch.sportchef.business.user.entity.User;
 import pl.setblack.airomem.core.SimpleController;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
 @Named
+@Singleton
 public class UserService {
 
     private SimpleController<UserManager> manager =
