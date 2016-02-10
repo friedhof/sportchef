@@ -20,10 +20,13 @@ package ch.sportchef.business.configuration.entity;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class Configuration {
 
     private static final String ADMIN_PASSWORD_KEY = "admin.password";
+
+    private static final Logger LOGGER = Logger.getLogger(Configuration.class.getName());
 
     private final Properties properties = new Properties();
 
@@ -33,6 +36,30 @@ public class Configuration {
 
     public String getAdminPassword() {
         return properties.getProperty(ADMIN_PASSWORD_KEY);
+    }
+
+    public String getSMTPServer() {
+        return properties.getProperty("smtp.server", null);
+    }
+
+    public Integer getSMTPPort() {
+        return Integer.valueOf(properties.getProperty("smtp.port", "25"));
+    }
+
+    public String getSMTPUser() {
+        return properties.getProperty("smtp.user", null);
+    }
+
+    public String getSMTPPassword() {
+        return properties.getProperty("smtp.password", null);
+    }
+
+    public Boolean getSMTPSSL() {
+        return Boolean.valueOf(properties.getProperty("smtp.useSSL", "false"));
+    }
+
+    public String getSMTPFrom() {
+        return properties.getProperty("smtp.from", null);
     }
 
     @Override

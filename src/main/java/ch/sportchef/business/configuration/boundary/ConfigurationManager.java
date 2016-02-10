@@ -20,6 +20,7 @@ package ch.sportchef.business.configuration.boundary;
 import ch.sportchef.business.configuration.entity.Configuration;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 @Named
+@Singleton
 public class ConfigurationManager {
 
     private static final Logger LOGGER = Logger.getLogger(ConfigurationManager.class.getName());
