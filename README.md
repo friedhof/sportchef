@@ -33,6 +33,17 @@ We use a [Maven](https://maven.apache.org/) build to tie everything together. As
 
 # How to contribute to *SportChef*
 
+## Contributors
+
+A huge thank you to all the contributors! All contributors are listed below (sorted alphabetically by GitHub username):
+
+- [CoalaJoe](https://github.com/CoalaJoe)
+- [jarekratajski](https://github.com/jarekratajski)
+- [McPringle](https://github.com/McPringle)
+- [PReimers](https://github.com/PReimers)
+
+If you are a contributor and you are missing on this list, please add your entry yourself and create a pull request or create an [issue](https://github.com/McPringle/sportchef/issues).
+
 ## Milestones
 
 | Version | Planned Release Date  | Status           |
