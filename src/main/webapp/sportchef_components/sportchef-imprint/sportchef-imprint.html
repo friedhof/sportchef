@@ -33,9 +33,9 @@
             }
         </style>
 
-        <section onclick="document.getElementById('dialog-imprint').open();">
-            <paper-button class="button">Imprint</paper-button>
-        </section>
+        <ul class="main-nav">
+            <li><a href="#" onclick="document.getElementById('dialog-imprint').open();">Imprint</a></li>
+        </ul>
 
         <iron-ajax auto url="/sportchef/imprint.md" handle-as="text" last-response="{{imprint}}"></iron-ajax>
         <paper-dialog id="dialog-imprint" modal>
