@@ -44,24 +44,6 @@ public class EventResourceIT {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
     }
 
-    private void readOneEventWithSuccess(final String location) {
-        // arrange
-
-        // act
-        final Response response = this.provider.target(location)
-                .request(MediaType.APPLICATION_JSON).get();
-        final JsonObject jsonObject = response.readEntity(JsonObject.class);
-
-        // assert
-        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
-        assertNotNull(jsonObject);
-        assertThat(jsonObject.getJsonNumber("eventId").longValue(), is(getEventId(location)));
-        assertThat(jsonObject.getString("title"), is("Christmas Party"));
-        assertThat(jsonObject.getString("location"), is("Town Hall"));
-        assertThat(jsonObject.getString("date"), is("2015-12-24"));
-        assertThat(jsonObject.getString("time"), is("18:00"));
-    }
-
     private void readOneEventWithNotFound(final String location) {
         // arrange
 
