@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.not;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -129,6 +130,21 @@ public class AutenticationResourceTest {
         //assert
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
         assertThat(((Entity) response.getEntity()).getEntity(), is(TEST_TOKEN));
+        mockProvider.verifyAll();
+    }
+
+    @Test
+    public void authenticateWithTokenUnauthorized() {
+        // arrange
+        EasyMock.expect(authenticationServiceMock.authentication(anyObject(), anyObject(), not(eq(TEST_TOKEN))))
+                .andReturn(Optional.empty());
+        mockProvider.replayAll();
+
+        // act
+        final Response response = authenticationResource.authenticate("12345-abcde");
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.UNAUTHORIZED.getStatusCode()));
         mockProvider.verifyAll();
     }
 

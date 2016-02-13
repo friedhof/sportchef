@@ -79,21 +79,6 @@ public class AuthenticationResourceIT {
     }
 
     @Test
-    public void authenticateWithTokenUnauthorized() {
-        // arrange
-        final String token = "invalid_token";
-
-        // act
-        final Response response = provider.target()
-                .request()
-                .accept(MediaType.APPLICATION_JSON)
-                .post(Entity.text(token));
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.UNAUTHORIZED.getStatusCode()));
-    }
-
-    @Test
     public void logout() {
         // arrange
 
