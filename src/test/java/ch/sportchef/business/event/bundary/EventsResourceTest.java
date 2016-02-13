@@ -1,5 +1,6 @@
 package ch.sportchef.business.event.bundary;
 
+import ch.sportchef.business.event.boundary.EventResource;
 import ch.sportchef.business.event.boundary.EventService;
 import ch.sportchef.business.event.boundary.EventsResource;
 import ch.sportchef.business.event.entity.Event;
@@ -28,6 +29,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(UnitTests.class)
@@ -102,4 +104,15 @@ public class EventsResourceTest {
         mockProvider.verifyAll();
     }
 
+    @Test
+    public void find() {
+        // arrange
+        final long eventId = 1L;
+
+        // act
+        final EventResource eventResource = eventsResource.find(eventId);
+
+        // assert
+        assertThat(eventsResource, notNullValue());
+    }
 }
