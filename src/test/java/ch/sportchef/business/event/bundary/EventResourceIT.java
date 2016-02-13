@@ -20,7 +20,6 @@ package ch.sportchef.business.event.bundary;
 import ch.sportchef.test.IntegrationTests;
 import com.airhacks.rulz.jaxrsclient.JAXRSClientProvider;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import javax.json.Json;
@@ -32,12 +31,10 @@ import javax.ws.rs.core.Response;
 
 import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @Category(IntegrationTests.class)
 public class EventResourceIT {
@@ -45,52 +42,8 @@ public class EventResourceIT {
     @Rule
     public final JAXRSClientProvider provider = buildWithURI("http://localhost:8080/sportchef/api/events");
 
-    @Test
-    public void crud() {
-        // create
-        final String location = createEventWithSuccess();
-        final String notFoundLocation = location.substring(0, location.lastIndexOf("/") + 1) + Long.MAX_VALUE;
-        createEventWithBadRequest();
-
-        // read
-        readOneEventWithSuccess(location);
-        readOneEventWithNotFound(notFoundLocation);
-        readAllEvents(location);
-
-        // update
-        final JsonObject eventToConflict = updateEventWithSuccess(location);
-//        updateEventWithConflict(location, eventToConflict);
-        updateEventWithNotFound(notFoundLocation);
-
-        // delete
-        deleteEventWithSuccess(location);
-        deleteEventWithNotFound(location);
-    }
-
     private long getEventId(final String location) {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
-    }
-
-    private String createEventWithSuccess() {
-        // arrange
-        final JsonObject eventToCreate = Json.createObjectBuilder()
-                .add("title", "Christmas Party")
-                .add("location", "Town Hall")
-                .add("date", "2015-12-24")
-                .add("time", "18:00")
-                .build();
-
-        // act
-        final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(eventToCreate));
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.CREATED.getStatusCode()));
-        final String location = response.getHeaderString("Location");
-        assertThat(location, notNullValue());
-        final long eventId = getEventId(location);
-        assertTrue(eventId > 0);
-
-        return location;
     }
 
     private void createEventWithBadRequest() {
