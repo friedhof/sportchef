@@ -51,24 +51,6 @@ public class UserResourceIT {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
     }
 
-    private void createUserWithExpectationFailed() {
-        // arrange
-        final JsonObject userToCreate = Json.createObjectBuilder()
-                .add("firstName", "John")
-                .add("lastName", "Doe")
-                .add("phone", "+41 79 555 00 01")
-                .add("email", "john.doe@sportchef.ch")
-                .build();
-
-        // act
-        final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(userToCreate));
-
-        //assert
-        assertThat(response.getStatus(), is(EXPECTATION_FAILED.getStatusCode()));
-        final String expectation = response.getHeaderString("Expectation");
-        assertThat(expectation, is("Email address has to be unique"));
-    }
-
     private void readOneUserWithSuccess(final String location) {
         // arrange
 
