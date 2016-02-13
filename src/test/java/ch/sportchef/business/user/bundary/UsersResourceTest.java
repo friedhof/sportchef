@@ -46,7 +46,7 @@ public class UsersResourceTest {
     private UriBuilder uriBuilderMock;
 
     @Test
-    public void createUserWithSuccess() throws URISyntaxException {
+    public void saveUserWithSuccess() throws URISyntaxException {
         // arrange
         final User userToCreate = new User(0L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
         final User savedUser = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
