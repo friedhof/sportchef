@@ -25,6 +25,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @Named
 @Singleton
@@ -41,7 +42,7 @@ public class EventService {
         return manager.executeAndQuery((mgr) -> mgr.update(event));
     }
 
-    public Event findByEventId(final long eventId) {
+    public Optional<Event> findByEventId(final Long eventId) {
         return manager.readOnly().findByEventId(eventId);
     }
 

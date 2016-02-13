@@ -23,6 +23,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -50,8 +51,8 @@ public class EventManager implements Serializable {
         return event;
     }
 
-    public Event findByEventId(final long eventId) {
-        return this.events.get(eventId);
+    public Optional<Event> findByEventId(final long eventId) {
+        return Optional.ofNullable(events.get(eventId));
     }
 
     public List<Event> findAll() {
