@@ -68,7 +68,7 @@ public class AuthenticationResource {
         final Optional<String> token = authenticationService.validateChallenge(identity, credential);
 
         return token.isPresent() ?
-                Response.ok(Entity.text(token)).build() :
+                Response.ok(Entity.text(token.get())).build() :
                 Response.status(Status.FORBIDDEN).build();
     }
 
