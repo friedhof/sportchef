@@ -75,7 +75,7 @@ public class UsersResourceTest {
     }
 
     @Test(expected=ExpectationFailedException.class)
-    public void saveWithConflict() {
+    public void saveWithExpectationFailed() {
         // arrange
         final User userToCreate = new User(0L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
         expect(userServiceMock.create(userToCreate))
