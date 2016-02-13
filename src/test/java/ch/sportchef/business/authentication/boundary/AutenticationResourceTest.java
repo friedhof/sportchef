@@ -159,4 +159,15 @@ public class AutenticationResourceTest {
         assertThat(response.getStatus(), is(Response.Status.NO_CONTENT.getStatusCode()));
     }
 
+    @Test
+    public void unsupportedMediaType() {
+        // arrange
+
+        // act
+        final Response response = authenticationResource.unsupportedCredentialType(null);
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode()));
+    }
+
 }

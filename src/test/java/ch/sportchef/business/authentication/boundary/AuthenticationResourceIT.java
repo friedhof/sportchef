@@ -78,19 +78,4 @@ public class AuthenticationResourceIT {
         assertThat(response.getStatus(), is(Response.Status.FORBIDDEN.getStatusCode()));
     }
 
-    @Test
-    public void unsupportedMediaType() {
-        // arrange
-        final String html = "<p>Ups!</p>";
-
-        // act
-        final Response response = provider.target()
-                .request()
-                .accept(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(html, MediaType.TEXT_HTML));
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode()));
-    }
-
 }
