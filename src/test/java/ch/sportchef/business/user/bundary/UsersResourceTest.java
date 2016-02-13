@@ -1,5 +1,6 @@
 package ch.sportchef.business.user.bundary;
 
+import ch.sportchef.business.user.boundary.UserResource;
 import ch.sportchef.business.user.boundary.UserService;
 import ch.sportchef.business.user.boundary.UsersResource;
 import ch.sportchef.business.user.entity.User;
@@ -25,6 +26,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(UnitTests.class)
@@ -95,4 +97,15 @@ public class UsersResourceTest {
         mockProvider.verifyAll();
     }
 
+    @Test
+    public void find() {
+        // arrange
+        final long userId = 1L;
+
+        // act
+        final UserResource userResource = usersResource.find(userId);
+
+        // assert
+        assertThat(userResource, notNullValue());
+    }
 }
