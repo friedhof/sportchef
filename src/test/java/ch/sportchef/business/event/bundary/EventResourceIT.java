@@ -46,22 +46,6 @@ public class EventResourceIT {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
     }
 
-    private void createEventWithBadRequest() {
-        // arrange
-        final JsonObject eventToCreate = Json.createObjectBuilder()
-                .add("title", "")
-                .add("location", "")
-                .add("date", "")
-                .add("time", "")
-                .build();
-
-        // act
-        final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(eventToCreate));
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
-    }
-
     private void readOneEventWithSuccess(final String location) {
         // arrange
 
