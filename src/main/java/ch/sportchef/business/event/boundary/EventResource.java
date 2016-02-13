@@ -18,7 +18,6 @@
 package ch.sportchef.business.event.boundary;
 
 import ch.sportchef.business.event.entity.Event;
-import pl.setblack.airomem.core.SimpleController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -34,18 +33,17 @@ import java.net.URI;
 
 public class EventResource {
 
-    private Long eventId;
+    private final Long eventId;
+    private final EventService eventService;
 
-    private SimpleController<EventManager> manager;
-
-    public EventResource(@NotNull final Long eventId, @NotNull final SimpleController<EventManager> manager) {
+    public EventResource(@NotNull final Long eventId, @NotNull final EventService eventService) {
         this.eventId = eventId;
-        this.manager = manager;
+        this.eventService = eventService;
     }
 
     @GET
     public Event find() {
-        final Event event = this.manager.readOnly().findByEventId(this.eventId);
+        final Event event = eventService.findByEventId(eventId);
         if (event == null) {
             throw new NotFoundException(String.format("event with id '%d' not found", eventId));
         }
@@ -55,8 +53,8 @@ public class EventResource {
     @PUT
     public Response update(@Valid final Event event, @Context final UriInfo info) {
         find(); // only update existing events
-        final Event eventToUpdate = new Event(this.eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
-        final Event updatedEvent = this.manager.executeAndQuery(mgr -> mgr.update(eventToUpdate));
+        final Event eventToUpdate = new Event(eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
+        final Event updatedEvent = eventService.update(eventToUpdate);
         final URI uri = info.getAbsolutePathBuilder().build();
         return Response.ok(updatedEvent).header("Location", uri.toString()).build();
     }
@@ -69,13 +67,13 @@ public class EventResource {
         } catch (final NotFoundException e) {
             // ignore, this event has no images
         }
-        this.manager.execute(mgr -> mgr.delete(event.getEventId()));
+        eventService.delete(eventId);
         return Response.noContent().build();
     }
 
     @Path("image")
     public EventImageResource image() {
         find(); // only existing events can have images
-        return new EventImageResource(manager, this.eventId);
+        return new EventImageResource(eventId, eventService);
     }
 }

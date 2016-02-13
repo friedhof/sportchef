@@ -17,11 +17,10 @@
  */
 package ch.sportchef.business.event.boundary;
 
-import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.event.entity.Event;
-import pl.setblack.airomem.core.SimpleController;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -41,12 +40,12 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class EventsResource {
 
-    private final SimpleController<EventManager> manager =
-            PersistenceManager.createSimpleController(Event.class, EventManager::new);
+    @Inject
+    private EventService eventService;
 
     @POST
     public Response save(@Valid final Event event, @Context final UriInfo info) {
-        final Event saved = manager.executeAndQuery(mgr -> mgr.create(event));
+        final Event saved = eventService.create(event);
         final long eventId = saved.getEventId();
         final URI uri = info.getAbsolutePathBuilder().path(File.separator + eventId).build();
         return Response.created(uri).build();
@@ -54,13 +53,13 @@ public class EventsResource {
 
     @GET
     public Response findAll() {
-        final List<Event> events = manager.readOnly().findAll();
+        final List<Event> events = eventService.findAll();
         return Response.ok(events).build();
     }
 
     @Path("{eventId}")
     public EventResource find(@PathParam("eventId") final long eventId) {
-        return new EventResource(eventId, manager);
+        return new EventResource(eventId, eventService);
     }
 
 }

@@ -17,7 +17,7 @@
  */
 package ch.sportchef.business.admin.boundary;
 
-import ch.sportchef.business.configuration.boundary.ConfigurationManager;
+import ch.sportchef.business.configuration.boundary.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 
 import javax.ejb.Stateless;
@@ -40,11 +40,11 @@ import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 public class AdminResource {
 
     @Inject
-    private ConfigurationManager configurationManager;
+    private ConfigurationService configurationService;
 
     @GET
     public Response getAdminPage(@QueryParam("access-code") final String accessCode) throws IOException {
-        final Configuration configuration = configurationManager.getConfiguration();
+        final Configuration configuration = configurationService.getConfiguration();
         final String password = configuration.getAdminPassword();
         if (password == null || password.trim().isEmpty() || !password.trim().equals(accessCode.trim())) {
             return Response.status(FORBIDDEN).build();

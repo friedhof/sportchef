@@ -21,7 +21,6 @@ import ch.sportchef.business.AverageColorCalculator;
 import ch.sportchef.business.ImageResizer;
 import ch.sportchef.business.event.entity.Event;
 import org.apache.commons.fileupload.MultipartStream;
-import pl.setblack.airomem.core.SimpleController;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -75,17 +74,17 @@ public class EventImageResource {
     }
 
     private final Long eventId;
-    private final SimpleController<EventManager> manager;
+    private final EventService eventService;
 
-    public EventImageResource(final SimpleController<EventManager> manager, @NotNull final Long eventId) {
-        this.manager = manager;
+    public EventImageResource(@NotNull final Long eventId, @NotNull final EventService eventService) {
         this.eventId = eventId;
+        this.eventService = eventService;
     }
 
     @GET
     @Produces({"image/png"})
     public Response getImage() throws URISyntaxException, IOException {
-        final File file = new File(IMAGE_UPLOAD_PATH, this.eventId + FILE_EXTENSION);
+        final File file = new File(IMAGE_UPLOAD_PATH, eventId + FILE_EXTENSION);
         if (file.exists()) {
             final byte[] image = Files.readAllBytes(file.toPath());
             return Response.ok().entity((StreamingOutput) stream -> {
@@ -110,7 +109,7 @@ public class EventImageResource {
             boolean nextPart = multipartStream.skipPreamble();
             while (nextPart) {
                 multipartStream.readHeaders(); // don't remove, strips headers off
-                file = new File(IMAGE_UPLOAD_PATH, this.eventId + FILE_EXTENSION);
+                file = new File(IMAGE_UPLOAD_PATH, eventId + FILE_EXTENSION);
                 file.createNewFile();
                 try (final BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file), 8192)) {
                     multipartStream.readBodyData(outputStream);
@@ -136,16 +135,16 @@ public class EventImageResource {
             return Response.status(BAD_REQUEST).build();
         }
 
-        final Event event = manager.readOnly().findByEventId(eventId);
+        final Event event = eventService.findByEventId(eventId);
         final Event eventToUpdate = new Event(event.getEventId(), event.getTitle(), event.getLocation(), event.getDate(), event.getTime(), averageColor);
-        final Event updatedEvent = this.manager.executeAndQuery(mgr -> mgr.update(eventToUpdate));
+        eventService.update(eventToUpdate);
 
         return Response.ok().build();
     }
 
     @DELETE
     public Response deleteImage() {
-        final File file = new File(IMAGE_UPLOAD_PATH, this.eventId + FILE_EXTENSION);
+        final File file = new File(IMAGE_UPLOAD_PATH, eventId + FILE_EXTENSION);
         if (file.exists()) {
             file.delete();
             return Response.noContent().build();
