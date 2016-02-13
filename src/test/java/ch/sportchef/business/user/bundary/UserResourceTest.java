@@ -74,9 +74,6 @@ public class UserResourceTest {
 
         // act
         final User user = userResource.find();
-
-        // assert
-        mockProvider.verifyAll();
     }
 
     @Test
