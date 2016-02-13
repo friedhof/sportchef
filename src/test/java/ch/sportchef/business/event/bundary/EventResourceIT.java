@@ -32,7 +32,6 @@ import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @Category(IntegrationTests.class)
 public class EventResourceIT {
@@ -42,19 +41,6 @@ public class EventResourceIT {
 
     private long getEventId(final String location) {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
-    }
-
-    private void readOneEventWithNotFound(final String location) {
-        // arrange
-
-        // act
-        final Response response = this.provider.target(location)
-                .request(MediaType.APPLICATION_JSON).get();
-        final JsonObject jsonObject = response.readEntity(JsonObject.class);
-
-        // assert
-        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
-        assertNull(jsonObject);
     }
 
     private JsonObject updateEventWithSuccess(final String location) {

@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
@@ -80,6 +81,16 @@ public class EventResourceTest {
         // assert
         assertThat(event, is(testEvent));
         mockProvider.verifyAll();
+    }
+
+    @Test(expected=NotFoundException.class)
+    public void findWithNotFound() {
+        // arrange
+        expect(eventServiceMock.findByEventId(anyObject())).andStubReturn(Optional.empty());
+        mockProvider.replayAll();
+
+        // act
+        eventResource.find();
     }
 
 }
