@@ -22,7 +22,6 @@ import com.airhacks.rulz.jaxrsclient.JAXRSClientProvider;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 
-import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
@@ -53,23 +52,6 @@ public class UserResourceIT {
 
         //assert
         assertThat(response.getStatus(), is(CONFLICT.getStatusCode()));
-    }
-
-    private void updateUserWithNotFound(final String location) {
-        // arrange
-        final JsonObject userToUpdate = Json.createObjectBuilder()
-                .add("userId", getUserId(location))
-                .add("firstName", "Jane")
-                .add("lastName", "Doe")
-                .add("phone", "+41 79 555 00 01")
-                .add("email", "jane.doe@sportchef.ch")
-                .build();
-
-        // act
-        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(userToUpdate));
-
-        //assert
-        assertThat(response.getStatus(), is(NOT_FOUND.getStatusCode()));
     }
 
     private void deleteUserWithSuccess(final String location) {

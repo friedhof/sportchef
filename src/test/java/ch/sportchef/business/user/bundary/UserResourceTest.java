@@ -100,4 +100,16 @@ public class UserResourceTest {
         mockProvider.verifyAll();
     }
 
+    @Test(expected=NotFoundException.class)
+    public void updateWithNotFound() {
+        // arrange
+        final User testUser = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
+
+        expect(userServiceMock.findByUserId(testUser.getUserId())).andStubReturn(Optional.empty());
+        mockProvider.replayAll();
+
+        // act
+        final Response response = userResource.update(testUser, uriInfoMock);
+    }
+
 }
