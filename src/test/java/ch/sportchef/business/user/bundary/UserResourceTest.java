@@ -77,7 +77,7 @@ public class UserResourceTest {
     }
 
     @Test
-    public void updateSuccess() throws URISyntaxException {
+    public void updateWithSuccess() throws URISyntaxException {
         // arrange
         final User testUser = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
         final String location = "http://localhost:8080/sportchef/api/users/1";
