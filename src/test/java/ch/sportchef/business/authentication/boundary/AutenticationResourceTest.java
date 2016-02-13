@@ -10,10 +10,15 @@ import org.easymock.EasyMock;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.picketlink.credential.DefaultLoginCredentials;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
+import java.util.Optional;
+
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -70,6 +75,24 @@ public class AutenticationResourceTest {
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        mockProvider.verifyAll();
+    }
+
+    @Test
+    public void authenticateWithWrongEmail() {
+        // arrange
+        final DefaultLoginCredentials credential = new DefaultLoginCredentials();
+        credential.setUserId("foo@bar.ch");
+        credential.setPassword("12345-abcde");
+        EasyMock.expect(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
+                .andReturn(Optional.empty());
+        mockProvider.replayAll();
+
+        // act
+        final Response response = authenticationResource.authenticate(credential);
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.FORBIDDEN.getStatusCode()));
         mockProvider.verifyAll();
     }
 

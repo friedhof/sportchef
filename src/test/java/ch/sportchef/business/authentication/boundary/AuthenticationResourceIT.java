@@ -61,23 +61,6 @@ public class AuthenticationResourceIT {
     @Rule
     public final JAXRSClientProvider provider = buildWithURI("http://localhost:8080/sportchef/api/authentication");
 
-    private void checkChallengeWithWrongEmail(@NotNull final String challenge) {
-        // arrange
-        final JsonObject credential = Json.createObjectBuilder()
-                .add("userId", "foo@bar.ch")
-                .add("password", challenge)
-                .build();
-
-        // act
-        final Response response = provider.target()
-                .request()
-                .accept(MediaType.APPLICATION_JSON)
-                .post(Entity.json(credential));
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.FORBIDDEN.getStatusCode()));
-    }
-
     private void checkChallengeWithCorrectEmail(@NotNull final String challenge) {
         // arrange
         final JsonObject credential = Json.createObjectBuilder()
