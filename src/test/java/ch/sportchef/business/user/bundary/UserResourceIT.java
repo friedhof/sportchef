@@ -32,10 +32,8 @@ import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
 import static javax.ws.rs.core.Response.Status.CONFLICT;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
-import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
 
 @Category(IntegrationTests.class)
 public class UserResourceIT {
@@ -45,33 +43,6 @@ public class UserResourceIT {
 
     private long getUserId(final String location) {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
-    }
-
-    private JsonObject updateUserWithSuccess(final String location) {
-        // arrange
-        final JsonObject userToUpdate = Json.createObjectBuilder()
-                .add("userId", getUserId(location))
-                .add("firstName", "Jane")
-                .add("lastName", "Doe")
-                .add("phone", "+41 79 555 00 01")
-                .add("email", "jane.doe@sportchef.ch")
-                .build();
-
-        // act
-        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(userToUpdate));
-        final JsonObject jsonObject = response.readEntity(JsonObject.class);
-
-        //assert
-        assertThat(response.getStatus(), is(OK.getStatusCode()));
-        assertThat(response.getHeaderString("Location"), is(location));
-        assertNotNull(jsonObject);
-        assertThat(jsonObject.getJsonNumber("userId").longValue(), is(getUserId(location)));
-        assertThat(jsonObject.getString("firstName"), is("Jane"));
-        assertThat(jsonObject.getString("lastName"), is("Doe"));
-        assertThat(jsonObject.getString("phone"), is("+41 79 555 00 01"));
-        assertThat(jsonObject.getString("email"), is("jane.doe@sportchef.ch"));
-
-        return userToUpdate;
     }
 
     private void updateUserWithConflict(final String location, final JsonObject userToUpdate) {
