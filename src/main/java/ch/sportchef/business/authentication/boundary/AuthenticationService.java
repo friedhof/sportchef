@@ -1,7 +1,7 @@
 package ch.sportchef.business.authentication.boundary;
 
 import ch.sportchef.business.authentication.entity.SimpleTokenCredential;
-import ch.sportchef.business.configuration.boundary.ConfigurationManager;
+import ch.sportchef.business.configuration.boundary.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.boundary.UserService;
 import ch.sportchef.business.user.entity.User;
@@ -50,14 +50,12 @@ public class AuthenticationService {
     private UserService userService;
 
     @Inject
-    private ConfigurationManager configurationManager;
-    private Configuration configuration;
+    private ConfigurationService configurationService;
 
     private Cache<String, String> challengeCache;
 
     @PostConstruct
     private void init() {
-        configuration = configurationManager.getConfiguration();
         challengeCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
@@ -91,6 +89,7 @@ public class AuthenticationService {
     }
 
     private void sendChallenge(@NotNull final String email, @NotNull final String challenge) throws EmailException {
+        final Configuration configuration = configurationService.getConfiguration();
         final Email mail = new SimpleEmail();
         mail.setHostName(configuration.getSMTPServer());
         mail.setSmtpPort(configuration.getSMTPPort());
