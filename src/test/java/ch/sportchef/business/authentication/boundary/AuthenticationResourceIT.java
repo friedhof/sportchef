@@ -79,19 +79,6 @@ public class AuthenticationResourceIT {
     }
 
     @Test
-    public void logout() {
-        // arrange
-
-        // act
-        final Response response = provider.target()
-                .request()
-                .delete();
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.NO_CONTENT.getStatusCode()));
-    }
-
-    @Test
     public void unsupportedMediaType() {
         // arrange
         final String html = "<p>Ups!</p>";

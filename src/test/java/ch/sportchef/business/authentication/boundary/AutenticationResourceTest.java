@@ -148,4 +148,15 @@ public class AutenticationResourceTest {
         mockProvider.verifyAll();
     }
 
+    @Test
+    public void logout() {
+        // arrange
+
+        // act
+        final Response response = authenticationResource.logout();
+
+        // assert
+        assertThat(response.getStatus(), is(Response.Status.NO_CONTENT.getStatusCode()));
+    }
+
 }
