@@ -20,7 +20,6 @@ package ch.sportchef.business.user.bundary;
 import ch.sportchef.test.IntegrationTests;
 import com.airhacks.rulz.jaxrsclient.JAXRSClientProvider;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import javax.json.Json;
@@ -33,18 +32,15 @@ import javax.ws.rs.core.Response;
 import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.CONFLICT;
-import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.EXPECTATION_FAILED;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @Category(IntegrationTests.class)
 public class UserResourceIT {
@@ -52,53 +48,8 @@ public class UserResourceIT {
     @Rule
     public final JAXRSClientProvider provider = buildWithURI("http://localhost:8080/sportchef/api/users");
 
-    @Test
-    public void crud() {
-        // create
-        final String location = createUserWithSuccess();
-        final String notFoundLocation = location.substring(0, location.lastIndexOf("/") + 1) + Long.MAX_VALUE;
-        createUserWithBadRequest();
-        createUserWithExpectationFailed();
-
-        // read
-        readOneUserWithSuccess(location);
-        readOneUserWithNotFound(notFoundLocation);
-        readAllUsers(location); // location of created user to do asserts
-
-        // update
-        final JsonObject userToConflict = updateUserWithSuccess(location);
-//        updateUserWithConflict(location, userToConflict);
-        updateUserWithNotFound(notFoundLocation);
-
-        // delete
-        deleteUserWithSuccess(location);
-        deleteUserWithNotFound(location);
-    }
-
     private long getUserId(final String location) {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
-    }
-
-    private String createUserWithSuccess() {
-        // arrange
-        final JsonObject userToCreate = Json.createObjectBuilder()
-                .add("firstName", "John")
-                .add("lastName", "Doe")
-                .add("phone", "+41 79 555 00 01")
-                .add("email", "john.doe@sportchef.ch")
-                .build();
-
-        // act
-        final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(userToCreate));
-
-        //assert
-        assertThat(response.getStatus(), is(CREATED.getStatusCode()));
-        final String location = response.getHeaderString("Location");
-        assertThat(location, notNullValue());
-        final long userId = getUserId(location);
-        assertTrue(userId > 0);
-
-        return location;
     }
 
     private void createUserWithBadRequest() {
