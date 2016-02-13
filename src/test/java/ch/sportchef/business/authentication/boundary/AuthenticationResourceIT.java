@@ -72,22 +72,6 @@ public class AuthenticationResourceIT {
     public final JAXRSClientProvider provider = buildWithURI("http://localhost:8080/sportchef/api/authentication");
 
     @Test
-    public void requestChallengeWithBadRequest() {
-        // arrange
-        final String email = "";
-
-        // act
-        final Response response = provider.target()
-                .queryParam("email", email)
-                .request()
-                .accept(MediaType.APPLICATION_JSON)
-                .get();
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
-    }
-
-    @Test
     public void requestChallengeWithNotFound() {
         // arrange
         final String email = "foobar@sportchef.ch";
