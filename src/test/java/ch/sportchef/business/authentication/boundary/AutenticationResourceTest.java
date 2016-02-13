@@ -13,8 +13,8 @@ import org.junit.experimental.categories.Category;
 import org.picketlink.credential.DefaultLoginCredentials;
 
 import javax.inject.Inject;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
-
 import java.util.Optional;
 
 import static org.easymock.EasyMock.anyObject;
@@ -26,6 +26,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class AutenticationResourceTest {
 
     private static final String TEST_USER_EMAIL = "auth.test@sportchef.ch";
+    private static final String TEST_TOKEN = "TEST_TOKEN";
 
     @Rule
     public NeedleRule needleRule = new NeedleRule();
@@ -93,6 +94,25 @@ public class AutenticationResourceTest {
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.FORBIDDEN.getStatusCode()));
+        mockProvider.verifyAll();
+    }
+
+    @Test
+    public void authenticateWithCorrectEmail() {
+        // arrange
+        final DefaultLoginCredentials credential = new DefaultLoginCredentials();
+        credential.setUserId(TEST_USER_EMAIL);
+        credential.setPassword("12345-abcde");
+        EasyMock.expect(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
+                .andReturn(Optional.of(TEST_TOKEN));
+        mockProvider.replayAll();
+
+        // act
+        final Response response = authenticationResource.authenticate(credential);
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(((Entity) response.getEntity()).getEntity(), is(TEST_TOKEN));
         mockProvider.verifyAll();
     }
 
