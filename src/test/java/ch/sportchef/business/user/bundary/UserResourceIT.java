@@ -48,24 +48,6 @@ public class UserResourceIT {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
     }
 
-    private void readOneUserWithSuccess(final String location) {
-        // arrange
-
-        // act
-        final Response response = this.provider.target(location)
-                .request(MediaType.APPLICATION_JSON).get();
-        final JsonObject jsonObject = response.readEntity(JsonObject.class);
-
-        // assert
-        assertThat(response.getStatus(), is(OK.getStatusCode()));
-        assertNotNull(jsonObject);
-        assertThat(jsonObject.getJsonNumber("userId").longValue(), is(getUserId(location)));
-        assertThat(jsonObject.getString("firstName"), is("John"));
-        assertThat(jsonObject.getString("lastName"), is("Doe"));
-        assertThat(jsonObject.getString("phone"), is("+41 79 555 00 01"));
-        assertThat(jsonObject.getString("email"), is("john.doe@sportchef.ch"));
-    }
-
     private void readOneUserWithNotFound(final String location) {
         // arrange
 
