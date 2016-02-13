@@ -17,8 +17,11 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
@@ -65,6 +68,30 @@ public class UsersResourceTest {
         //assert
         assertThat(response.getStatus(), is(CREATED.getStatusCode()));
         assertThat(response.getHeaderString("Location"), is(location));
+        mockProvider.verifyAll();
+    }
+
+    @Test
+    public void findAll() {
+        // arrange
+        final User user1 = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
+        final User user2 = new User(2L, "Jane", "Doe", "+41 79 555 00 02", "jane.doe@sportchef.ch");
+        final List<User> users = new ArrayList<>();
+        users.add(user1);
+        users.add(user2);
+        expect(userServiceMock.findAll()).andStubReturn(users);
+        mockProvider.replayAll();
+
+        // act
+        final Response response = usersResource.findAll();
+        final List<User> list = (List<User>) response.getEntity();
+        final User responseUser1 = list.get(0);
+        final User responseUser2 = list.get(1);
+
+        // assert
+        assertThat(response.getStatus(), is(OK.getStatusCode()));
+        assertThat(responseUser1, is(user1));
+        assertThat(responseUser2, is(user2));
         mockProvider.verifyAll();
     }
 

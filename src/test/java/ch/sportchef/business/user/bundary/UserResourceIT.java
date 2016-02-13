@@ -23,7 +23,6 @@ import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
@@ -31,13 +30,11 @@ import javax.ws.rs.core.Response;
 
 import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
 import static javax.ws.rs.core.Response.Status.CONFLICT;
-import static javax.ws.rs.core.Response.Status.EXPECTATION_FAILED;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -80,26 +77,6 @@ public class UserResourceIT {
         // assert
         assertThat(response.getStatus(), is(NOT_FOUND.getStatusCode()));
         assertNull(jsonObject);
-    }
-
-    private void readAllUsers(final String location) {
-        // arrange
-
-        // act
-        final Response response = this.provider.target()
-                .request(MediaType.APPLICATION_JSON).get();
-        final JsonArray jsonArray = response.readEntity(JsonArray.class);
-        final JsonObject jsonObject = jsonArray.size() > 0 ? jsonArray.getJsonObject(jsonArray.size() - 1) : null;
-
-        // assert
-        assertThat(response.getStatus(), is(OK.getStatusCode()));
-        assertFalse(jsonArray.isEmpty());
-        assertNotNull(jsonObject);
-        assertThat(jsonObject.getJsonNumber("userId").longValue(), is(getUserId(location)));
-        assertThat(jsonObject.getString("firstName"), is("John"));
-        assertThat(jsonObject.getString("lastName"), is("Doe"));
-        assertThat(jsonObject.getString("phone"), is("+41 79 555 00 01"));
-        assertThat(jsonObject.getString("email"), is("john.doe@sportchef.ch"));
     }
 
     private JsonObject updateUserWithSuccess(final String location) {
