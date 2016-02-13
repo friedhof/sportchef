@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
+import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
@@ -110,6 +111,23 @@ public class UserResourceTest {
 
         // act
         final Response response = userResource.update(testUser, uriInfoMock);
+    }
+
+    @Test
+    public void deleteWithSuccess() {
+        // arrange
+        final User testUser = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
+        final String location = "http://localhost:8080/sportchef/api/users/1";
+
+        expect(userServiceMock.findByUserId(testUser.getUserId())).andStubReturn(Optional.of(testUser));
+        mockProvider.replayAll();
+
+        // act
+        final Response response = userResource.delete();
+
+        //assert
+        assertThat(response.getStatus(), is(NO_CONTENT.getStatusCode()));
+        mockProvider.verifyAll();
     }
 
 }
