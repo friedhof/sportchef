@@ -22,30 +22,11 @@ import com.airhacks.rulz.jaxrsclient.JAXRSClientProvider;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 
-import javax.json.JsonObject;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
-import static javax.ws.rs.core.Response.Status.CONFLICT;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(IntegrationTests.class)
 public class UserResourceIT {
 
     @Rule
     public final JAXRSClientProvider provider = buildWithURI("http://localhost:8080/sportchef/api/users");
-
-    private void updateUserWithConflict(final String location, final JsonObject userToUpdate) {
-        // arrange
-
-        // act
-        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(userToUpdate));
-
-        //assert
-        assertThat(response.getStatus(), is(CONFLICT.getStatusCode()));
-    }
-
 }

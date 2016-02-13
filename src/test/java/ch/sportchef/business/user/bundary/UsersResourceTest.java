@@ -1,5 +1,6 @@
 package ch.sportchef.business.user.bundary;
 
+import ch.sportchef.business.exception.ExpectationFailedException;
 import ch.sportchef.business.user.boundary.UserResource;
 import ch.sportchef.business.user.boundary.UserService;
 import ch.sportchef.business.user.boundary.UsersResource;
@@ -71,6 +72,18 @@ public class UsersResourceTest {
         assertThat(response.getStatus(), is(CREATED.getStatusCode()));
         assertThat(response.getHeaderString("Location"), is(location));
         mockProvider.verifyAll();
+    }
+
+    @Test(expected=ExpectationFailedException.class)
+    public void saveUserWithConflict() {
+        // arrange
+        final User userToCreate = new User(0L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
+        expect(userServiceMock.create(userToCreate))
+                .andStubThrow(new ExpectationFailedException("Email address has to be unique"));
+        mockProvider.replayAll();
+
+        // act
+        usersResource.save(userToCreate, null);
     }
 
     @Test
