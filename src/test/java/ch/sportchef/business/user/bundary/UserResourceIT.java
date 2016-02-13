@@ -29,7 +29,6 @@ import javax.ws.rs.core.Response;
 
 import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
 import static javax.ws.rs.core.Response.Status.CONFLICT;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -39,10 +38,6 @@ public class UserResourceIT {
     @Rule
     public final JAXRSClientProvider provider = buildWithURI("http://localhost:8080/sportchef/api/users");
 
-    private long getUserId(final String location) {
-        return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
-    }
-
     private void updateUserWithConflict(final String location, final JsonObject userToUpdate) {
         // arrange
 
@@ -51,16 +46,6 @@ public class UserResourceIT {
 
         //assert
         assertThat(response.getStatus(), is(CONFLICT.getStatusCode()));
-    }
-
-    private void deleteUserWithNotFound(final String location) {
-        // arrange
-
-        // act
-        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).delete();
-
-        //assert
-        assertThat(response.getStatus(), is(NOT_FOUND.getStatusCode()));
     }
 
 }

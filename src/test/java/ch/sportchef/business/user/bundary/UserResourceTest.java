@@ -129,4 +129,14 @@ public class UserResourceTest {
         mockProvider.verifyAll();
     }
 
+    @Test(expected=NotFoundException.class)
+    public void deleteWithNotFound() {
+        // arrange
+        expect(userServiceMock.findByUserId(anyObject())).andStubReturn(Optional.empty());
+        mockProvider.replayAll();
+
+        // act
+        final Response response = userResource.delete();
+    }
+
 }
