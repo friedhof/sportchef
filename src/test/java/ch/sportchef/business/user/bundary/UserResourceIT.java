@@ -30,7 +30,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.CONFLICT;
 import static javax.ws.rs.core.Response.Status.EXPECTATION_FAILED;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -50,22 +49,6 @@ public class UserResourceIT {
 
     private long getUserId(final String location) {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
-    }
-
-    private void createUserWithBadRequest() {
-        // arrange
-        final JsonObject userToCreate = Json.createObjectBuilder()
-                .add("firstName", "")
-                .add("lastName", "")
-                .add("phone", "")
-                .add("email", "")
-                .build();
-
-        // act
-        final Response response = this.provider.target().request(MediaType.APPLICATION_JSON).post(Entity.json(userToCreate));
-
-        //assert
-        assertThat(response.getStatus(), is(BAD_REQUEST.getStatusCode()));
     }
 
     private void createUserWithExpectationFailed() {
