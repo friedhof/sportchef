@@ -91,7 +91,7 @@ public class UserResourceTest {
         mockProvider.replayAll();
 
         // act
-        final User user = userResource.find();
+        userResource.find();
     }
 
     @Test
@@ -127,7 +127,7 @@ public class UserResourceTest {
         mockProvider.replayAll();
 
         // act
-        final Response response = userResource.update(testUser, uriInfoMock);
+        userResource.update(testUser, uriInfoMock);
     }
 
     @Test
@@ -153,7 +153,7 @@ public class UserResourceTest {
         mockProvider.replayAll();
 
         // act
-        final Response response = userResource.delete();
+        userResource.delete();
     }
 
 }
