@@ -83,7 +83,6 @@ public class AuthenticationResource {
     @POST
     @Consumes({MediaType.WILDCARD})
     public Response unsupportedCredentialType(@Context HttpServletRequest request) {
-        final String ct = request.getHeader("Content-Type");
         return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).build();
     }
 
