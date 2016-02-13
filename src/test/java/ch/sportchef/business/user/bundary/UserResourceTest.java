@@ -117,7 +117,6 @@ public class UserResourceTest {
     public void deleteWithSuccess() {
         // arrange
         final User testUser = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
-        final String location = "http://localhost:8080/sportchef/api/users/1";
 
         expect(userServiceMock.findByUserId(testUser.getUserId())).andStubReturn(Optional.of(testUser));
         mockProvider.replayAll();
