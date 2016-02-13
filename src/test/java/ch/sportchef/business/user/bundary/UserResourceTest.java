@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 import java.util.Optional;
 
 import static org.easymock.EasyMock.anyObject;
@@ -52,4 +53,18 @@ public class UserResourceTest {
         assertThat(user, is(testUser));
         mockProvider.verifyAll();
     }
+
+    @Test(expected=NotFoundException.class)
+    public void findWithNotFound() {
+        // arrange
+        expect(userServiceMock.findByUserId(anyObject())).andStubReturn(Optional.empty());
+        mockProvider.replayAll();
+
+        // act
+        final User user = userResource.find();
+
+        // assert
+        mockProvider.verifyAll();
+    }
+
 }

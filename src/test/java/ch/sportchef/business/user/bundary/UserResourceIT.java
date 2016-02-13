@@ -36,7 +36,6 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @Category(IntegrationTests.class)
 public class UserResourceIT {
@@ -46,19 +45,6 @@ public class UserResourceIT {
 
     private long getUserId(final String location) {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
-    }
-
-    private void readOneUserWithNotFound(final String location) {
-        // arrange
-
-        // act
-        final Response response = this.provider.target(location)
-                .request(MediaType.APPLICATION_JSON).get();
-        final JsonObject jsonObject = response.readEntity(JsonObject.class);
-
-        // assert
-        assertThat(response.getStatus(), is(NOT_FOUND.getStatusCode()));
-        assertNull(jsonObject);
     }
 
     private JsonObject updateUserWithSuccess(final String location) {
