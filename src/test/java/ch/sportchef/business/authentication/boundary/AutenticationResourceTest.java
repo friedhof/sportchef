@@ -6,7 +6,6 @@ import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
 import org.apache.commons.mail.EmailException;
-import org.easymock.EasyMock;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -19,6 +18,7 @@ import java.util.Optional;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.not;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -69,7 +69,7 @@ public class AutenticationResourceTest {
     public void requestChallengeWithSuccess() throws EmailException {
         // arrange
         final User testUser = new User(0L, "AuthTest", "AuthTest", "AuthTest", TEST_USER_EMAIL);
-        EasyMock.expect(authenticationServiceMock.requestChallenge(TEST_USER_EMAIL)).andReturn(true);
+        expect(authenticationServiceMock.requestChallenge(TEST_USER_EMAIL)).andReturn(true);
         mockProvider.replayAll();
 
         // act
@@ -86,7 +86,7 @@ public class AutenticationResourceTest {
         final DefaultLoginCredentials credential = new DefaultLoginCredentials();
         credential.setUserId("foo@bar.ch");
         credential.setPassword("12345-abcde");
-        EasyMock.expect(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
+        expect(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
                 .andReturn(Optional.empty());
         mockProvider.replayAll();
 
@@ -104,7 +104,7 @@ public class AutenticationResourceTest {
         final DefaultLoginCredentials credential = new DefaultLoginCredentials();
         credential.setUserId(TEST_USER_EMAIL);
         credential.setPassword("12345-abcde");
-        EasyMock.expect(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
+        expect(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
                 .andReturn(Optional.of(TEST_TOKEN));
         mockProvider.replayAll();
 
@@ -120,7 +120,7 @@ public class AutenticationResourceTest {
     @Test
     public void authenticateWithTokenSuccessful() {
         // arrange
-        EasyMock.expect(authenticationServiceMock.authentication(anyObject(), anyObject(), eq(TEST_TOKEN)))
+        expect(authenticationServiceMock.authentication(anyObject(), anyObject(), eq(TEST_TOKEN)))
                 .andReturn(Optional.of(TEST_TOKEN));
         mockProvider.replayAll();
 
@@ -136,7 +136,7 @@ public class AutenticationResourceTest {
     @Test
     public void authenticateWithTokenUnauthorized() {
         // arrange
-        EasyMock.expect(authenticationServiceMock.authentication(anyObject(), anyObject(), not(eq(TEST_TOKEN))))
+        expect(authenticationServiceMock.authentication(anyObject(), anyObject(), not(eq(TEST_TOKEN))))
                 .andReturn(Optional.empty());
         mockProvider.replayAll();
 
