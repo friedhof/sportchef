@@ -20,8 +20,11 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
@@ -70,6 +73,32 @@ public class EventsResourceTest {
         //assert
         assertThat(response.getStatus(), is(CREATED.getStatusCode()));
         assertThat(response.getHeaderString("Location"), is(location));
+        mockProvider.verifyAll();
+    }
+
+    @Test
+    public void findAll() {
+        // arrange
+        final Event event1 = new Event(1L, "Testevent", "Testlocation",
+                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final Event event2 = new Event(2L, "Testevent", "Testlocation",
+                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final List<Event> events = new ArrayList<>();
+        events.add(event1);
+        events.add(event2);
+        expect(eventServiceMock.findAll()).andStubReturn(events);
+        mockProvider.replayAll();
+
+        // act
+        final Response response = eventsResource.findAll();
+        final List<Event> list = (List<Event>) response.getEntity();
+        final Event responseEvent1 = list.get(0);
+        final Event responseEvent2 = list.get(1);
+
+        // assert
+        assertThat(response.getStatus(), is(OK.getStatusCode()));
+        assertThat(responseEvent1, is(event1));
+        assertThat(responseEvent2, is(event2));
         mockProvider.verifyAll();
     }
 
