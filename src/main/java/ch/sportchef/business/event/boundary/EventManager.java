@@ -41,12 +41,12 @@ public class EventManager implements Serializable {
     public Event create(@NotNull final Event event) {
         final Long eventId = eventSeq.incrementAndGet();
         final Event eventToCreate = new Event(eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
-        this.events.put(eventId, eventToCreate);
+        events.put(eventId, eventToCreate);
         return eventToCreate;
     }
 
     public Event update(@NotNull final Event event) {
-        this.events.put(event.getEventId(), event);
+        events.put(event.getEventId(), event);
         return event;
     }
 
@@ -55,12 +55,12 @@ public class EventManager implements Serializable {
     }
 
     public List<Event> findAll() {
-       return this.events.values().stream()
+       return events.values().stream()
                .sorted(comparingLong(Event::getEventId))
                .collect(toList());
     }
 
     public void delete(final long eventId) {
-        this.events.remove(eventId);
+        events.remove(eventId);
     }
 }
