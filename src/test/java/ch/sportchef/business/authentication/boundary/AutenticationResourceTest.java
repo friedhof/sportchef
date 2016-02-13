@@ -31,4 +31,16 @@ public class AutenticationResourceTest {
         assertThat(response.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
     }
 
+    @Test
+    public void requestChallengeWithNotFound() throws EmailException {
+        // arrange
+        final String email = "foobar@sportchef.ch";
+
+        // act
+        final Response response = authenticationResource.requestChallenge(email);
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
+    }
+
 }

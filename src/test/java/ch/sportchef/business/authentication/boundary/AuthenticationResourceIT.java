@@ -72,22 +72,6 @@ public class AuthenticationResourceIT {
     public final JAXRSClientProvider provider = buildWithURI("http://localhost:8080/sportchef/api/authentication");
 
     @Test
-    public void requestChallengeWithNotFound() {
-        // arrange
-        final String email = "foobar@sportchef.ch";
-
-        // act
-        final Response response = provider.target()
-                .queryParam("email", email)
-                .request()
-                .accept(MediaType.APPLICATION_JSON)
-                .get();
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
-    }
-
-    @Test
     public void testChallengeAndResponse() throws InterruptedException, IOException, MessagingException {
         requestChallengeWithSuccess();
         Thread.sleep(1000); // wait 1 second for mail to be delivered
