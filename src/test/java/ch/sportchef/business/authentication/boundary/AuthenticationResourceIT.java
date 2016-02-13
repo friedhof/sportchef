@@ -29,7 +29,6 @@ import org.junit.experimental.categories.Category;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -60,19 +59,6 @@ public class AuthenticationResourceIT {
 
     @Rule
     public final JAXRSClientProvider provider = buildWithURI("http://localhost:8080/sportchef/api/authentication");
-
-    private void authenticateWithTokenSuccessful(@NotNull final String token) {
-        // arrange
-
-        // act
-        final Response response = provider.target()
-                .request()
-                .accept(MediaType.APPLICATION_JSON)
-                .post(Entity.text(token));
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
-    }
 
     @Test
     public void authenticateWithChallengeForbidden() {

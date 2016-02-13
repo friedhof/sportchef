@@ -116,4 +116,20 @@ public class AutenticationResourceTest {
         mockProvider.verifyAll();
     }
 
+    @Test
+    public void authenticateWithTokenSuccessful() {
+        // arrange
+        EasyMock.expect(authenticationServiceMock.authentication(anyObject(), anyObject(), eq(TEST_TOKEN)))
+                .andReturn(Optional.of(TEST_TOKEN));
+        mockProvider.replayAll();
+
+        // act
+        final Response response = authenticationResource.authenticate(TEST_TOKEN);
+
+        //assert
+        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(((Entity) response.getEntity()).getEntity(), is(TEST_TOKEN));
+        mockProvider.verifyAll();
+    }
+
 }
