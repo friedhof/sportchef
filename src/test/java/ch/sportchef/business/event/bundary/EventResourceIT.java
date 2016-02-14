@@ -41,14 +41,4 @@ public class EventResourceIT {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
     }
 
-    private void updateEventWithConflict(final String location, final JsonObject eventToUpdate) {
-        // arrange
-
-        // act
-        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(eventToUpdate));
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.CONFLICT.getStatusCode()));
-    }
-
 }
