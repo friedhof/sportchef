@@ -18,14 +18,12 @@
 package ch.sportchef.business.authentication.boundary;
 
 import ch.sportchef.business.user.entity.User;
-import ch.sportchef.test.UnitTests;
 import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
 import org.apache.commons.mail.EmailException;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.picketlink.credential.DefaultLoginCredentials;
 
 import javax.inject.Inject;
@@ -40,7 +38,6 @@ import static org.easymock.EasyMock.not;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Category(UnitTests.class)
 public class AutenticationResourceTest {
 
     private static final String TEST_USER_EMAIL = "auth.test@sportchef.ch";

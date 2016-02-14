@@ -4,13 +4,11 @@ import ch.sportchef.business.event.boundary.EventResource;
 import ch.sportchef.business.event.boundary.EventService;
 import ch.sportchef.business.event.boundary.EventsResource;
 import ch.sportchef.business.event.entity.Event;
-import ch.sportchef.test.UnitTests;
 import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -32,7 +30,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Category(UnitTests.class)
 public class EventsResourceTest {
 
     @Rule

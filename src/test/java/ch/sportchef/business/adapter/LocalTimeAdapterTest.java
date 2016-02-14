@@ -17,18 +17,15 @@
  */
 package ch.sportchef.business.adapter;
 
-import ch.sportchef.test.UnitTests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.time.LocalTime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@Category(UnitTests.class)
 public class LocalTimeAdapterTest {
 
     private static final String TIME_TEST_STRING = "13:02";

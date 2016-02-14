@@ -20,13 +20,11 @@ package ch.sportchef.business.event.bundary;
 import ch.sportchef.business.event.boundary.EventResource;
 import ch.sportchef.business.event.boundary.EventService;
 import ch.sportchef.business.event.entity.Event;
-import ch.sportchef.test.UnitTests;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
@@ -47,7 +45,6 @@ import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Category(UnitTests.class)
 public class EventResourceTest {
 
     @Rule
