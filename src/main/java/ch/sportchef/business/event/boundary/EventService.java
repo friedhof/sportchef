@@ -42,7 +42,7 @@ public class EventService {
         return manager.executeAndQuery((mgr) -> mgr.update(event));
     }
 
-    public Optional<Event> findByEventId(final Long eventId) {
+    public Optional<Event> findByEventId(@NotNull final Long eventId) {
         return manager.readOnly().findByEventId(eventId);
     }
 
@@ -50,7 +50,7 @@ public class EventService {
         return manager.readOnly().findAll();
     }
 
-    public void delete(final long eventId) {
+    public void delete(@NotNull final Long eventId) {
         manager.execute((mgr) -> mgr.delete(eventId));
     }
 }
