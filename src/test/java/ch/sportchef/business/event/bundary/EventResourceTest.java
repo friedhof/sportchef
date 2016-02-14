@@ -122,4 +122,17 @@ public class EventResourceTest {
         mockProvider.verifyAll();
     }
 
+    @Test(expected=NotFoundException.class)
+    public void updateWithNotFound() {
+        // arrange
+        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
+                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+
+        expect(eventServiceMock.findByEventId(testEvent.getEventId())).andStubReturn(Optional.empty());
+        mockProvider.replayAll();
+
+        // act
+        eventResource.update(testEvent, uriInfoMock);
+    }
+
 }

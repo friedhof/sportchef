@@ -22,7 +22,6 @@ import com.airhacks.rulz.jaxrsclient.JAXRSClientProvider;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 
-import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
@@ -50,23 +49,6 @@ public class EventResourceIT {
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.CONFLICT.getStatusCode()));
-    }
-
-    private void updateEventWithNotFound(final String location) {
-        // arrange
-        final JsonObject eventToUpdate = Json.createObjectBuilder()
-                .add("eventId", getEventId(location))
-                .add("title", "New Year Party")
-                .add("location", "Town Hall")
-                .add("date", "2015-12-31")
-                .add("time", "20:00")
-                .build();
-
-        // act
-        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(eventToUpdate));
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.NOT_FOUND.getStatusCode()));
     }
 
     private void deleteEventWithSuccess(final String location) {
