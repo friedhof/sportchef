@@ -153,4 +153,14 @@ public class EventResourceTest {
         mockProvider.verifyAll();
     }
 
+    @Test(expected=NotFoundException.class)
+    public void deleteWithNotFound() {
+        // arrange
+        expect(eventServiceMock.findByEventId(anyObject())).andStubReturn(Optional.empty());
+        mockProvider.replayAll();
+
+        // act
+        eventResource.delete();
+    }
+
 }
