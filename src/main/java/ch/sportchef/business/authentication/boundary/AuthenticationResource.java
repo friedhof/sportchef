@@ -68,7 +68,7 @@ public class AuthenticationResource {
         final Optional<String> token = authenticationService.validateChallenge(identity, credential);
 
         return token.isPresent() ?
-                Response.ok(Entity.text(token)).build() :
+                Response.ok(Entity.text(token.get())).build() :
                 Response.status(Status.FORBIDDEN).build();
     }
 
@@ -83,7 +83,6 @@ public class AuthenticationResource {
     @POST
     @Consumes({MediaType.WILDCARD})
     public Response unsupportedCredentialType(@Context HttpServletRequest request) {
-        final String ct = request.getHeader("Content-Type");
         return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).build();
     }
 

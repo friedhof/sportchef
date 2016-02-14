@@ -30,6 +30,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.Optional;
 
 public class EventResource {
 
@@ -43,11 +44,11 @@ public class EventResource {
 
     @GET
     public Event find() {
-        final Event event = eventService.findByEventId(eventId);
-        if (event == null) {
-            throw new NotFoundException(String.format("event with id '%d' not found", eventId));
+        final Optional<Event> event = eventService.findByEventId(eventId);
+        if (event.isPresent()) {
+            return event.get();
         }
-        return event;
+        throw new NotFoundException(String.format("event with id '%d' not found", eventId));
     }
 
     @PUT

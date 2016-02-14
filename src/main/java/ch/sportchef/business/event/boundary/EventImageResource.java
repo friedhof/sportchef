@@ -135,7 +135,7 @@ public class EventImageResource {
             return Response.status(BAD_REQUEST).build();
         }
 
-        final Event event = eventService.findByEventId(eventId);
+        final Event event = eventService.findByEventId(eventId).get();
         final Event eventToUpdate = new Event(event.getEventId(), event.getTitle(), event.getLocation(), event.getDate(), event.getTime(), averageColor);
         eventService.update(eventToUpdate);
 

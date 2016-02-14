@@ -45,7 +45,7 @@ public class UsersResource {
     @POST
     public Response save(@Valid final User user, @Context final UriInfo info) {
         final User saved = userService.create(user);
-        final long userId = saved.getUserId();
+        final Long userId = saved.getUserId();
         final URI uri = info.getAbsolutePathBuilder().path("/" + userId).build();
         return Response.created(uri).build();
     }
