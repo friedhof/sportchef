@@ -30,13 +30,17 @@ import org.junit.experimental.categories.Category;
 
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.Optional;
 
+import static javax.ws.rs.core.Response.Status.OK;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
@@ -91,6 +95,31 @@ public class EventResourceTest {
 
         // act
         eventResource.find();
+    }
+
+    @Test
+    public void updateWithSuccess() throws URISyntaxException {
+        // arrange
+        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
+                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final String location = "http://localhost:8080/sportchef/api/events/1";
+        final URI uri = new URI(location);
+
+        expect(eventServiceMock.findByEventId(testEvent.getEventId())).andStubReturn(Optional.of(testEvent));
+        expect(eventServiceMock.update(anyObject())).andStubReturn(testEvent);
+        expect(uriInfoMock.getAbsolutePathBuilder()).andStubReturn(uriBuilderMock);
+        expect(uriBuilderMock.build()).andStubReturn(uri);
+        mockProvider.replayAll();
+
+        // act
+        final Response response = eventResource.update(testEvent, uriInfoMock);
+        final Event event = (Event) response.getEntity();
+
+        //assert
+        assertThat(response.getStatus(), is(OK.getStatusCode()));
+        assertThat(response.getHeaderString("Location"), is(location));
+        assertThat(event, is(testEvent));
+        mockProvider.verifyAll();
     }
 
 }

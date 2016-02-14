@@ -31,7 +31,6 @@ import javax.ws.rs.core.Response;
 import static com.airhacks.rulz.jaxrsclient.JAXRSClientProvider.buildWithURI;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
 
 @Category(IntegrationTests.class)
 public class EventResourceIT {
@@ -41,33 +40,6 @@ public class EventResourceIT {
 
     private long getEventId(final String location) {
         return Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
-    }
-
-    private JsonObject updateEventWithSuccess(final String location) {
-        // arrange
-        final JsonObject eventToUpdate = Json.createObjectBuilder()
-                .add("eventId", getEventId(location))
-                .add("title", "New Year Party")
-                .add("location", "Town Hall")
-                .add("date", "2015-12-31")
-                .add("time", "20:00")
-                .build();
-
-        // act
-        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).put(Entity.json(eventToUpdate));
-        final JsonObject jsonObject = response.readEntity(JsonObject.class);
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
-        assertThat(response.getHeaderString("Location"), is(location));
-        assertNotNull(jsonObject);
-        assertThat(jsonObject.getJsonNumber("eventId").longValue(), is(getEventId(location)));
-        assertThat(jsonObject.getString("title"), is("New Year Party"));
-        assertThat(jsonObject.getString("location"), is("Town Hall"));
-        assertThat(jsonObject.getString("date"), is("2015-12-31"));
-        assertThat(jsonObject.getString("time"), is("20:00"));
-
-        return eventToUpdate;
     }
 
     private void updateEventWithConflict(final String location, final JsonObject eventToUpdate) {
