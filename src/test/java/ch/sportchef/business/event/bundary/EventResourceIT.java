@@ -51,16 +51,6 @@ public class EventResourceIT {
         assertThat(response.getStatus(), is(Response.Status.CONFLICT.getStatusCode()));
     }
 
-    private void deleteEventWithSuccess(final String location) {
-        // arrange
-
-        // act
-        final Response response = this.provider.target(location).request(MediaType.APPLICATION_JSON).delete();
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.NO_CONTENT.getStatusCode()));
-    }
-
     private void deleteEventWithNotFound(final String location) {
         // arrange
 

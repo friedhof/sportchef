@@ -40,6 +40,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.Optional;
 
+import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
@@ -133,6 +134,23 @@ public class EventResourceTest {
 
         // act
         eventResource.update(testEvent, uriInfoMock);
+    }
+
+    @Test
+    public void deleteWithSuccess() {
+        // arrange
+        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
+                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+
+        expect(eventServiceMock.findByEventId(testEvent.getEventId())).andStubReturn(Optional.of(testEvent));
+        mockProvider.replayAll();
+
+        // act
+        final Response response = eventResource.delete();
+
+        //assert
+        assertThat(response.getStatus(), is(NO_CONTENT.getStatusCode()));
+        mockProvider.verifyAll();
     }
 
 }
