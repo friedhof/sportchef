@@ -1,9 +1,9 @@
-package ch.sportchef.business.authentication.boundary;
+package ch.sportchef.business.authentication.control;
 
 import ch.sportchef.business.authentication.entity.SimpleTokenCredential;
-import ch.sportchef.business.configuration.boundary.ConfigurationService;
+import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
-import ch.sportchef.business.user.boundary.UserService;
+import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;

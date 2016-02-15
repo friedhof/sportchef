@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.authentication.boundary;
 
+import ch.sportchef.business.authentication.control.AuthenticationService;
 import org.apache.commons.mail.EmailException;
 import org.picketlink.Identity;
 import org.picketlink.credential.DefaultLoginCredentials;

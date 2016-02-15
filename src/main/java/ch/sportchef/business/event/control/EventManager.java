@@ -1,6 +1,6 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2015, 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,9 +13,9 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.business.event.boundary;
+package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.event.entity.Event;
 
@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
 
-public class EventManager implements Serializable {
+class EventManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,29 +39,29 @@ public class EventManager implements Serializable {
     private final AtomicLong eventSeq = new AtomicLong(0);
 
 
-    public Event create(@NotNull final Event event) {
+    Event create(@NotNull final Event event) {
         final Long eventId = eventSeq.incrementAndGet();
         final Event eventToCreate = new Event(eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
         events.put(eventId, eventToCreate);
         return eventToCreate;
     }
 
-    public Event update(@NotNull final Event event) {
+    Event update(@NotNull final Event event) {
         events.put(event.getEventId(), event);
         return event;
     }
 
-    public Optional<Event> findByEventId(final long eventId) {
+    Optional<Event> findByEventId(final long eventId) {
         return Optional.ofNullable(events.get(eventId));
     }
 
-    public List<Event> findAll() {
+    List<Event> findAll() {
        return events.values().stream()
                .sorted(comparingLong(Event::getEventId))
                .collect(toList());
     }
 
-    public void delete(final long eventId) {
+    void delete(final long eventId) {
         events.remove(eventId);
     }
 }

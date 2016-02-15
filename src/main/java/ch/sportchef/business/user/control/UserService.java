@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.business.user.boundary;
+package ch.sportchef.business.user.control;
 
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.user.entity.User;

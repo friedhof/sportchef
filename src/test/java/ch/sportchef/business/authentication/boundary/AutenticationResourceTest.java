@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.authentication.boundary;
 
+import ch.sportchef.business.authentication.control.AuthenticationService;
 import ch.sportchef.business.user.entity.User;
 import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;

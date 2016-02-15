@@ -18,7 +18,7 @@
 package ch.sportchef.business.authentication.boundary;
 
 import ch.sportchef.business.authentication.entity.SimpleTokenCredential;
-import ch.sportchef.business.user.boundary.UserService;
+import ch.sportchef.business.user.control.UserService;
 import org.picketlink.annotations.PicketLink;
 import org.picketlink.authentication.BaseAuthenticator;
 import org.picketlink.credential.DefaultLoginCredentials;
