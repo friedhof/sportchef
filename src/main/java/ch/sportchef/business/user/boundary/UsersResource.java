@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.user.boundary;
 
+import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
 
 import javax.ejb.Stateless;

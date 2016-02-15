@@ -17,7 +17,7 @@
  */
 package ch.sportchef.business.admin.boundary;
 
-import ch.sportchef.business.configuration.boundary.ConfigurationService;
+import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 
 import javax.ejb.Stateless;

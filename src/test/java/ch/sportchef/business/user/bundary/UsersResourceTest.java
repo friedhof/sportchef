@@ -19,7 +19,7 @@ package ch.sportchef.business.user.bundary;
 
 import ch.sportchef.business.exception.ExpectationFailedException;
 import ch.sportchef.business.user.boundary.UserResource;
-import ch.sportchef.business.user.boundary.UserService;
+import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.boundary.UsersResource;
 import ch.sportchef.business.user.entity.User;
 import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;

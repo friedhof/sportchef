@@ -1,7 +1,7 @@
 package ch.sportchef.business.event.bundary;
 
 import ch.sportchef.business.event.boundary.EventResource;
-import ch.sportchef.business.event.boundary.EventService;
+import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.boundary.EventsResource;
 import ch.sportchef.business.event.entity.Event;
 import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;

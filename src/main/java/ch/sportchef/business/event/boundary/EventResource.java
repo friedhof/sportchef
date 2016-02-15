@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.event.boundary;
 
+import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
 
 import javax.validation.Valid;

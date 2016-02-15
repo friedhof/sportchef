@@ -19,6 +19,7 @@ package ch.sportchef.business.event.boundary;
 
 import ch.sportchef.business.AverageColorCalculator;
 import ch.sportchef.business.ImageResizer;
+import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
 import org.apache.commons.fileupload.MultipartStream;
 
