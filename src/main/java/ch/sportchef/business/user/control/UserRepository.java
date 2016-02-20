@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
 
-class UserManager implements Serializable {
+class UserRepository implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

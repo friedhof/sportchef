@@ -31,31 +31,31 @@ import java.util.Optional;
 @Singleton
 public class UserService {
 
-    private SimpleController<UserManager> manager =
-            PersistenceManager.createSimpleController(User.class, UserManager::new);
+    private SimpleController<UserRepository> controller =
+            PersistenceManager.createSimpleController(User.class, UserRepository::new);
 
     public User create(@NotNull final User user) {
-        return manager.executeAndQuery((mgr) -> mgr.create(user));
+        return controller.executeAndQuery((mgr) -> mgr.create(user));
     }
 
     public User update(@NotNull final User user) {
-        return manager.executeAndQuery((mgr) -> mgr.update(user));
+        return controller.executeAndQuery((mgr) -> mgr.update(user));
     }
 
     public Optional<User> findByUserId(@NotNull final Long userId) {
-        return manager.readOnly().findByUserId(userId);
+        return controller.readOnly().findByUserId(userId);
     }
 
     public Optional<User> findByEmail(@NotNull final String email) {
-        return manager.readOnly().findByEmail(email);
+        return controller.readOnly().findByEmail(email);
     }
 
     public List<User> findAll() {
-        return manager.readOnly().findAll();
+        return controller.readOnly().findAll();
     }
 
     public void delete(final Long userId) {
-        manager.execute((mgr) -> mgr.delete(userId));
+        controller.execute((mgr) -> mgr.delete(userId));
     }
 
 }
