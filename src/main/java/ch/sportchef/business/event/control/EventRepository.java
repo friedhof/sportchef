@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
 
-class EventManager implements Serializable {
+class EventRepository implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

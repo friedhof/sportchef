@@ -31,26 +31,26 @@ import java.util.Optional;
 @Singleton
 public class EventService {
 
-    private final SimpleController<EventManager> manager =
-            PersistenceManager.createSimpleController(Event.class, EventManager::new);
+    private final SimpleController<EventRepository> controller =
+            PersistenceManager.createSimpleController(Event.class, EventRepository::new);
 
     public Event create(@NotNull final Event event) {
-        return manager.executeAndQuery((mgr) -> mgr.create(event));
+        return controller.executeAndQuery((mgr) -> mgr.create(event));
     }
 
     public Event update(@NotNull final Event event) {
-        return manager.executeAndQuery((mgr) -> mgr.update(event));
+        return controller.executeAndQuery((mgr) -> mgr.update(event));
     }
 
     public Optional<Event> findByEventId(@NotNull final Long eventId) {
-        return manager.readOnly().findByEventId(eventId);
+        return controller.readOnly().findByEventId(eventId);
     }
 
     public List<Event> findAll() {
-        return manager.readOnly().findAll();
+        return controller.readOnly().findAll();
     }
 
     public void delete(@NotNull final Long eventId) {
-        manager.execute((mgr) -> mgr.delete(eventId));
+        controller.execute((mgr) -> mgr.delete(eventId));
     }
 }
