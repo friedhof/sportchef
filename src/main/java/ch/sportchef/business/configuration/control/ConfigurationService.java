@@ -28,15 +28,15 @@ import javax.inject.Singleton;
 public class ConfigurationService {
 
     @Inject
-    private ConfigurationManager configurationManager;
+    private ConfigurationRepository configurationRepository;
 
     @SuppressWarnings("MethodReturnOfConcreteClass")
     public Configuration getConfiguration() {
-        return configurationManager.getConfiguration();
+        return configurationRepository.getConfiguration();
     }
 
     @Override
     public String toString() {
-        return String.format("ConfigurationService{configurationManager=%s}", configurationManager); //NON-NLS
+        return String.format("ConfigurationService{configurationRepository=%s}", configurationRepository); //NON-NLS
     }
 }
