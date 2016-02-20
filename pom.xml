@@ -31,7 +31,7 @@
         <dependency>
             <groupId>pl.setblack</groupId>
             <artifactId>airomem-core</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
