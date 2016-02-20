@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-class ConfigurationManager {
+class ConfigurationRepository {
 
-    private static final Logger LOGGER = Logger.getLogger(ConfigurationManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ConfigurationRepository.class.getName());
 
     private  static final String DEFAULT_CONFIGURATION_FILE = "cfg_default.properties"; //NON-NLS
     private  static final String CUSTOM_CONFIGURATION_FILE = "cfg_custom.properties"; //NON-NLS
@@ -36,7 +36,7 @@ class ConfigurationManager {
     @SuppressWarnings("InstanceVariableOfConcreteClass")
     private final Configuration configuration;
 
-    ConfigurationManager() {
+    ConfigurationRepository() {
         final Properties properties = new Properties();
 
         // load default configuration first
@@ -71,6 +71,6 @@ class ConfigurationManager {
 
     @Override
     public String toString() {
-        return String.format("ConfigurationManager{configuration=%s}", configuration); //NON-NLS
+        return String.format("ConfigurationRepository{configuration=%s}", configuration); //NON-NLS
     }
 }
