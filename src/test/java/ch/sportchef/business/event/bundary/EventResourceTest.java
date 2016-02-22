@@ -17,7 +17,9 @@
  */
 package ch.sportchef.business.event.bundary;
 
+import ch.sportchef.business.event.boundary.EventImageResource;
 import ch.sportchef.business.event.boundary.EventResource;
+import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;
@@ -42,7 +44,9 @@ import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EventResourceTest {
@@ -59,6 +63,9 @@ public class EventResourceTest {
     private EventService eventServiceMock;
 
     @Inject
+    private EventImageService eventImageServiceMock;
+
+    @Inject
     private UriInfo uriInfoMock;
 
     @Inject
@@ -66,7 +73,7 @@ public class EventResourceTest {
 
     @Before
     public void setup() {
-        eventResource = new EventResource(1L, eventServiceMock);
+        eventResource = new EventResource(1L, eventServiceMock, eventImageServiceMock);
     }
 
     @Test
@@ -134,7 +141,26 @@ public class EventResourceTest {
     }
 
     @Test
-    public void deleteWithSuccess() {
+    public void deleteWithoutImageSuccess() {
+        // arrange
+        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
+                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+
+        expect(eventServiceMock.findByEventId(testEvent.getEventId())).andStubReturn(Optional.of(testEvent));
+        eventImageServiceMock.deleteImage(testEvent.getEventId());
+        expectLastCall().andThrow(new NotFoundException());
+        mockProvider.replayAll();
+
+        // act
+        final Response response = eventResource.delete();
+
+        //assert
+        assertThat(response.getStatus(), is(NO_CONTENT.getStatusCode()));
+        mockProvider.verifyAll();
+    }
+
+    @Test
+    public void deleteWithImageSuccess() {
         // arrange
         final Event testEvent = new Event(1L, "Testevent", "Testlocation",
                 LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
@@ -158,6 +184,23 @@ public class EventResourceTest {
 
         // act
         eventResource.delete();
+    }
+
+    @Test
+    public void image() {
+        // arrange
+        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
+                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+
+        expect(eventServiceMock.findByEventId(testEvent.getEventId())).andStubReturn(Optional.of(testEvent));
+        mockProvider.replayAll();
+
+        // act
+        final EventImageResource eventImageResource = eventResource.image();
+
+        // assert
+        assertThat(eventImageResource, notNullValue());
+        mockProvider.verifyAll();
     }
 
 }
