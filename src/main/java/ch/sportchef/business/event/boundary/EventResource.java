@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.event.boundary;
 
+import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
 
@@ -37,10 +38,14 @@ public class EventResource {
 
     private final Long eventId;
     private final EventService eventService;
+    private final EventImageService eventImageService;
 
-    public EventResource(@NotNull final Long eventId, @NotNull final EventService eventService) {
+    public EventResource(@NotNull final Long eventId,
+                         @NotNull final EventService eventService,
+                         @NotNull final EventImageService eventImageService) {
         this.eventId = eventId;
         this.eventService = eventService;
+        this.eventImageService = eventImageService;
     }
 
     @GET
@@ -65,9 +70,9 @@ public class EventResource {
     public Response delete() {
         final Event event = find(); // only delete existing events
         try {
-            image().deleteImage();
+            eventImageService.deleteImage(eventId);
         } catch (final NotFoundException e) {
-            // ignore, this event has no images
+            // ignore, event has no image
         }
         eventService.delete(eventId);
         return Response.noContent().build();
@@ -76,6 +81,6 @@ public class EventResource {
     @Path("image")
     public EventImageResource image() {
         find(); // only existing events can have images
-        return new EventImageResource(eventId, eventService);
+        return new EventImageResource(eventId, eventService, eventImageService);
     }
 }

@@ -1,6 +1,6 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,10 +13,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.event.boundary;
 
+import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
 
@@ -44,6 +45,9 @@ public class EventsResource {
     @Inject
     private EventService eventService;
 
+    @Inject
+    private EventImageService eventImageService;
+
     @POST
     public Response save(@Valid final Event event, @Context final UriInfo info) {
         final Event saved = eventService.create(event);
@@ -60,7 +64,7 @@ public class EventsResource {
 
     @Path("{eventId}")
     public EventResource find(@PathParam("eventId") final long eventId) {
-        return new EventResource(eventId, eventService);
+        return new EventResource(eventId, eventService, eventImageService);
     }
 
 }
