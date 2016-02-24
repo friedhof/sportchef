@@ -49,6 +49,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.TEMPORARY_REDIRECT;
 import static org.easymock.EasyMock.expect;
@@ -166,6 +167,17 @@ public class EventImageResourceTest {
         // assert
         assertThat(response.getStatus(), is(BAD_REQUEST.getStatusCode()));
         mockProvider.verifyAll();
+    }
+
+    @Test
+    public void delete() {
+        // arrange
+
+        // act
+        final Response response = eventImageResource.deleteImage();
+
+        // assert
+        assertThat(response.getStatus(), is(NO_CONTENT.getStatusCode()));
     }
 
     private class ServletInputStreamMock extends ServletInputStream {
