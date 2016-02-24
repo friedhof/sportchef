@@ -119,15 +119,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.kie.modules</groupId>
-            <artifactId>org-apache-commons-httpclient</artifactId>
-            <version>6.2.0.CR2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
             <version>4.5.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.lucee</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
