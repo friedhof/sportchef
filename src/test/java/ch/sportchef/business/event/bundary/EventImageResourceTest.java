@@ -22,20 +22,33 @@ import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import javax.inject.Inject;
+import javax.servlet.ReadListener;
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.TEMPORARY_REDIRECT;
 import static org.easymock.EasyMock.expect;
@@ -59,6 +72,9 @@ public class EventImageResourceTest {
 
     @Inject
     private EventImageService eventImageServiceMock;
+
+    @Inject
+    private HttpServletRequest httpServletRequest;
 
     @Before
     public void setup() {
@@ -104,6 +120,121 @@ public class EventImageResourceTest {
         assertThat(response.getStatus(), is(TEMPORARY_REDIRECT.getStatusCode()));
         assertThat(response.getLocation().toString(), is("http://placehold.it/350x200"));
         mockProvider.verifyAll();
+    }
+
+    @Test
+    public void uploadImageWithOK() throws IOException, ServletException {
+        // arrange
+        final byte[] fileContent = readTestImage();
+        final Part[] parts = new Part[] {
+                new FilePart(TEST_IMAGE_NAME, new ByteArrayPartSource(TEST_IMAGE_NAME, fileContent)) };
+        final MultipartRequestEntity multipartRequestEntity =
+                new MultipartRequestEntity(parts, new PostMethod().getParams());
+        final ByteArrayOutputStream requestContent = new ByteArrayOutputStream();
+        multipartRequestEntity.writeRequest(requestContent);
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream(requestContent.toByteArray());
+        final ServletInputStreamMock inputStreamMock = new ServletInputStreamMock(inputStream);
+        final String contentType = multipartRequestEntity.getContentType();
+
+        expect(httpServletRequest.getContentType()).andStubReturn(contentType);
+        expect(httpServletRequest.getInputStream()).andStubReturn(inputStreamMock);
+        mockProvider.replayAll();
+
+        // act
+        final Response response = eventImageResource.uploadImage(httpServletRequest);
+
+        // assert
+        assertThat(response.getStatus(), is(OK.getStatusCode()));
+        mockProvider.verifyAll();
+    }
+
+    @Test
+    public void uploadImageWithBadRequest() throws IOException, ServletException {
+        // arrange
+        final byte[] image = readTestImage();
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream(image);
+        final ServletInputStreamMock inputStreamMock = new ServletInputStreamMock(inputStream);
+
+        expect(httpServletRequest.getContentType()).andStubReturn(
+                MediaType.MULTIPART_FORM_DATA.concat("; boundary=mytestboundary"));
+        expect(httpServletRequest.getInputStream()).andStubReturn(inputStreamMock);
+        mockProvider.replayAll();
+
+        // act
+        final Response response = eventImageResource.uploadImage(httpServletRequest);
+
+        // assert
+        assertThat(response.getStatus(), is(BAD_REQUEST.getStatusCode()));
+        mockProvider.verifyAll();
+    }
+
+    private class ServletInputStreamMock extends ServletInputStream {
+
+        private final ByteArrayInputStream inputStream;
+
+        public ServletInputStreamMock(@NotNull final ByteArrayInputStream inputStream) {
+            this.inputStream = inputStream;
+        }
+
+        @Override
+        public boolean isFinished() {
+            return false;
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public void setReadListener(ReadListener readListener) {
+
+        }
+
+        @Override
+        public int read() throws IOException {
+            return inputStream.read();
+        }
+
+        @Override
+        public int read(byte[] b) throws IOException {
+            return inputStream.read(b);
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            return inputStream.read(b, off, len);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            return inputStream.skip(n);
+        }
+
+        @Override
+        public int available() throws IOException {
+            return inputStream.available();
+        }
+
+        @Override
+        public void close() throws IOException {
+            inputStream.close();
+        }
+
+        @Override
+        public synchronized void mark(int readlimit) {
+            inputStream.mark(readlimit);
+        }
+
+        @Override
+        public synchronized void reset() throws IOException {
+            inputStream.reset();
+        }
+
+        @Override
+        public boolean markSupported() {
+            return inputStream.markSupported();
+        }
     }
 
 }
