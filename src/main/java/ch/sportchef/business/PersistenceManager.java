@@ -27,16 +27,13 @@ import java.util.function.Supplier;
 public enum PersistenceManager {
     ;
 
-    private static final String USER_HOME_PROPERTY_KEY = "user.home"; //NON-NLS
     private static final String SPORTCHEF_DIRECTORY_NAME = ".sportchef"; //NON-NLS
     private static final String PREVAYLER_DIRECTORY_NAME = "prevayler"; //NON-NLS
 
     private static final Path DATA_DIRECTORY;
 
     static {
-        @SuppressWarnings("AccessOfSystemProperties")
-        final String userHome = System.getProperty(USER_HOME_PROPERTY_KEY);
-        DATA_DIRECTORY = Paths.get(userHome, SPORTCHEF_DIRECTORY_NAME, PREVAYLER_DIRECTORY_NAME);
+        DATA_DIRECTORY = Paths.get(SPORTCHEF_DIRECTORY_NAME, PREVAYLER_DIRECTORY_NAME);
     }
 
     public static <T extends Serializable> SimpleController<T> createSimpleController(
