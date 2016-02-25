@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 @Entity
 @XmlRootElement
@@ -74,7 +75,6 @@ public class Event implements Serializable {
                  @NotNull final LocalTime time) {
         this(eventId, title, location, date, time, DEFAULT_CSS_BACKGROUND_COLOR);
     }
-
     public Event(@NotNull final Long eventId,
                  @NotNull final String title,
                  @NotNull final String location,
@@ -88,7 +88,28 @@ public class Event implements Serializable {
         this.date = date;
         this.time = time;
         this.cssBackgroundColor = cssBackgroundColor;
+        this.version = (long)hashCode();
     }
+
+
+    public Event(@NotNull final Long eventId,
+                 @NotNull final String title,
+                 @NotNull final String location,
+                 @NotNull final LocalDate date,
+                 @NotNull final LocalTime time,
+                 final String cssBackgroundColor,
+                 @NotNull final Long version ) {
+        this();
+        this.eventId = eventId;
+        this.title = title;
+        this.location = location;
+        this.date = date;
+        this.time = time;
+        this.cssBackgroundColor = cssBackgroundColor;
+        this.version = version;
+    }
+
+
 
     public Long getEventId() {
         return eventId;
@@ -119,5 +140,20 @@ public class Event implements Serializable {
         return String.format(
                 "Event{eventId=%d, version=%d, title='%s', location='%s', date=%s, time=%s, cssBackgroundColor='%s'}",
                 eventId, version, title, location, date, time, cssBackgroundColor);
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Optional.ofNullable(eventId).map( e -> e.hashCode()).orElse(0);
+        result = 31 * result + title.hashCode();
+        result = 31 * result + location.hashCode();
+        result = 31 * result + date.hashCode();
+        result = 31 * result + time.hashCode();
+        result = 31 * result + cssBackgroundColor.hashCode();
+        return result;
     }
 }
