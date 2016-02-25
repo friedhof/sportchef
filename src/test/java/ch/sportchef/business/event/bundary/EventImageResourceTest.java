@@ -52,6 +52,8 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.TEMPORARY_REDIRECT;
+import static org.easymock.EasyMock.anyLong;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -139,6 +141,8 @@ public class EventImageResourceTest {
 
         expect(httpServletRequest.getContentType()).andStubReturn(contentType);
         expect(httpServletRequest.getInputStream()).andStubReturn(inputStreamMock);
+
+        eventImageServiceMock.uploadImage(anyLong(), anyObject());
         mockProvider.replayAll();
 
         // act
@@ -157,7 +161,7 @@ public class EventImageResourceTest {
         final ServletInputStreamMock inputStreamMock = new ServletInputStreamMock(inputStream);
 
         expect(httpServletRequest.getContentType()).andStubReturn(
-                MediaType.MULTIPART_FORM_DATA.concat("; boundary=mytestboundary"));
+                MediaType.MULTIPART_FORM_DATA);
         expect(httpServletRequest.getInputStream()).andStubReturn(inputStreamMock);
         mockProvider.replayAll();
 
