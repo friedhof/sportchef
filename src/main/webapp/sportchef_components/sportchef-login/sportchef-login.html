@@ -1,0 +1,60 @@
+<!--
+    SportChef – Sports Competition Management Software
+    Copyright (C) 2016 Marcus Fihlon
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html"/>
+<link rel="import" href="../../bower_components/paper-button/paper-button.html"/>
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html"/>
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html"/>
+<link rel="import" href="../sportchef-jquery/sportchef-jquery.html"/>
+
+<dom-module id="sportchef-login">
+    <template>
+        <style>
+            .container {
+                max-height: 750px;
+                max-width: 750px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        </style>
+
+        <!-- <iron-ajax auto url="/sportchef/imprint.md" handle-as="text" last-response="{{imprint}}"></iron-ajax> -->
+        <paper-dialog id="dialog-login" modal>
+            <paper-dialog-scrollable class="can-scroll">
+                <div class="container">{{imprint}}</div>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button id="btn-login-request-code" onClick="loginRequestCode()">Request Code</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        function loginRequestCode() {
+            document.getElementById('dialog-login').close();
+        };
+
+        Polymer({
+            is: "sportchef-login",
+
+            ready: function() {
+
+            }
+        });
+    </script>
+</dom-module>
