@@ -18,7 +18,9 @@
 package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.event.entity.Event;
+import ch.sportchef.business.event.entity.EventBuilder;
 
+import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -47,8 +49,14 @@ class EventRepository implements Serializable {
     }
 
     Event update(@NotNull final Event event) {
-        events.put(event.getEventId(), event);
-        return event;
+        final Event previousEvent = events.getOrDefault(event.getEventId(), event);
+        if ( previousEvent.getVersion() != event.getVersion() ) {
+            throw new OptimisticLockException();
+        } else {
+            events.put(event.getEventId(), EventBuilder.fromEvent(event).build());
+            return event;
+        }
+
     }
 
     Optional<Event> findByEventId(final long eventId) {
