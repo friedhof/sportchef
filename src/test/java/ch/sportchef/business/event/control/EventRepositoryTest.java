@@ -2,34 +2,53 @@ package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.event.entity.Event;
 import ch.sportchef.business.event.entity.EventBuilder;
-import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import javax.persistence.OptimisticLockException;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 public class EventRepositoryTest {
+
+    private Event createEvent(@NotNull final EventRepository eventRepository) {
+        final Event baseEvent = EventBuilder
+                .anEvent()
+                .withTitle("tetTitle")
+                .withLocation("Basel Hackergarten")
+                .withDate(LocalDate.of(2016, 4, 1))
+                .withTime(LocalTime.of(10, 12))
+                .build();
+
+        return eventRepository.create(baseEvent);
+    }
+
     @Test
-    public void shouldUpdateEventWithoutProblem() {
-        final EventRepository testee = new EventRepository();
-        final Event createdEvent = prepareEvent(testee);
+    public void updateOK() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+        final Event createdEvent = createEvent(eventRepository);
         final Event eventToUpdate = EventBuilder
                 .fromEvent(createdEvent)
                 .withTitle("changedTitle")
                 .buildWithVersion();
-        final Event updatedEvent =  testee.update(eventToUpdate);
 
+        // act
+        final Event updatedEvent =  eventRepository.update(eventToUpdate);
+
+        // assert
         assertThat(updatedEvent.getTitle(), is(equalTo("changedTitle")));
     }
 
     @Test(expected = OptimisticLockException.class)
-    public void shouldMakeOptimisticLockException() {
-        final EventRepository testee = new EventRepository();
-        final Event createdEvent = prepareEvent(testee);
+    public void updateWithConflict() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+        final Event createdEvent = createEvent(eventRepository);
         final Event eventToUpdate1 = EventBuilder
                 .fromEvent(createdEvent)
                 .withTitle("changedTitle1")
@@ -38,22 +57,12 @@ public class EventRepositoryTest {
                 .fromEvent(createdEvent)
                 .withTitle("changedTitle2")
                 .buildWithVersion();
-        final Event updatedEvent1 =  testee.update(eventToUpdate1);
-        final Event updatedEvent2 =  testee.update(eventToUpdate2);
 
+        // act
+        eventRepository.update(eventToUpdate1);
+        eventRepository.update(eventToUpdate2);
 
-    }
-
-    private Event prepareEvent(EventRepository testee) {
-        final Event baseEvent = EventBuilder
-                .anEvent()
-                .withTitle("tetTitle")
-                .withLocation("Basel Hackergarten")
-                .withDate(LocalDate.of(2016,  4,1))
-                .withTime(LocalTime.of(10,12))
-                .build();
-
-        return testee.create(baseEvent);
+        // assert
     }
 
 }

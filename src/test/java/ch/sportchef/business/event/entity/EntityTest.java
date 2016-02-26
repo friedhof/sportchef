@@ -31,7 +31,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class EntityTest {
 
     private static final Long EVENT_ID = 1L;
-    private static final Long EVENT_VERSION = null;
     private static final String EVENT_TITLE = "Test Event";
     private static final String EVENT_LOCATION = "Test Location";
     private static final LocalDate EVENT_DATE = LocalDate.of(1974, Month.JANUARY, 30);
@@ -85,7 +84,7 @@ public class EntityTest {
         // arrange
         final String toStringExpect = String.format(
                 "Event{eventId=%d, version=%d, title='%s', location='%s', date=%s, time=%s, cssBackgroundColor='%s'}",
-                EVENT_ID, EVENT_VERSION, EVENT_TITLE, EVENT_LOCATION, EVENT_DATE, EVENT_TIME, EVENT_CSS_BACKGROUND_COLOR);
+                EVENT_ID, event.getVersion(), EVENT_TITLE, EVENT_LOCATION, EVENT_DATE, EVENT_TIME, EVENT_CSS_BACKGROUND_COLOR);
 
         // act
         final String toStringIs = event.toString();

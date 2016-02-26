@@ -43,15 +43,15 @@ class EventRepository implements Serializable {
 
     Event create(@NotNull final Event event) {
         final Long eventId = eventSeq.incrementAndGet();
-        final Event eventToCreate = new Event(eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
+        final Event eventToCreate = EventBuilder.fromEvent(event).withEventId(eventId).build();
         events.put(eventId, eventToCreate);
         return eventToCreate;
     }
 
     Event update(@NotNull final Event event) {
         final Event previousEvent = events.getOrDefault(event.getEventId(), event);
-        if ( previousEvent.getVersion() != event.getVersion() ) {
-            throw new OptimisticLockException();
+        if (previousEvent.getVersion() != event.getVersion()) {
+            throw new OptimisticLockException("You tried to update an event that was modified concurrently!");
         } else {
             events.put(event.getEventId(), EventBuilder.fromEvent(event).build());
             return event;
