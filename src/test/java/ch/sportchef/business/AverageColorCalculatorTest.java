@@ -18,10 +18,8 @@
 package ch.sportchef.business;
 
 import org.junit.Test;
-import org.junit.internal.runners.statements.ExpectException;
 
 import javax.imageio.ImageIO;
-import javax.ws.rs.NotFoundException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -30,67 +28,45 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AverageColorCalculatorTest {
 
-    private static final String[] IMAGE_NAMES = {
-            "test-grey-light.png", //NON-NLS
-            "test-grey-dark.png" }; //NON-NLS
+    private static final String[][] TEST_IMAGES = {
+            { "test-grey-dark.png",  "#5E5E5E" }, //NON-NLS
+            { "test-grey-light.png", "#A0A0A0" }  //NON-NLS
+    };
 
     @Test
-    public final void testImageColorSuccess() throws URISyntaxException, IOException {
+    @SuppressWarnings("ObjectAllocationInLoop")
+    public void getAverageColorAsHex() throws URISyntaxException, IOException {
+        for (final String[] testImage : TEST_IMAGES) {
+            // arrange
+            final String testImageName = testImage[0];
+            final String expectedColorCode = testImage[1];
+            final Thread currentThread = Thread.currentThread();
+            final ClassLoader classLoader = currentThread.getContextClassLoader();
+            final URL url = classLoader.getResource(testImageName);
+            assert url != null;
+            final URI uri = url.toURI();
+            final File file = new File(uri);
+            final BufferedImage inputImage = ImageIO.read(file);
 
-        final Thread currentThread = Thread.currentThread();
-        final ClassLoader classLoader = currentThread.getContextClassLoader();
-        final URL url = classLoader.getResource("test-grey-light.png");
-        assert url != null;
-        final URI uri = url.toURI();
+            // act
+            final String averageColorAsHex = AverageColorCalculator.getAverageColorAsHex(inputImage);
 
-        // act
-        final String outputHex = testAverageColorAsHex(uri);
-
-        // assert
-        assertThat(outputHex, is("#A0A0A0"));
-    }
-
-    @Test
-    public final void testImageColorFailed() throws URISyntaxException, IOException {
-
-        final Thread currentThread = Thread.currentThread();
-        final ClassLoader classLoader = currentThread.getContextClassLoader();
-        final URL url = classLoader.getResource("test-grey-dark.png");
-        assert url != null;
-        final URI uri = url.toURI();
-
-        // act
-        final String outputHex = testAverageColorAsHex(uri);
-
-        // assert
-        assertThat(outputHex, not("#A0A0A0"));
+            // assert
+            assertThat(averageColorAsHex, is(expectedColorCode));
+        }
     }
 
     @Test(expected=NullPointerException.class)
-    public final void testImageColorWithoutImage() throws URISyntaxException, IOException {
-/*
-        final Thread currentThread = Thread.currentThread();
-        final ClassLoader classLoader = currentThread.getContextClassLoader();
-        final URL url = classLoader.getResource("test-grey-dark.png");
-        assert url != null;
-        final URI uri = url.toURI();
-*/
+    public final void testImageColorWithoutImage() {
+        // arrange
+
         // act
-        final String outputHex = testAverageColorAsHex(null);
+        AverageColorCalculator.getAverageColorAsHex(null);
 
         // assert
-        assertThat(outputHex, not("#A0A0A0"));
     }
-
-    private static String testAverageColorAsHex(final URI uri) throws IOException {
-        final File file = new File(uri);
-        final BufferedImage inputImage = ImageIO.read(file);
-        return AverageColorCalculator.getAverageColorAsHex(inputImage);
-    }
-
 }
