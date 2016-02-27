@@ -17,13 +17,14 @@
  */
 package ch.sportchef.business;
 
+import javax.validation.constraints.NotNull;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 public enum AverageColorCalculator {
     ;
 
-    public static String getAverageColorAsHex(final BufferedImage image) {
+    public static String getAverageColorAsHex(@NotNull final BufferedImage image) {
         int red = 0, green = 0, blue = 0, pixelCount = 0, columnCount, rowCount;
 
         for (columnCount = 0; columnCount < image.getWidth(); columnCount++) {
