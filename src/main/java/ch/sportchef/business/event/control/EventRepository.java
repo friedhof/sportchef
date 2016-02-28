@@ -50,13 +50,12 @@ class EventRepository implements Serializable {
 
     Event update(@NotNull final Event event) {
         final Event previousEvent = events.getOrDefault(event.getEventId(), event);
-        if (previousEvent.getVersion() != event.getVersion()) {
+        if (!previousEvent.getVersion().equals(event.getVersion())) {
             throw new OptimisticLockException("You tried to update an event that was modified concurrently!");
         } else {
             events.put(event.getEventId(), EventBuilder.fromEvent(event).build());
             return event;
         }
-
     }
 
     Optional<Event> findByEventId(final long eventId) {
