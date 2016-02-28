@@ -64,18 +64,19 @@ public class Event implements Serializable {
 
     private String cssBackgroundColor = DEFAULT_CSS_BACKGROUND_COLOR;
 
-    public Event() {
+    Event() {
         super();
     }
 
-    public Event(@NotNull final Long eventId,
+    Event(@NotNull final Long eventId,
                  @NotNull final String title,
                  @NotNull final String location,
                  @NotNull final LocalDate date,
                  @NotNull final LocalTime time) {
         this(eventId, title, location, date, time, DEFAULT_CSS_BACKGROUND_COLOR);
     }
-    public Event(@NotNull final Long eventId,
+
+    Event(@NotNull final Long eventId,
                  @NotNull final String title,
                  @NotNull final String location,
                  @NotNull final LocalDate date,
@@ -92,7 +93,7 @@ public class Event implements Serializable {
     }
 
 
-    public Event(@NotNull final Long eventId,
+    Event(@NotNull final Long eventId,
                  @NotNull final String title,
                  @NotNull final String location,
                  @NotNull final LocalDate date,
