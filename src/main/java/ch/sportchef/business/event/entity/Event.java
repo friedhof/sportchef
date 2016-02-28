@@ -64,7 +64,8 @@ public class Event implements Serializable {
 
     private String cssBackgroundColor = DEFAULT_CSS_BACKGROUND_COLOR;
 
-    Event() {
+    // Required by Jackson for JSON object maping!
+    private Event() {
         super();
     }
 
