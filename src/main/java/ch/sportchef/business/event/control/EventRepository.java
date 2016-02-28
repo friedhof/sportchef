@@ -23,13 +23,13 @@ import ch.sportchef.business.event.entity.EventBuilder;
 import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
 
 class EventRepository implements Serializable {
@@ -64,7 +64,11 @@ class EventRepository implements Serializable {
 
     List<Event> findAll() {
        return events.values().stream()
-               .sorted(comparingLong(Event::getEventId))
+               .sorted((event1, event2) -> {
+                   final LocalDateTime event1DateTime = LocalDateTime.of(event1.getDate(), event1.getTime());
+                   final LocalDateTime event2DateTime = LocalDateTime.of(event2.getDate(), event2.getTime());
+                   return event1DateTime.compareTo(event2DateTime);
+               })
                .collect(toList());
     }
 
