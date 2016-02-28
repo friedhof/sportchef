@@ -70,11 +70,9 @@ public class EventBuilder {
     }
 
     public Event build() {
-        Event event = new Event(eventId, title, location, date, time, cssBackgroundColor);
-        return event;
+        return new Event(eventId, title, location, date, time, cssBackgroundColor);
     }
     public Event buildWithVersion() {
-        Event event = new Event(eventId, title, location, date, time, cssBackgroundColor,version);
-        return event;
+        return new Event(eventId, title, location, date, time, cssBackgroundColor,version);
     }
 }

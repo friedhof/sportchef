@@ -22,6 +22,7 @@ import ch.sportchef.business.event.boundary.EventResource;
 import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
+import ch.sportchef.business.event.entity.EventBuilder;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
 import org.junit.Before;
@@ -79,8 +80,13 @@ public class EventResourceTest {
     @Test
     public void findWithSuccess() {
         // arrange
-        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
-                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final Event testEvent = EventBuilder.anEvent()
+                .withEventId(1L)
+                .withTitle("Testevent")
+                .withLocation("Testlocation")
+                .withDate(LocalDate.of(2099, Month.DECEMBER, 31))
+                .withTime(LocalTime.of(22, 0))
+                .build();
         expect(eventServiceMock.findByEventId(anyObject())).andStubReturn(Optional.of(testEvent));
         mockProvider.replayAll();
 
@@ -105,8 +111,13 @@ public class EventResourceTest {
     @Test
     public void updateWithSuccess() throws URISyntaxException {
         // arrange
-        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
-                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final Event testEvent = EventBuilder.anEvent()
+                .withEventId(1L)
+                .withTitle("Testevent")
+                .withLocation("Testlocation")
+                .withDate(LocalDate.of(2099, Month.DECEMBER, 31))
+                .withTime(LocalTime.of(22, 0))
+                .build();
         final String location = "http://localhost:8080/sportchef/api/events/1";
         final URI uri = new URI(location);
 
@@ -130,8 +141,13 @@ public class EventResourceTest {
     @Test(expected=NotFoundException.class)
     public void updateWithNotFound() {
         // arrange
-        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
-                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final Event testEvent = EventBuilder.anEvent()
+                .withEventId(1L)
+                .withTitle("Testevent")
+                .withLocation("Testlocation")
+                .withDate(LocalDate.of(2099, Month.DECEMBER, 31))
+                .withTime(LocalTime.of(22, 0))
+                .build();
 
         expect(eventServiceMock.findByEventId(testEvent.getEventId())).andStubReturn(Optional.empty());
         mockProvider.replayAll();
@@ -143,8 +159,13 @@ public class EventResourceTest {
     @Test
     public void deleteWithoutImageSuccess() {
         // arrange
-        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
-                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final Event testEvent = EventBuilder.anEvent()
+                .withEventId(1L)
+                .withTitle("Testevent")
+                .withLocation("Testlocation")
+                .withDate(LocalDate.of(2099, Month.DECEMBER, 31))
+                .withTime(LocalTime.of(22, 0))
+                .build();
 
         expect(eventServiceMock.findByEventId(testEvent.getEventId())).andStubReturn(Optional.of(testEvent));
         eventImageServiceMock.deleteImage(testEvent.getEventId());
@@ -162,8 +183,13 @@ public class EventResourceTest {
     @Test
     public void deleteWithImageSuccess() {
         // arrange
-        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
-                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final Event testEvent = EventBuilder.anEvent()
+                .withEventId(1L)
+                .withTitle("Testevent")
+                .withLocation("Testlocation")
+                .withDate(LocalDate.of(2099, Month.DECEMBER, 31))
+                .withTime(LocalTime.of(22, 0))
+                .build();
 
         expect(eventServiceMock.findByEventId(testEvent.getEventId())).andStubReturn(Optional.of(testEvent));
         mockProvider.replayAll();
@@ -189,8 +215,13 @@ public class EventResourceTest {
     @Test
     public void image() {
         // arrange
-        final Event testEvent = new Event(1L, "Testevent", "Testlocation",
-                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final Event testEvent = EventBuilder.anEvent()
+                .withEventId(1L)
+                .withTitle("Testevent")
+                .withLocation("Testlocation")
+                .withDate(LocalDate.of(2099, Month.DECEMBER, 31))
+                .withTime(LocalTime.of(22, 0))
+                .build();
 
         expect(eventServiceMock.findByEventId(testEvent.getEventId())).andStubReturn(Optional.of(testEvent));
         mockProvider.replayAll();

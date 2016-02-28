@@ -64,18 +64,12 @@ public class Event implements Serializable {
 
     private String cssBackgroundColor = DEFAULT_CSS_BACKGROUND_COLOR;
 
-    public Event() {
+    // Required by Jackson for JSON object maping!
+    private Event() {
         super();
     }
 
-    public Event(@NotNull final Long eventId,
-                 @NotNull final String title,
-                 @NotNull final String location,
-                 @NotNull final LocalDate date,
-                 @NotNull final LocalTime time) {
-        this(eventId, title, location, date, time, DEFAULT_CSS_BACKGROUND_COLOR);
-    }
-    public Event(@NotNull final Long eventId,
+    Event(@NotNull final Long eventId,
                  @NotNull final String title,
                  @NotNull final String location,
                  @NotNull final LocalDate date,
@@ -91,25 +85,16 @@ public class Event implements Serializable {
         this.version = (long)hashCode();
     }
 
-
-    public Event(@NotNull final Long eventId,
+    Event(@NotNull final Long eventId,
                  @NotNull final String title,
                  @NotNull final String location,
                  @NotNull final LocalDate date,
                  @NotNull final LocalTime time,
                  final String cssBackgroundColor,
                  @NotNull final Long version ) {
-        this();
-        this.eventId = eventId;
-        this.title = title;
-        this.location = location;
-        this.date = date;
-        this.time = time;
-        this.cssBackgroundColor = cssBackgroundColor;
+        this(eventId, title, location, date, time, cssBackgroundColor);
         this.version = version;
     }
-
-
 
     public Long getEventId() {
         return eventId;
