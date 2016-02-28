@@ -21,6 +21,8 @@ import ch.sportchef.business.AverageColorCalculator;
 import ch.sportchef.business.ImageResizer;
 import ch.sportchef.business.event.entity.Event;
 import ch.sportchef.business.event.entity.EventBuilder;
+import org.apache.commons.io.IOUtils;
+import pl.setblack.badass.Politician;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -33,7 +35,9 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Random;
 
 @Named
 @Singleton
@@ -88,6 +92,18 @@ public class EventImageService {
                 .withCssBackgroundColor(averageColor)
                 .buildWithVersion();
         eventService.update(eventToUpdate);
+    }
+
+    public void chooseRandomDefaultImage(@NotNull final Long eventId) {
+        final int index = new Random().nextInt(14);
+        final String filename = String.format("default-event-image-%03d.png", index);
+        Politician.beatAroundTheBush(() -> {
+            try (final InputStream inputStream =
+                         Thread.currentThread().getContextClassLoader().getResourceAsStream(filename)) {
+                final byte[] image = IOUtils.toByteArray(inputStream);
+                uploadImage(eventId, image);
+            }
+        });
     }
 
     public void deleteImage(@NotNull final Long eventId) {

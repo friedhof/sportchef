@@ -52,6 +52,7 @@ public class EventsResource {
     public Response save(@Valid final Event event, @Context final UriInfo info) {
         final Event saved = eventService.create(event);
         final long eventId = saved.getEventId();
+        eventImageService.chooseRandomDefaultImage(saved.getEventId());
         final URI uri = info.getAbsolutePathBuilder().path(File.separator + eventId).build();
         return Response.created(uri).build();
     }
