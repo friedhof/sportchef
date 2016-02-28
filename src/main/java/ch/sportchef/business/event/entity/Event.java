@@ -73,14 +73,6 @@ public class Event implements Serializable {
                  @NotNull final String title,
                  @NotNull final String location,
                  @NotNull final LocalDate date,
-                 @NotNull final LocalTime time) {
-        this(eventId, title, location, date, time, DEFAULT_CSS_BACKGROUND_COLOR);
-    }
-
-    Event(@NotNull final Long eventId,
-                 @NotNull final String title,
-                 @NotNull final String location,
-                 @NotNull final LocalDate date,
                  @NotNull final LocalTime time,
                  final String cssBackgroundColor) {
         this();
@@ -93,7 +85,6 @@ public class Event implements Serializable {
         this.version = (long)hashCode();
     }
 
-
     Event(@NotNull final Long eventId,
                  @NotNull final String title,
                  @NotNull final String location,
@@ -101,17 +92,9 @@ public class Event implements Serializable {
                  @NotNull final LocalTime time,
                  final String cssBackgroundColor,
                  @NotNull final Long version ) {
-        this();
-        this.eventId = eventId;
-        this.title = title;
-        this.location = location;
-        this.date = date;
-        this.time = time;
-        this.cssBackgroundColor = cssBackgroundColor;
+        this(eventId, title, location, date, time, cssBackgroundColor);
         this.version = version;
     }
-
-
 
     public Long getEventId() {
         return eventId;
