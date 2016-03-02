@@ -12,15 +12,20 @@ import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleRule;
 import org.needle4j.mock.EasyMockProvider;
+import org.picketlink.Identity;
+import org.picketlink.credential.DefaultLoginCredentials;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static java.lang.Boolean.FALSE;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.mock;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AuthenticationServiceTest {
@@ -46,12 +51,7 @@ public class AuthenticationServiceTest {
     @Inject
     private ConfigurationService configurationServiceMock;
 
-    @Test
-    public void requestChallengeOk() {
-        // arrange
-        final Optional<User> userOptional = Optional.of(
-                new User(TEST_USER_ID, TEST_USER_FIRSTNAME, TEST_USER_LASTNAME, TEST_USER_PHONE, TEST_USER_EMAIL));
-        expect(userServiceMock.findByEmail(TEST_USER_EMAIL)).andReturn(userOptional);
+    private Configuration createConfigurationMock() {
         final Configuration configurationMock = mock(Configuration.class);
         expect(configurationMock.getSMTPServer()).andReturn("localhost");
         expect(configurationMock.getSMTPPort()).andReturn(4444);
@@ -59,22 +59,15 @@ public class AuthenticationServiceTest {
         expect(configurationMock.getSMTPPassword()).andReturn("test");
         expect(configurationMock.getSMTPSSL()).andReturn(FALSE);
         expect(configurationMock.getSMTPFrom()).andReturn("noreply@sportchef.ch");
-        expect(configurationServiceMock.getConfiguration()).andReturn(configurationMock);
         replay(configurationMock);
-        mockProvider.replayAll();
+        return configurationMock;
+    }
+
+    private SmtpServer createSmtpServerMock() {
         final ServerOptions smtpServerOptions = new ServerOptions();
         smtpServerOptions.port = 4444;
         final SmtpServer smtpServer = SmtpServerFactory.startServer(smtpServerOptions);
-
-        // act
-        final boolean ok = authenticationService.requestChallenge(TEST_USER_EMAIL);
-
-        // assert
-        smtpServer.stop();
-        assertThat(smtpServer.getEmailCount(), is(1));
-        assertThat(smtpServer.getMessage(0).getFirstHeaderValue("To"), is(TEST_USER_EMAIL));
-        assertThat(ok, is(true));
-        mockProvider.verifyAll();
+        return smtpServer;
     }
 
     @Test
@@ -92,12 +85,60 @@ public class AuthenticationServiceTest {
     }
 
     @Test
-    public void validateChallenge() {
+    public void requestAndValidateChallenge() {
         // arrange
 
         // act
+        final String challenge = requestChallengeOk();
+        final String token = validateChallenge(challenge);
 
         // assert
+        System.out.println(token);
+    }
+
+    private String requestChallengeOk() {
+        // arrange
+        final Optional<User> userOptional = Optional.of(
+                new User(TEST_USER_ID, TEST_USER_FIRSTNAME, TEST_USER_LASTNAME, TEST_USER_PHONE, TEST_USER_EMAIL));
+        expect(userServiceMock.findByEmail(TEST_USER_EMAIL)).andReturn(userOptional);
+        expectLastCall().times(2);
+        final Configuration configurationMock = createConfigurationMock();
+        expect(configurationServiceMock.getConfiguration()).andReturn(configurationMock);
+        mockProvider.replayAll();
+        final SmtpServer smtpServer = createSmtpServerMock();
+
+        // act
+        final boolean ok = authenticationService.requestChallenge(TEST_USER_EMAIL);
+
+        // assert
+        smtpServer.stop();
+        assertThat(smtpServer.getEmailCount(), is(1));
+        assertThat(smtpServer.getMessage(0).getFirstHeaderValue("To"), is(TEST_USER_EMAIL));
+        assertThat(ok, is(true));
+
+        final String body = smtpServer.getMessage(0).getBody();
+        final String challenge = body.substring(body.indexOf("=") + 2);
+        return challenge;
+    }
+
+    private String validateChallenge(@NotNull final String challenge) {
+        // arrange
+        final Identity identityMock = mock(Identity.class);
+        expect(identityMock.isLoggedIn()).andReturn(false);
+        final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
+        expect(credentialMock.getUserId()).andReturn(TEST_USER_EMAIL);
+        expect(credentialMock.getPassword()).andReturn(challenge);
+        replay(identityMock, credentialMock);
+
+        // act
+        final Optional<String> token = authenticationService.validateChallenge(identityMock, credentialMock);
+
+        // assert
+        assertThat(token, notNullValue());
+        assertThat(token.isPresent(), is(true));
+        mockProvider.verifyAll();
+
+        return token.get();
     }
 
     @Test
