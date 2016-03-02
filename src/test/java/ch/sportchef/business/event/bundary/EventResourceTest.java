@@ -23,11 +23,11 @@ import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
 import ch.sportchef.business.event.entity.EventBuilder;
-import de.akquinet.jbosscc.needle.junit.NeedleRule;
-import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.junit.NeedleRule;
+import org.needle4j.mock.EasyMockProvider;
 
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;

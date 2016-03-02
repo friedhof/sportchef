@@ -20,8 +20,6 @@ package ch.sportchef.business.event.bundary;
 import ch.sportchef.business.event.boundary.EventImageResource;
 import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
-import de.akquinet.jbosscc.needle.junit.NeedleRule;
-import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
@@ -30,6 +28,8 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.junit.NeedleRule;
+import org.needle4j.mock.EasyMockProvider;
 
 import javax.inject.Inject;
 import javax.servlet.ReadListener;
