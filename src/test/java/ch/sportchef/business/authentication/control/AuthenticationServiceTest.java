@@ -246,7 +246,29 @@ public class AuthenticationServiceTest {
         assertThat(tokenOptional.isPresent(), is(false));
     }
 
+    @Test
+    public void logoutIsLoggedIn() {
+        // arrange
+        final Identity identityMock = mock(Identity.class);
+        expect(identityMock.isLoggedIn()).andReturn(true);
+        identityMock.logout();
+        replay(identityMock);
+
         // act
+        authenticationService.logout(identityMock);
+
+        // assert
+    }
+
+    @Test
+    public void logoutIsNotLoggedIn() {
+        // arrange
+        final Identity identityMock = mock(Identity.class);
+        expect(identityMock.isLoggedIn()).andReturn(false);
+        replay(identityMock);
+
+        // act
+        authenticationService.logout(identityMock);
 
         // assert
     }
