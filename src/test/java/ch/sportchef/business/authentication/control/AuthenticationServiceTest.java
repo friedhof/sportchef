@@ -14,12 +14,14 @@ import org.needle4j.junit.NeedleRule;
 import org.needle4j.mock.EasyMockProvider;
 import org.picketlink.Identity;
 import org.picketlink.credential.DefaultLoginCredentials;
+import org.picketlink.idm.model.Account;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static java.lang.Boolean.FALSE;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.mock;
@@ -216,8 +218,33 @@ public class AuthenticationServiceTest {
     }
 
     @Test
-    public void logout() {
+    public void generateTokenOk() {
         // arrange
+        final Optional<User> userOptional = Optional.of(
+                new User(TEST_USER_ID, TEST_USER_FIRSTNAME, TEST_USER_LASTNAME, TEST_USER_PHONE, TEST_USER_EMAIL));
+        expect(userServiceMock.findByEmail(TEST_USER_EMAIL)).andReturn(userOptional);
+        mockProvider.replayAll();
+
+        // act
+        final Optional<String> tokenOptional = authenticationService.generateToken(TEST_USER_EMAIL);
+
+        // assert
+        assertThat(tokenOptional.isPresent(), is(true));
+        assertThat(tokenOptional.get(), notNullValue());
+    }
+
+    @Test
+    public void generateTokenNotOk() {
+        // arrange
+        expect(userServiceMock.findByEmail(TEST_USER_EMAIL)).andReturn(Optional.empty());
+        mockProvider.replayAll();
+
+        // act
+        final Optional<String> tokenOptional = authenticationService.generateToken(TEST_USER_EMAIL);
+
+        // assert
+        assertThat(tokenOptional.isPresent(), is(false));
+    }
 
         // act
 
