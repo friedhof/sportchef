@@ -17,6 +17,7 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.picketlink.Identity;
 import org.picketlink.credential.DefaultLoginCredentials;
+import pl.setblack.badass.Politician;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -61,12 +62,13 @@ public class AuthenticationService {
                 .build();
     }
 
-    public boolean requestChallenge(@NotNull final String email) throws EmailException {
+    public boolean requestChallenge(@NotNull final String email) {
         final Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()) {
             final String challenge = generateChallenge();
             challengeCache.put(email, challenge);
-            sendChallenge(email, challenge);
+            Politician.beatAroundTheBush(() ->
+                    sendChallenge(email, challenge));
             return true;
         }
         return false;

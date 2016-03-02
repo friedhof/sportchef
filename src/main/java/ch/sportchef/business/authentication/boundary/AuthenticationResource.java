@@ -53,7 +53,7 @@ public class AuthenticationResource {
 
     @GET
     @Consumes({MediaType.WILDCARD})
-    public Response requestChallenge(@QueryParam("email") final String email) throws EmailException {
+    public Response requestChallenge(@QueryParam("email") final String email) {
         if (email == null || email.trim().isEmpty()) {
             return Response.status(Status.BAD_REQUEST).build();
         }
