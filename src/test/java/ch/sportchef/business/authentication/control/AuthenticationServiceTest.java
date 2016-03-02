@@ -142,21 +142,77 @@ public class AuthenticationServiceTest {
     }
 
     @Test
-    public void authentication() {
+    public void authenticationIsLoggedInOk() {
         // arrange
+        final Identity identityMock = mock(Identity.class);
+        expect(identityMock.isLoggedIn()).andReturn(true);
+        expect(identityMock.getAccount()).andReturn(mock(Account.class));
+        final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
+        replay(identityMock, credentialMock);
+        final String token = "1234567890";
 
         // act
+        final Optional<String> tokenOptional = authenticationService.authentication(identityMock, credentialMock, token);
 
         // assert
+        assertThat(tokenOptional.isPresent(), is(true));
+        assertThat(tokenOptional.get(), is(token));
     }
 
     @Test
-    public void generateToken() {
+    public void authenticationIsLoggedInNotOk() {
         // arrange
+        final Identity identityMock = mock(Identity.class);
+        expect(identityMock.isLoggedIn()).andReturn(true);
+        expect(identityMock.getAccount()).andReturn(null);
+        final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
+        replay(identityMock, credentialMock);
+        final String token = "1234567890";
 
         // act
+        final Optional<String> tokenOptional = authenticationService.authentication(identityMock, credentialMock, token);
 
         // assert
+        assertThat(tokenOptional.isPresent(), is(false));
+    }
+
+    @Test
+    public void authenticationIsNotLoggedInOk() {
+        // arrange
+        final Identity identityMock = mock(Identity.class);
+        expect(identityMock.isLoggedIn()).andReturn(false);
+        expect(identityMock.getAccount()).andReturn(mock(Account.class));
+        expect(identityMock.login()).andReturn(Identity.AuthenticationResult.SUCCESS);
+        final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
+        credentialMock.setCredential(anyObject());
+        replay(identityMock, credentialMock);
+        final String token = "1234567890";
+
+        // act
+        final Optional<String> tokenOptional = authenticationService.authentication(identityMock, credentialMock, token);
+
+        // assert
+        assertThat(tokenOptional.isPresent(), is(true));
+        assertThat(tokenOptional.get(), is(token));
+    }
+
+    @Test
+    public void authenticationIsNotLoggedInNotOk() {
+        // arrange
+        final Identity identityMock = mock(Identity.class);
+        expect(identityMock.isLoggedIn()).andReturn(false);
+        expect(identityMock.getAccount()).andReturn(null);
+        expect(identityMock.login()).andReturn(Identity.AuthenticationResult.FAILED);
+        final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
+        credentialMock.setCredential(anyObject());
+        replay(identityMock, credentialMock);
+        final String token = "1234567890";
+
+        // act
+        final Optional<String> tokenOptional = authenticationService.authentication(identityMock, credentialMock, token);
+
+        // assert
+        assertThat(tokenOptional.isPresent(), is(false));
     }
 
     @Test
