@@ -18,15 +18,15 @@
 package ch.sportchef.business.event.bundary;
 
 import ch.sportchef.business.event.boundary.EventResource;
-import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.boundary.EventsResource;
+import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
 import ch.sportchef.business.event.entity.EventBuilder;
-import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
-import de.akquinet.jbosscc.needle.junit.NeedleRule;
-import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleRule;
+import org.needle4j.mock.EasyMockProvider;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
