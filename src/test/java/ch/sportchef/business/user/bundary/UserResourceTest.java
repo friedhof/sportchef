@@ -20,6 +20,7 @@ package ch.sportchef.business.user.bundary;
 import ch.sportchef.business.user.boundary.UserResource;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
+import ch.sportchef.business.user.entity.UserBuilder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,10 +67,19 @@ public class UserResourceTest {
         userResource = new UserResource(1L, userServiceMock);
     }
 
+    private User createTestUser() {
+        return UserBuilder.anUser()
+                .withUserId(1L)
+                .withFirstName("John")
+                .withLastName("Doe")
+                .withPhone("+41 79 555 00 01")
+                .withEmail("john.doe@sportchef.ch").build();
+    }
+
     @Test
     public void findWithSuccess() {
         // arrange
-        final User testUser = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
+        final User testUser = createTestUser();
         expect(userServiceMock.findByUserId(anyObject())).andStubReturn(Optional.of(testUser));
         mockProvider.replayAll();
 
@@ -94,7 +104,7 @@ public class UserResourceTest {
     @Test
     public void updateWithSuccess() throws URISyntaxException {
         // arrange
-        final User testUser = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
+        final User testUser = createTestUser();
         final String location = "http://localhost:8080/sportchef/api/users/1";
         final URI uri = new URI(location);
 
@@ -118,7 +128,7 @@ public class UserResourceTest {
     @Test(expected=NotFoundException.class)
     public void updateWithNotFound() {
         // arrange
-        final User testUser = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
+        final User testUser = createTestUser();
 
         expect(userServiceMock.findByUserId(testUser.getUserId())).andStubReturn(Optional.empty());
         mockProvider.replayAll();
@@ -130,7 +140,7 @@ public class UserResourceTest {
     @Test
     public void deleteWithSuccess() {
         // arrange
-        final User testUser = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
+        final User testUser = createTestUser();
 
         expect(userServiceMock.findByUserId(testUser.getUserId())).andStubReturn(Optional.of(testUser));
         mockProvider.replayAll();

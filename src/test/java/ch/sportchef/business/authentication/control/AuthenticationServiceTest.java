@@ -4,6 +4,7 @@ import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
+import ch.sportchef.business.user.entity.UserBuilder;
 import com.dumbster.smtp.ServerOptions;
 import com.dumbster.smtp.SmtpServer;
 import com.dumbster.smtp.SmtpServerFactory;
@@ -53,6 +54,16 @@ public class AuthenticationServiceTest {
     @Inject
     private ConfigurationService configurationServiceMock;
 
+    private User createTestUser() {
+        return UserBuilder.anUser()
+                .withUserId(TEST_USER_ID)
+                .withFirstName(TEST_USER_FIRSTNAME)
+                .withLastName(TEST_USER_LASTNAME)
+                .withPhone(TEST_USER_PHONE)
+                .withEmail(TEST_USER_EMAIL)
+                .build();
+    }
+
     private Configuration createConfigurationMock() {
         final Configuration configurationMock = mock(Configuration.class);
         expect(configurationMock.getSMTPServer()).andReturn("localhost");
@@ -100,8 +111,7 @@ public class AuthenticationServiceTest {
 
     private String requestChallengeOk() {
         // arrange
-        final Optional<User> userOptional = Optional.of(
-                new User(TEST_USER_ID, TEST_USER_FIRSTNAME, TEST_USER_LASTNAME, TEST_USER_PHONE, TEST_USER_EMAIL));
+        final Optional<User> userOptional = Optional.of(createTestUser());
         expect(userServiceMock.findByEmail(TEST_USER_EMAIL)).andReturn(userOptional);
         expectLastCall().times(2);
         final Configuration configurationMock = createConfigurationMock();
@@ -220,8 +230,7 @@ public class AuthenticationServiceTest {
     @Test
     public void generateTokenOk() {
         // arrange
-        final Optional<User> userOptional = Optional.of(
-                new User(TEST_USER_ID, TEST_USER_FIRSTNAME, TEST_USER_LASTNAME, TEST_USER_PHONE, TEST_USER_EMAIL));
+        final Optional<User> userOptional = Optional.of(createTestUser());
         expect(userServiceMock.findByEmail(TEST_USER_EMAIL)).andReturn(userOptional);
         mockProvider.replayAll();
 

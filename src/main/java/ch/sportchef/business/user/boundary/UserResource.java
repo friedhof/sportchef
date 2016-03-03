@@ -19,6 +19,7 @@ package ch.sportchef.business.user.boundary;
 
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
+import ch.sportchef.business.user.entity.UserBuilder;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -56,7 +57,7 @@ public class UserResource {
     @PUT
     public Response update(@Valid final User user, @Context final UriInfo info) {
         find(); // only update existing users
-        final User userToUpdate = new User(this.userId, user.getFirstName(), user.getLastName(), user.getPhone(), user.getEmail());
+        final User userToUpdate = UserBuilder.fromUser(user).withUserId(userId).build();
         final User updatedUser = userService.update(userToUpdate);
         final URI uri = info.getAbsolutePathBuilder().build();
         return Response.ok(updatedUser).header("Location", uri.toString()).build();
