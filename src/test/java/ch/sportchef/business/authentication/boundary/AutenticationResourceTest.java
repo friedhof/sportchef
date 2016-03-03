@@ -19,6 +19,7 @@ package ch.sportchef.business.authentication.boundary;
 
 import ch.sportchef.business.authentication.control.AuthenticationService;
 import ch.sportchef.business.user.entity.User;
+import ch.sportchef.business.user.entity.UserBuilder;
 import org.apache.commons.mail.EmailException;
 import org.junit.Rule;
 import org.junit.Test;
@@ -83,7 +84,13 @@ public class AutenticationResourceTest {
     @Test
     public void requestChallengeWithSuccess() throws EmailException {
         // arrange
-        final User testUser = new User(0L, "AuthTest", "AuthTest", "AuthTest", TEST_USER_EMAIL);
+        final User testUser = UserBuilder.anUser()
+                .withUserId(0L)
+                .withFirstName("AuthTest")
+                .withLastName("AuthTest")
+                .withPhone("AuthTest")
+                .withEmail(TEST_USER_EMAIL)
+                .build();
         expect(authenticationServiceMock.requestChallenge(TEST_USER_EMAIL)).andReturn(true);
         mockProvider.replayAll();
 

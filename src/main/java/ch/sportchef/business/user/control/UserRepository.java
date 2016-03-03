@@ -19,6 +19,7 @@ package ch.sportchef.business.user.control;
 
 import ch.sportchef.business.exception.ExpectationFailedException;
 import ch.sportchef.business.user.entity.User;
+import ch.sportchef.business.user.entity.UserBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -44,7 +45,7 @@ class UserRepository implements Serializable {
             throw new ExpectationFailedException("Email address has to be unique");
         }
         final Long userId = userSeq.incrementAndGet();
-        final User userToCreate = new User(userId, user.getFirstName(), user.getLastName(), user.getPhone(), user.getEmail());
+        final User userToCreate = UserBuilder.fromUser(user).withUserId(userId).build();
         this.users.put(userId, userToCreate);
         return userToCreate;
     }

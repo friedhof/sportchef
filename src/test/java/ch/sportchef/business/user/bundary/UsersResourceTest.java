@@ -22,6 +22,7 @@ import ch.sportchef.business.user.boundary.UserResource;
 import ch.sportchef.business.user.boundary.UsersResource;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
+import ch.sportchef.business.user.entity.UserBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
@@ -29,6 +30,7 @@ import org.needle4j.junit.NeedleRule;
 import org.needle4j.mock.EasyMockProvider;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -65,11 +67,31 @@ public class UsersResourceTest {
     @Inject
     private UriBuilder uriBuilderMock;
 
+    private User createJohnDoe(@NotNull final Long userId) {
+        return UserBuilder.anUser()
+                .withUserId(userId)
+                .withFirstName("John")
+                .withLastName("Doe")
+                .withPhone("+41 79 555 00 01")
+                .withEmail("john.doe@sportchef.ch")
+                .build();
+    }
+
+    private User createJaneDoe(@NotNull final Long userId) {
+        return UserBuilder.anUser()
+                .withUserId(userId)
+                .withFirstName("Jane")
+                .withLastName("Doe")
+                .withPhone("+41 79 555 00 02")
+                .withEmail("jane.doe@sportchef.ch")
+                .build();
+    }
+
     @Test
     public void saveWithSuccess() throws URISyntaxException {
         // arrange
-        final User userToCreate = new User(0L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
-        final User savedUser = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
+        final User userToCreate = createJohnDoe(0L);
+        final User savedUser = createJohnDoe(1L);
         final String location = "http://localhost:8080/sportchef/api/users/1";
         final URI uri = new URI(location);
 
@@ -91,7 +113,7 @@ public class UsersResourceTest {
     @Test(expected=ExpectationFailedException.class)
     public void saveWithExpectationFailed() {
         // arrange
-        final User userToCreate = new User(0L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
+        final User userToCreate = createJohnDoe(0L);
         expect(userServiceMock.create(userToCreate))
                 .andStubThrow(new ExpectationFailedException("Email address has to be unique"));
         mockProvider.replayAll();
@@ -103,8 +125,8 @@ public class UsersResourceTest {
     @Test
     public void findAll() {
         // arrange
-        final User user1 = new User(1L, "John", "Doe", "+41 79 555 00 01", "john.doe@sportchef.ch");
-        final User user2 = new User(2L, "Jane", "Doe", "+41 79 555 00 02", "jane.doe@sportchef.ch");
+        final User user1 = createJohnDoe(1L);
+        final User user2 = createJaneDoe(2L);
         final List<User> users = new ArrayList<>();
         users.add(user1);
         users.add(user2);
