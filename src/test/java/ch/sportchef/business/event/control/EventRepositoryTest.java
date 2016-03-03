@@ -123,4 +123,30 @@ public class EventRepositoryTest {
         assertThat(eventList, notNullValue());
         assertThat(eventList.size(), is(0));
     }
+
+    @Test
+    public void deleteExistingEvent() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+        final Event event = createEvent(eventRepository);
+
+        // act
+        eventRepository.delete(event.getEventId());
+
+        // assert
+        assertThat(eventRepository.findByEventId(event.getEventId()), is(Optional.empty()));
+    }
+
+    @Test
+    public void deleteNonExistingEvent() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+
+        // act
+        eventRepository.delete(1L);
+
+        // assert
+        assertThat(eventRepository.findByEventId(1L), is(Optional.empty()));
+    }
+
 }
