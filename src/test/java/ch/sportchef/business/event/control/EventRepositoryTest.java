@@ -8,6 +8,7 @@ import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -65,4 +66,29 @@ public class EventRepositoryTest {
         // assert
     }
 
+    @Test
+    public void findByEventIdFound() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+        final Event event = createEvent(eventRepository);
+
+        // act
+        final Optional<Event> eventOptional = eventRepository.findByEventId(event.getEventId());
+
+        // assert
+        assertThat(eventOptional.isPresent(), is(true));
+        assertThat(eventOptional.get(), is(event));
+    }
+
+    @Test
+    public void findByEventIdNotFound() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+
+        // act
+        final Optional<Event> eventOptional = eventRepository.findByEventId(1L);
+
+        // assert
+        assertThat(eventOptional.isPresent(), is(false));
+    }
 }
