@@ -8,9 +8,12 @@ import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EventRepositoryTest {
@@ -63,6 +66,87 @@ public class EventRepositoryTest {
         eventRepository.update(eventToUpdate2);
 
         // assert
+    }
+
+    @Test
+    public void findByEventIdFound() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+        final Event event = createEvent(eventRepository);
+
+        // act
+        final Optional<Event> eventOptional = eventRepository.findByEventId(event.getEventId());
+
+        // assert
+        assertThat(eventOptional.isPresent(), is(true));
+        assertThat(eventOptional.get(), is(event));
+    }
+
+    @Test
+    public void findByEventIdNotFound() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+
+        // act
+        final Optional<Event> eventOptional = eventRepository.findByEventId(1L);
+
+        // assert
+        assertThat(eventOptional.isPresent(), is(false));
+    }
+
+    @Test
+    public void findAllFound() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+        final Event event1 = createEvent(eventRepository);
+        final Event event2 = createEvent(eventRepository);
+
+        // act
+        final List<Event> eventList = eventRepository.findAll();
+
+        // assert
+        assertThat(eventList, notNullValue());
+        assertThat(eventList.size(), is(2));
+        assertThat(eventList.get(0), is(event1));
+        assertThat(eventList.get(1), is(event2));
+    }
+
+    @Test
+    public void findAllNotFound() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+
+        // act
+        final List<Event> eventList = eventRepository.findAll();
+
+        // assert
+        assertThat(eventList, notNullValue());
+        assertThat(eventList.size(), is(0));
+    }
+
+    @Test
+    public void deleteExistingEvent() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+        final Event event = createEvent(eventRepository);
+
+        // act
+        eventRepository.delete(event.getEventId());
+
+        // assert
+        assertThat(eventRepository.findByEventId(event.getEventId()), is(Optional.empty()));
+    }
+
+    @Test
+    public void deleteNonExistingEvent() {
+        // arrange
+        final EventRepository eventRepository = new EventRepository();
+
+        // act
+        eventRepository.delete(1L);
+
+        // assert
+        assertThat(eventRepository.findByEventId(1L), is(Optional.empty()));
     }
 
 }
