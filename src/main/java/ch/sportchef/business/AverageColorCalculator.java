@@ -25,7 +25,12 @@ public enum AverageColorCalculator {
     ;
 
     public static String getAverageColorAsHex(@NotNull final BufferedImage image) {
-        int red = 0, green = 0, blue = 0, pixelCount = 0, columnCount, rowCount;
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+        int pixelCount = 0;
+        int columnCount;
+        int rowCount;
 
         for (columnCount = 0; columnCount < image.getWidth(); columnCount++) {
             for (rowCount = 0; rowCount < image.getHeight(); pixelCount++) {
