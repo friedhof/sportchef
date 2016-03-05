@@ -47,6 +47,6 @@ public class SimpleTokenCredential extends AbstractBaseCredentials {
 
     @Override
     public String toString() {
-        return String.format("SimpleTokenCredential{token='%s}", token); //NON-NLS
+        return String.format("SimpleTokenCredential{token='%s'}", token); //NON-NLS
     }
 }
