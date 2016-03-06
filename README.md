@@ -62,6 +62,24 @@ If you are a contributor and you are missing on this list, please add your entry
 |    v4.1 | End of November 2016  |                  |
 |    v4.2 | End of December 2016  |                  |
 
+## Overview of issues
+
+We use [Waffle.io](http://waffle.io/McPringle/sportchef) for a really useful overview of our issues. Our issues can have one of five states. The states are:
+
+| Status      | Explanation                                                                        |
+| ----------- | ---------------------------------------------------------------------------------- |
+| Backlog     | All open issues *not ready* to be worked on.                                       |
+| Ready       | All open issues *ready* to be worked on.                                           |
+| In Progress | All issues, somebody *is working* on.                                              |
+| In Review   | Implementation is finished but should be reviewed or is waiting as a pull request. |
+| Done        | Issues closed in the last week.                                                    |
+
+**If you would like to contribute to *SportChef*, please choose an issue from the *Ready* column and add a comment, so that we know what issue you choosed and we're able to update the status of the issue.**
+
+If you prefer an issue which is not yet ready and listed in the *Backlog*, please add a comment before starting to work on it, so we can discuss the issue beforehand and take it to the *Ready* state.
+
+If there is an issue already *In Progress* and you would like to help, please add a comment to the issue to get in contact with the assigned developer.
+
 ## Source code management
 
 ### GIT Workflow Rules
