@@ -1,5 +1,5 @@
 *SportChef*
-======
+===========
 
 [![Build Status](https://travis-ci.org/McPringle/sportchef.svg?branch=develop)](https://travis-ci.org/McPringle/sportchef) [![Coverage Status](https://coveralls.io/repos/github/McPringle/sportchef/badge.svg?branch=develop)](https://coveralls.io/github/McPringle/sportchef?branch=develop) [![Codacy Badge](https://api.codacy.com/project/badge/grade/c9339611012742f68b0d8e0f0dcd2064)](https://www.codacy.com/app/McPringle/sportchef) [![Dependency Status](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c) [![Dependency Status](https://www.versioneye.com/user/projects/562e699636d0ab00210013b8/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699636d0ab00210013b8)<br/>[![Stories in Ready](https://badge.waffle.io/McPringle/sportchef.png?label=ready&title=Ready)](http://waffle.io/McPringle/sportchef) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/issue)](http://issuestats.com/github/McPringle/sportchef) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/pr)](http://issuestats.com/github/McPringle/sportchef) [![Join the chat at https://gitter.im/McPringle/sportchef](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/McPringle/sportchef?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -61,6 +61,7 @@ We use a [Maven](https://maven.apache.org/) build to tie everything together. As
 A huge thank you to all the contributors! All contributors are listed below (sorted alphabetically by GitHub username):
 
 - [CoalaJoe](https://github.com/CoalaJoe)
+- [Interactiondesigner](https://github.com/Interactiondesigner)
 - [jarekratajski](https://github.com/jarekratajski)
 - [McPringle](https://github.com/McPringle)
 - [PReimers](https://github.com/PReimers)
@@ -72,8 +73,8 @@ If you are a contributor and you are missing on this list, please add your entry
 | Version | Planned Release Date  | Status           |
 | ------- | --------------------- | ---------------- |
 |    v1.0 | End of January 2016   | released         |
-|    v1.1 | End of February 2016  | work in progress |
-|    v1.2 | End of March 2016     |                  |
+|    v1.1 | End of February 2016  | released         |
+|    v1.2 | End of March 2016     | work in progress |
 |    v2.0 | End of April 2016     |                  |
 |    v2.1 | End of May 2016       |                  |
 |    v2.2 | End of June 2016      |                  |
@@ -84,6 +85,24 @@ If you are a contributor and you are missing on this list, please add your entry
 |    v4.1 | End of November 2016  |                  |
 |    v4.2 | End of December 2016  |                  |
 
+## Overview of issues
+
+We use [Waffle.io](http://waffle.io/McPringle/sportchef) for a really useful overview of our issues. Our issues can have one of five states. The states are:
+
+| Status      | Explanation                                                                        |
+| ----------- | ---------------------------------------------------------------------------------- |
+| Backlog     | All open issues *not ready* to be worked on.                                       |
+| Ready       | All open issues *ready* to be worked on.                                           |
+| In Progress | All issues, somebody *is working* on.                                              |
+| In Review   | Implementation is finished but should be reviewed or is waiting as a pull request. |
+| Done        | Issues closed in the last week.                                                    |
+
+**If you would like to contribute to *SportChef*, please choose an issue from the *Ready* column and add a comment, so that we know what issue you choosed and we're able to update the status of the issue.**
+
+If you prefer an issue which is not yet ready and listed in the *Backlog*, please add a comment before starting to work on it, so we can discuss the issue beforehand and take it to the *Ready* state.
+
+If there is an issue already *In Progress* and you would like to help, please add a comment to the issue to get in contact with the assigned developer.
+
 ## Source code management
 
 ### GIT Workflow Rules
@@ -91,6 +110,8 @@ If you are a contributor and you are missing on this list, please add your entry
 We use the GitFlow workflow for *SportChef*. You can read a really good explanation of GitFlow on the Blog of [Vincent Driessen](http://nvie.com/): [A successful Git branching model](http://nvie.com/posts/a-successful-git-branching-model/)
 
 ![GitFlow Workflow Visualization by Seibert Media](https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-4.png)
+
+**Important: If you start to work on a new feature, please start on the *develop* branch!**
 
 ### Keep your fork in sync
 
