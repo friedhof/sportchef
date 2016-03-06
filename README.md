@@ -50,8 +50,8 @@ If you are a contributor and you are missing on this list, please add your entry
 | Version | Planned Release Date  | Status           |
 | ------- | --------------------- | ---------------- |
 |    v1.0 | End of January 2016   | released         |
-|    v1.1 | End of February 2016  | work in progress |
-|    v1.2 | End of March 2016     |                  |
+|    v1.1 | End of February 2016  | released         |
+|    v1.2 | End of March 2016     | work in progress |
 |    v2.0 | End of April 2016     |                  |
 |    v2.1 | End of May 2016       |                  |
 |    v2.2 | End of June 2016      |                  |
