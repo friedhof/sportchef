@@ -88,6 +88,8 @@ We use the GitFlow workflow for *SportChef*. You can read a really good explanat
 
 ![GitFlow Workflow Visualization by Seibert Media](https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-4.png)
 
+**Important: If you start to work on a new feature, please start on the *develop* branch!**
+
 ### Keep your fork in sync
 
 If you fork this repository, GitHub will not keep your fork in sync with this repository. You have to do it on your own.
