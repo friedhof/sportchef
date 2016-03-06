@@ -13,6 +13,16 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+## Version 1.0
+
+- List all events on one page
+- Use persistence framework (no database)
+- Add imprint page
+- New administration page
+- Custom configuration file
+- Resize event images on upload
+- Calculate background color of events based on the event image
+
 # Technology
 
 ## Server
