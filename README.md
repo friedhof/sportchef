@@ -38,6 +38,7 @@ We use a [Maven](https://maven.apache.org/) build to tie everything together. As
 A huge thank you to all the contributors! All contributors are listed below (sorted alphabetically by GitHub username):
 
 - [CoalaJoe](https://github.com/CoalaJoe)
+- [Interactiondesigner](https://github.com/Interactiondesigner)
 - [jarekratajski](https://github.com/jarekratajski)
 - [McPringle](https://github.com/McPringle)
 - [PReimers](https://github.com/PReimers)
