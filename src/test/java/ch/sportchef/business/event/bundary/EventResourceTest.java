@@ -26,6 +26,7 @@ import ch.sportchef.business.event.entity.EventBuilder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
 import org.needle4j.mock.EasyMockProvider;
 
@@ -53,7 +54,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class EventResourceTest {
 
     @Rule
-    public NeedleRule needleRule = new NeedleRule();
+    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
 
     private EventResource eventResource;
 

@@ -24,6 +24,7 @@ import ch.sportchef.business.user.entity.UserBuilder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
 import org.needle4j.mock.EasyMockProvider;
 
@@ -46,7 +47,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class UserResourceTest {
 
     @Rule
-    public NeedleRule needleRule = new NeedleRule();
+    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
 
     private UserResource userResource;
 

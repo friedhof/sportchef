@@ -11,6 +11,7 @@ import com.dumbster.smtp.SmtpServerFactory;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
 import org.needle4j.mock.EasyMockProvider;
 import org.picketlink.Identity;
@@ -40,7 +41,7 @@ public class AuthenticationServiceTest {
     private static final String TEST_USER_EMAIL = "john.doe@sportchef.ch";
 
     @Rule
-    public NeedleRule needleRule = new NeedleRule();
+    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
 
     @ObjectUnderTest(postConstruct = true)
     private AuthenticationService authenticationService;

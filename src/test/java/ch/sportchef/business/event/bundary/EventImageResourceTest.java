@@ -28,6 +28,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
 import org.needle4j.mock.EasyMockProvider;
 
@@ -63,7 +64,7 @@ public class EventImageResourceTest {
     private static final String TEST_IMAGE_NAME = "test-350x200.png";
 
     @Rule
-    public NeedleRule needleRule = new NeedleRule();
+    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
 
     private EventImageResource eventImageResource;
 
