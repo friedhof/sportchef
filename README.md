@@ -13,6 +13,19 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Release Notes
+
+## Version 1.1
+
+- Default images are assigned to events without an image
+- The imprint now opens in a dialog instead of a separate page
+- Started with integration builds
+- Added a lot of automated tests
+- Measure the test coverage
+- Static code analysis to increase code quality
+- Fixed a lot of small bugs
+- Increased code quality
+
 ## Version 1.0
 
 - List all events on one page
