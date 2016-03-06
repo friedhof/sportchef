@@ -1,6 +1,6 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2015, 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,7 +13,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.event.entity;
 
@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 @Entity
 @XmlRootElement
@@ -63,19 +64,12 @@ public class Event implements Serializable {
 
     private String cssBackgroundColor = DEFAULT_CSS_BACKGROUND_COLOR;
 
-    public Event() {
+    // Required by Jackson for JSON object maping!
+    private Event() {
         super();
     }
 
-    public Event(@NotNull final Long eventId,
-                 @NotNull final String title,
-                 @NotNull final String location,
-                 @NotNull final LocalDate date,
-                 @NotNull final LocalTime time) {
-        this(eventId, title, location, date, time, DEFAULT_CSS_BACKGROUND_COLOR);
-    }
-
-    public Event(@NotNull final Long eventId,
+    Event(@NotNull final Long eventId,
                  @NotNull final String title,
                  @NotNull final String location,
                  @NotNull final LocalDate date,
@@ -88,6 +82,18 @@ public class Event implements Serializable {
         this.date = date;
         this.time = time;
         this.cssBackgroundColor = cssBackgroundColor;
+        this.version = (long)hashCode();
+    }
+
+    Event(@NotNull final Long eventId,
+                 @NotNull final String title,
+                 @NotNull final String location,
+                 @NotNull final LocalDate date,
+                 @NotNull final LocalTime time,
+                 final String cssBackgroundColor,
+                 @NotNull final Long version ) {
+        this(eventId, title, location, date, time, cssBackgroundColor);
+        this.version = version;
     }
 
     public Long getEventId() {
@@ -112,5 +118,27 @@ public class Event implements Serializable {
 
     public String getCssBackgroundColor() {
         return cssBackgroundColor;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Event{eventId=%d, version=%d, title='%s', location='%s', date=%s, time=%s, cssBackgroundColor='%s'}",
+                eventId, version, title, location, date, time, cssBackgroundColor);
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Optional.ofNullable(eventId).map( e -> e.hashCode()).orElse(0);
+        result = 31 * result + title.hashCode();
+        result = 31 * result + location.hashCode();
+        result = 31 * result + date.hashCode();
+        result = 31 * result + time.hashCode();
+        result = 31 * result + cssBackgroundColor.hashCode();
+        return result;
     }
 }

@@ -1,6 +1,6 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2015, 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,15 +13,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.user.boundary;
 
-import ch.sportchef.business.PersistenceManager;
+import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import pl.setblack.airomem.core.SimpleController;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -40,26 +40,26 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class UsersResource {
 
-    private SimpleController<UserManager> manager =
-            PersistenceManager.createSimpleController(User.class, UserManager::new);
+    @Inject
+    private UserService userService;
 
     @POST
     public Response save(@Valid final User user, @Context final UriInfo info) {
-        final User saved = this.manager.executeAndQuery((mgr) -> mgr.create(user));
-        final long userId = saved.getUserId();
+        final User saved = userService.create(user);
+        final Long userId = saved.getUserId();
         final URI uri = info.getAbsolutePathBuilder().path("/" + userId).build();
         return Response.created(uri).build();
     }
 
     @GET
     public Response findAll() {
-        final List<User> users = this.manager.readOnly().findAll();
+        final List<User> users = userService.findAll();
         return Response.ok(users).build();
     }
 
     @Path("{userId}")
     public UserResource find(@PathParam("userId") final long userId) {
-        return new UserResource(userId, this.manager);
+        return new UserResource(userId, userService);
     }
 
 }

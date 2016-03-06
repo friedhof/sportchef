@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.business.configuration.boundary;
+package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
 
-import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,10 +26,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-@Named
-public class ConfigurationManager {
+class ConfigurationRepository {
 
-    private static final Logger LOGGER = Logger.getLogger(ConfigurationManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ConfigurationRepository.class.getName());
 
     private  static final String DEFAULT_CONFIGURATION_FILE = "cfg_default.properties"; //NON-NLS
     private  static final String CUSTOM_CONFIGURATION_FILE = "cfg_custom.properties"; //NON-NLS
@@ -38,7 +36,7 @@ public class ConfigurationManager {
     @SuppressWarnings("InstanceVariableOfConcreteClass")
     private final Configuration configuration;
 
-    public ConfigurationManager() {
+    ConfigurationRepository() {
         final Properties properties = new Properties();
 
         // load default configuration first
@@ -67,12 +65,12 @@ public class ConfigurationManager {
     }
 
     @SuppressWarnings("MethodReturnOfConcreteClass")
-    public Configuration getConfiguration() {
+    Configuration getConfiguration() {
         return configuration;
     }
 
     @Override
     public String toString() {
-        return String.format("ConfigurationManager{configuration=%s}", configuration); //NON-NLS
+        return String.format("ConfigurationRepository{configuration=%s}", configuration); //NON-NLS
     }
 }

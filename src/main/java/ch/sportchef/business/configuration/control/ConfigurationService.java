@@ -15,6 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.test;
+package ch.sportchef.business.configuration.control;
 
-public interface IntegrationTests { /* category marker */ }
+import ch.sportchef.business.configuration.entity.Configuration;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+@Named
+@Singleton
+public class ConfigurationService {
+
+    @Inject
+    private ConfigurationRepository configurationRepository;
+
+    @SuppressWarnings("MethodReturnOfConcreteClass")
+    public Configuration getConfiguration() {
+        return configurationRepository.getConfiguration();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ConfigurationService{configurationRepository=%s}", configurationRepository); //NON-NLS
+    }
+}

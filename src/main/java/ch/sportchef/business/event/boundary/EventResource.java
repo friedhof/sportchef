@@ -17,8 +17,10 @@
  */
 package ch.sportchef.business.event.boundary;
 
+import ch.sportchef.business.event.control.EventImageService;
+import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
-import pl.setblack.airomem.core.SimpleController;
+import ch.sportchef.business.event.entity.EventBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -31,32 +33,38 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.Optional;
 
 public class EventResource {
 
-    private Long eventId;
+    private final Long eventId;
+    private final EventService eventService;
+    private final EventImageService eventImageService;
 
-    private SimpleController<EventManager> manager;
-
-    public EventResource(@NotNull final Long eventId, @NotNull final SimpleController<EventManager> manager) {
+    public EventResource(@NotNull final Long eventId,
+                         @NotNull final EventService eventService,
+                         @NotNull final EventImageService eventImageService) {
         this.eventId = eventId;
-        this.manager = manager;
+        this.eventService = eventService;
+        this.eventImageService = eventImageService;
     }
 
     @GET
     public Event find() {
-        final Event event = this.manager.readOnly().findByEventId(this.eventId);
-        if (event == null) {
-            throw new NotFoundException(String.format("event with id '%d' not found", eventId));
+        final Optional<Event> event = eventService.findByEventId(eventId);
+        if (event.isPresent()) {
+            return event.get();
         }
-        return event;
+        throw new NotFoundException(String.format("event with id '%d' not found", eventId));
     }
 
     @PUT
     public Response update(@Valid final Event event, @Context final UriInfo info) {
         find(); // only update existing events
-        final Event eventToUpdate = new Event(this.eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
-        final Event updatedEvent = this.manager.executeAndQuery(mgr -> mgr.update(eventToUpdate));
+        final Event eventToUpdate = EventBuilder.fromEvent(event)
+                .withEventId(eventId)
+                .buildWithVersion();
+        final Event updatedEvent = eventService.update(eventToUpdate);
         final URI uri = info.getAbsolutePathBuilder().build();
         return Response.ok(updatedEvent).header("Location", uri.toString()).build();
     }
@@ -65,17 +73,17 @@ public class EventResource {
     public Response delete() {
         final Event event = find(); // only delete existing events
         try {
-            image().deleteImage();
+            eventImageService.deleteImage(eventId);
         } catch (final NotFoundException e) {
-            // ignore, this event has no images
+            // ignore, event has no image
         }
-        this.manager.execute(mgr -> mgr.delete(event.getEventId()));
+        eventService.delete(eventId);
         return Response.noContent().build();
     }
 
     @Path("image")
     public EventImageResource image() {
         find(); // only existing events can have images
-        return new EventImageResource(manager, this.eventId);
+        return new EventImageResource(eventId, eventService, eventImageService);
     }
 }

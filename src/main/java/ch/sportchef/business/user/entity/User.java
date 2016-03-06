@@ -54,11 +54,12 @@ public class User implements Serializable {
     @Size(min = 1)
     private String email;
 
-    public User() {
+    // Required by Jackson for JSON object maping!
+    private User() {
         super();
     }
 
-    public User(@NotNull final Long userId,
+    User(@NotNull final Long userId,
                 @NotNull final String firstName,
                 @NotNull final String lastName,
                 @NotNull final String phone,

@@ -1,6 +1,6 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,15 +13,16 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.event.boundary;
 
-import ch.sportchef.business.PersistenceManager;
+import ch.sportchef.business.event.control.EventImageService;
+import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
-import pl.setblack.airomem.core.SimpleController;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -41,26 +42,30 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class EventsResource {
 
-    private final SimpleController<EventManager> manager =
-            PersistenceManager.createSimpleController(Event.class, EventManager::new);
+    @Inject
+    private EventService eventService;
+
+    @Inject
+    private EventImageService eventImageService;
 
     @POST
     public Response save(@Valid final Event event, @Context final UriInfo info) {
-        final Event saved = manager.executeAndQuery(mgr -> mgr.create(event));
+        final Event saved = eventService.create(event);
         final long eventId = saved.getEventId();
+        eventImageService.chooseRandomDefaultImage(saved.getEventId());
         final URI uri = info.getAbsolutePathBuilder().path(File.separator + eventId).build();
         return Response.created(uri).build();
     }
 
     @GET
     public Response findAll() {
-        final List<Event> events = manager.readOnly().findAll();
+        final List<Event> events = eventService.findAll();
         return Response.ok(events).build();
     }
 
     @Path("{eventId}")
     public EventResource find(@PathParam("eventId") final long eventId) {
-        return new EventResource(eventId, manager);
+        return new EventResource(eventId, eventService, eventImageService);
     }
 
 }
