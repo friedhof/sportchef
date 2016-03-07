@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
-import org.needle4j.mock.EasyMockProvider;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -34,9 +33,11 @@ import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class AdminResourceTest {
 
@@ -47,9 +48,6 @@ public class AdminResourceTest {
     private AdminResource adminResource;
 
     @Inject
-    private EasyMockProvider mockProvider;
-
-    @Inject
     private ConfigurationService configurationServiceMock;
 
     @Test
@@ -58,15 +56,15 @@ public class AdminResourceTest {
         final Map<Object, Object> properties = new HashMap<>();
         properties.put("admin.password", "correct_password");
         final Configuration configuration = new Configuration(properties);
-        expect(configurationServiceMock.getConfiguration()).andStubReturn(configuration);
-        mockProvider.replayAll();
+        when(configurationServiceMock.getConfiguration())
+                .thenReturn(configuration);
 
         // act
         final Response response = adminResource.getAdminPage("correct_password");
 
         //assert
         assertThat(response.getStatus(), is(OK.getStatusCode()));
-        mockProvider.verifyAll();
+        verify(configurationServiceMock, times(1)).getConfiguration();
     }
 
     @Test
@@ -75,15 +73,15 @@ public class AdminResourceTest {
         final Map<Object, Object> properties = new HashMap<>();
         properties.put("admin.password", "correct_password");
         final Configuration configuration = new Configuration(properties);
-        expect(configurationServiceMock.getConfiguration()).andStubReturn(configuration);
-        mockProvider.replayAll();
+        when(configurationServiceMock.getConfiguration())
+                .thenReturn(configuration);
 
         // act
         final Response response = adminResource.getAdminPage("wrong_password");
 
         //assert
         assertThat(response.getStatus(), is(FORBIDDEN.getStatusCode()));
-        mockProvider.verifyAll();
+        verify(configurationServiceMock, times(1)).getConfiguration();
     }
 
 }

@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
-import org.needle4j.mock.EasyMockProvider;
 import org.picketlink.credential.DefaultLoginCredentials;
 
 import javax.inject.Inject;
@@ -34,12 +33,14 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.not;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class AutenticationResourceTest {
 
@@ -51,9 +52,6 @@ public class AutenticationResourceTest {
 
     @ObjectUnderTest
     private AuthenticationResource authenticationResource;
-
-    @Inject
-    private EasyMockProvider mockProvider;
 
     @Inject
     private AuthenticationService authenticationServiceMock;
@@ -92,15 +90,15 @@ public class AutenticationResourceTest {
                 .withPhone("AuthTest")
                 .withEmail(TEST_USER_EMAIL)
                 .build();
-        expect(authenticationServiceMock.requestChallenge(TEST_USER_EMAIL)).andReturn(true);
-        mockProvider.replayAll();
+        when(authenticationServiceMock.requestChallenge(TEST_USER_EMAIL))
+                .thenReturn(true);
 
         // act
         final Response response = authenticationResource.requestChallenge(TEST_USER_EMAIL);
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
-        mockProvider.verifyAll();
+        verify(authenticationServiceMock, times(1)).requestChallenge(TEST_USER_EMAIL);
     }
 
     @Test
@@ -109,16 +107,15 @@ public class AutenticationResourceTest {
         final DefaultLoginCredentials credential = new DefaultLoginCredentials();
         credential.setUserId("foo@bar.ch");
         credential.setPassword("12345-abcde");
-        expect(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
-                .andReturn(Optional.empty());
-        mockProvider.replayAll();
+        when(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
+                .thenReturn(Optional.empty());
 
         // act
         final Response response = authenticationResource.authenticate(credential);
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.FORBIDDEN.getStatusCode()));
-        mockProvider.verifyAll();
+        verify(authenticationServiceMock, times(1)).validateChallenge(anyObject(), eq(credential));
     }
 
     @Test
@@ -127,9 +124,8 @@ public class AutenticationResourceTest {
         final DefaultLoginCredentials credential = new DefaultLoginCredentials();
         credential.setUserId(TEST_USER_EMAIL);
         credential.setPassword("12345-abcde");
-        expect(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
-                .andReturn(Optional.of(TEST_TOKEN));
-        mockProvider.replayAll();
+        when(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
+                .thenReturn(Optional.of(TEST_TOKEN));
 
         // act
         final Response response = authenticationResource.authenticate(credential);
@@ -137,15 +133,14 @@ public class AutenticationResourceTest {
         //assert
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
         assertThat(((Entity) response.getEntity()).getEntity(), is(TEST_TOKEN));
-        mockProvider.verifyAll();
+        verify(authenticationServiceMock, times(1)).validateChallenge(anyObject(), eq(credential));
     }
 
     @Test
     public void authenticateWithTokenSuccessful() {
         // arrange
-        expect(authenticationServiceMock.authentication(anyObject(), anyObject(), eq(TEST_TOKEN)))
-                .andReturn(Optional.of(TEST_TOKEN));
-        mockProvider.replayAll();
+        when(authenticationServiceMock.authentication(anyObject(), anyObject(), eq(TEST_TOKEN)))
+                .thenReturn(Optional.of(TEST_TOKEN));
 
         // act
         final Response response = authenticationResource.authenticate(TEST_TOKEN);
@@ -153,22 +148,21 @@ public class AutenticationResourceTest {
         //assert
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
         assertThat(((Entity) response.getEntity()).getEntity(), is(TEST_TOKEN));
-        mockProvider.verifyAll();
+        verify(authenticationServiceMock, times(1)).authentication(anyObject(), anyObject(), eq(TEST_TOKEN));
     }
 
     @Test
     public void authenticateWithTokenUnauthorized() {
         // arrange
-        expect(authenticationServiceMock.authentication(anyObject(), anyObject(), not(eq(TEST_TOKEN))))
-                .andReturn(Optional.empty());
-        mockProvider.replayAll();
+        when(authenticationServiceMock.authentication(anyObject(), anyObject(), anyString()))
+                .thenReturn(Optional.empty());
 
         // act
         final Response response = authenticationResource.authenticate("12345-abcde");
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.UNAUTHORIZED.getStatusCode()));
-        mockProvider.verifyAll();
+        verify(authenticationServiceMock, times(1)).authentication(anyObject(), anyObject(), anyString());
     }
 
     @Test

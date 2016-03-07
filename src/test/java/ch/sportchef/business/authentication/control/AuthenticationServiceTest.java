@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
-import org.needle4j.mock.EasyMockProvider;
 import org.picketlink.Identity;
 import org.picketlink.credential.DefaultLoginCredentials;
 import org.picketlink.idm.model.Account;
@@ -23,14 +22,15 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static java.lang.Boolean.FALSE;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.mock;
-import static org.easymock.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class AuthenticationServiceTest {
 
@@ -45,9 +45,6 @@ public class AuthenticationServiceTest {
 
     @ObjectUnderTest(postConstruct = true)
     private AuthenticationService authenticationService;
-
-    @Inject
-    private EasyMockProvider mockProvider;
 
     @Inject
     private UserService userServiceMock;
@@ -67,35 +64,39 @@ public class AuthenticationServiceTest {
 
     private Configuration createConfigurationMock() {
         final Configuration configurationMock = mock(Configuration.class);
-        expect(configurationMock.getSMTPServer()).andReturn("localhost");
-        expect(configurationMock.getSMTPPort()).andReturn(4444);
-        expect(configurationMock.getSMTPUser()).andReturn("test");
-        expect(configurationMock.getSMTPPassword()).andReturn("test");
-        expect(configurationMock.getSMTPSSL()).andReturn(FALSE);
-        expect(configurationMock.getSMTPFrom()).andReturn("noreply@sportchef.ch");
-        replay(configurationMock);
+        when(configurationMock.getSMTPServer())
+                .thenReturn("localhost");
+        when(configurationMock.getSMTPPort())
+                .thenReturn(4444);
+        when(configurationMock.getSMTPUser())
+                .thenReturn("test");
+        when(configurationMock.getSMTPPassword())
+                .thenReturn("test");
+        when(configurationMock.getSMTPSSL())
+                .thenReturn(FALSE);
+        when(configurationMock.getSMTPFrom())
+                .thenReturn("noreply@sportchef.ch");
         return configurationMock;
     }
 
     private SmtpServer createSmtpServerMock() {
         final ServerOptions smtpServerOptions = new ServerOptions();
         smtpServerOptions.port = 4444;
-        final SmtpServer smtpServer = SmtpServerFactory.startServer(smtpServerOptions);
-        return smtpServer;
+        return SmtpServerFactory.startServer(smtpServerOptions);
     }
 
     @Test
     public void requestChallengeNotOk() {
         // arrange
-        expect(userServiceMock.findByEmail(TEST_USER_EMAIL)).andReturn(Optional.empty());
-        mockProvider.replayAll();
+        when(userServiceMock.findByEmail(TEST_USER_EMAIL))
+                .thenReturn(Optional.empty());
 
         // act
         final boolean ok = authenticationService.requestChallenge(TEST_USER_EMAIL);
 
         // assert
         assertThat(ok, is(false));
-        mockProvider.verifyAll();
+        verify(userServiceMock, times(1)).findByEmail(TEST_USER_EMAIL);
     }
 
     @Test
@@ -113,11 +114,11 @@ public class AuthenticationServiceTest {
     private String requestChallengeOk() {
         // arrange
         final Optional<User> userOptional = Optional.of(createTestUser());
-        expect(userServiceMock.findByEmail(TEST_USER_EMAIL)).andReturn(userOptional);
-        expectLastCall().times(2);
+        when(userServiceMock.findByEmail(TEST_USER_EMAIL))
+                .thenReturn(userOptional);
         final Configuration configurationMock = createConfigurationMock();
-        expect(configurationServiceMock.getConfiguration()).andReturn(configurationMock);
-        mockProvider.replayAll();
+        when(configurationServiceMock.getConfiguration())
+                .thenReturn(configurationMock);
         final SmtpServer smtpServer = createSmtpServerMock();
 
         // act
@@ -128,6 +129,7 @@ public class AuthenticationServiceTest {
         assertThat(smtpServer.getEmailCount(), is(1));
         assertThat(smtpServer.getMessage(0).getFirstHeaderValue("To"), is(TEST_USER_EMAIL));
         assertThat(ok, is(true));
+        verify(userServiceMock, times(1)).findByEmail(TEST_USER_EMAIL);
 
         final String body = smtpServer.getMessage(0).getBody();
         final String challenge = body.substring(body.indexOf("=") + 2);
@@ -137,11 +139,13 @@ public class AuthenticationServiceTest {
     private String validateChallenge(@NotNull final String challenge) {
         // arrange
         final Identity identityMock = mock(Identity.class);
-        expect(identityMock.isLoggedIn()).andReturn(false);
+        when(identityMock.isLoggedIn())
+                .thenReturn(false);
         final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
-        expect(credentialMock.getUserId()).andReturn(TEST_USER_EMAIL);
-        expect(credentialMock.getPassword()).andReturn(challenge);
-        replay(identityMock, credentialMock);
+        when(credentialMock.getUserId())
+                .thenReturn(TEST_USER_EMAIL);
+        when(credentialMock.getPassword())
+                .thenReturn(challenge);
 
         // act
         final Optional<String> token = authenticationService.validateChallenge(identityMock, credentialMock);
@@ -149,7 +153,8 @@ public class AuthenticationServiceTest {
         // assert
         assertThat(token, notNullValue());
         assertThat(token.isPresent(), is(true));
-        mockProvider.verifyAll();
+        verify(credentialMock, times(1)).getUserId();
+        verify(credentialMock, times(1)).getPassword();
 
         return token.get();
     }
@@ -158,10 +163,11 @@ public class AuthenticationServiceTest {
     public void authenticationIsLoggedInOk() {
         // arrange
         final Identity identityMock = mock(Identity.class);
-        expect(identityMock.isLoggedIn()).andReturn(true);
-        expect(identityMock.getAccount()).andReturn(mock(Account.class));
+        when(identityMock.isLoggedIn())
+                .thenReturn(true);
+        when(identityMock.getAccount())
+                .thenReturn(mock(Account.class));
         final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
-        replay(identityMock, credentialMock);
         final String token = "1234567890";
 
         // act
@@ -170,16 +176,19 @@ public class AuthenticationServiceTest {
         // assert
         assertThat(tokenOptional.isPresent(), is(true));
         assertThat(tokenOptional.get(), is(token));
+        verify(identityMock, times(1)).isLoggedIn();
+        verify(identityMock, times(1)).getAccount();
     }
 
     @Test
     public void authenticationIsLoggedInNotOk() {
         // arrange
         final Identity identityMock = mock(Identity.class);
-        expect(identityMock.isLoggedIn()).andReturn(true);
-        expect(identityMock.getAccount()).andReturn(null);
+        when(identityMock.isLoggedIn())
+                .thenReturn(true);
+        when(identityMock.getAccount())
+                .thenReturn(null);
         final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
-        replay(identityMock, credentialMock);
         final String token = "1234567890";
 
         // act
@@ -187,18 +196,21 @@ public class AuthenticationServiceTest {
 
         // assert
         assertThat(tokenOptional.isPresent(), is(false));
+        verify(identityMock, times(1)).isLoggedIn();
+        verify(identityMock, times(1)).getAccount();
     }
 
     @Test
     public void authenticationIsNotLoggedInOk() {
         // arrange
         final Identity identityMock = mock(Identity.class);
-        expect(identityMock.isLoggedIn()).andReturn(false);
-        expect(identityMock.getAccount()).andReturn(mock(Account.class));
-        expect(identityMock.login()).andReturn(Identity.AuthenticationResult.SUCCESS);
+        when(identityMock.isLoggedIn())
+                .thenReturn(false);
+        when(identityMock.getAccount())
+                .thenReturn(mock(Account.class));
+        when(identityMock.login())
+                .thenReturn(Identity.AuthenticationResult.SUCCESS);
         final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
-        credentialMock.setCredential(anyObject());
-        replay(identityMock, credentialMock);
         final String token = "1234567890";
 
         // act
@@ -207,18 +219,23 @@ public class AuthenticationServiceTest {
         // assert
         assertThat(tokenOptional.isPresent(), is(true));
         assertThat(tokenOptional.get(), is(token));
+        verify(identityMock, times(1)).isLoggedIn();
+        verify(identityMock, times(1)).getAccount();
+        verify(identityMock, times(1)).login();
+        verify(credentialMock, times(1)).setCredential(anyObject());
     }
 
     @Test
     public void authenticationIsNotLoggedInNotOk() {
         // arrange
         final Identity identityMock = mock(Identity.class);
-        expect(identityMock.isLoggedIn()).andReturn(false);
-        expect(identityMock.getAccount()).andReturn(null);
-        expect(identityMock.login()).andReturn(Identity.AuthenticationResult.FAILED);
+        when(identityMock.isLoggedIn())
+                .thenReturn(false);
+        when(identityMock.getAccount())
+                .thenReturn(null);
+        when(identityMock.login())
+                .thenReturn(Identity.AuthenticationResult.FAILED);
         final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
-        credentialMock.setCredential(anyObject());
-        replay(identityMock, credentialMock);
         final String token = "1234567890";
 
         // act
@@ -226,14 +243,18 @@ public class AuthenticationServiceTest {
 
         // assert
         assertThat(tokenOptional.isPresent(), is(false));
+        verify(identityMock, times(1)).isLoggedIn();
+        verify(identityMock, times(1)).getAccount();
+        verify(identityMock, times(1)).login();
+        verify(credentialMock, times(1)).setCredential(anyObject());
     }
 
     @Test
     public void generateTokenOk() {
         // arrange
         final Optional<User> userOptional = Optional.of(createTestUser());
-        expect(userServiceMock.findByEmail(TEST_USER_EMAIL)).andReturn(userOptional);
-        mockProvider.replayAll();
+        when(userServiceMock.findByEmail(TEST_USER_EMAIL))
+                .thenReturn(userOptional);
 
         // act
         final Optional<String> tokenOptional = authenticationService.generateToken(TEST_USER_EMAIL);
@@ -241,46 +262,51 @@ public class AuthenticationServiceTest {
         // assert
         assertThat(tokenOptional.isPresent(), is(true));
         assertThat(tokenOptional.get(), notNullValue());
+        verify(userServiceMock, times(1)).findByEmail(TEST_USER_EMAIL);
     }
 
     @Test
     public void generateTokenNotOk() {
         // arrange
-        expect(userServiceMock.findByEmail(TEST_USER_EMAIL)).andReturn(Optional.empty());
-        mockProvider.replayAll();
+        when(userServiceMock.findByEmail(TEST_USER_EMAIL))
+                .thenReturn(Optional.empty());
 
         // act
         final Optional<String> tokenOptional = authenticationService.generateToken(TEST_USER_EMAIL);
 
         // assert
         assertThat(tokenOptional.isPresent(), is(false));
+        verify(userServiceMock, times(1)).findByEmail(TEST_USER_EMAIL);
     }
 
     @Test
     public void logoutIsLoggedIn() {
         // arrange
         final Identity identityMock = mock(Identity.class);
-        expect(identityMock.isLoggedIn()).andReturn(true);
-        identityMock.logout();
-        replay(identityMock);
+        when(identityMock.isLoggedIn())
+                .thenReturn(true);
 
         // act
         authenticationService.logout(identityMock);
 
         // assert
+        verify(identityMock, times(1)).isLoggedIn();
+        verify(identityMock, times(1)).logout();
     }
 
     @Test
     public void logoutIsNotLoggedIn() {
         // arrange
         final Identity identityMock = mock(Identity.class);
-        expect(identityMock.isLoggedIn()).andReturn(false);
-        replay(identityMock);
+        when(identityMock.isLoggedIn())
+                .thenReturn(false);
 
         // act
         authenticationService.logout(identityMock);
 
         // assert
+        verify(identityMock, times(1)).isLoggedIn();
+        verify(identityMock, never()).logout();
     }
 
 }

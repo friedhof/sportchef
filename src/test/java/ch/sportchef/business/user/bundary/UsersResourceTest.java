@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
-import org.needle4j.mock.EasyMockProvider;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -42,11 +41,14 @@ import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.easymock.EasyMock.anyString;
-import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class UsersResourceTest {
 
@@ -55,9 +57,6 @@ public class UsersResourceTest {
 
     @ObjectUnderTest
     private UsersResource usersResource;
-
-    @Inject
-    private EasyMockProvider mockProvider;
 
     @Inject
     private UserService userServiceMock;
@@ -96,11 +95,14 @@ public class UsersResourceTest {
         final String location = "http://localhost:8080/sportchef/api/users/1";
         final URI uri = new URI(location);
 
-        expect(userServiceMock.create(userToCreate)).andStubReturn(savedUser);
-        expect(uriInfoMock.getAbsolutePathBuilder()).andStubReturn(uriBuilderMock);
-        expect(uriBuilderMock.path(anyString())).andStubReturn(uriBuilderMock);
-        expect(uriBuilderMock.build()).andStubReturn(uri);
-        mockProvider.replayAll();
+        when(userServiceMock.create(userToCreate))
+                .thenReturn(savedUser);
+        when(uriInfoMock.getAbsolutePathBuilder())
+                .thenReturn(uriBuilderMock);
+        when(uriBuilderMock.path(anyString()))
+                .thenReturn(uriBuilderMock);
+        when(uriBuilderMock.build())
+                .thenReturn(uri);
 
         // act
         final Response response = usersResource.save(userToCreate, uriInfoMock);
@@ -108,16 +110,18 @@ public class UsersResourceTest {
         //assert
         assertThat(response.getStatus(), is(CREATED.getStatusCode()));
         assertThat(response.getHeaderString("Location"), is(location));
-        mockProvider.verifyAll();
+        verify(userServiceMock, times(1)).create(userToCreate);
+        verify(uriInfoMock, times(1)).getAbsolutePathBuilder();
+        verify(uriBuilderMock, times(1)).path(anyString());
+        verify(uriBuilderMock, times(1)).build();
     }
 
     @Test(expected=ExpectationFailedException.class)
     public void saveWithExpectationFailed() {
         // arrange
         final User userToCreate = createJohnDoe(0L);
-        expect(userServiceMock.create(userToCreate))
-                .andStubThrow(new ExpectationFailedException("Email address has to be unique"));
-        mockProvider.replayAll();
+        doThrow(new ExpectationFailedException("Email address has to be unique"))
+                .when(userServiceMock).create(userToCreate);
 
         // act
         usersResource.save(userToCreate, null);
@@ -131,8 +135,8 @@ public class UsersResourceTest {
         final List<User> users = new ArrayList<>();
         users.add(user1);
         users.add(user2);
-        expect(userServiceMock.findAll()).andStubReturn(users);
-        mockProvider.replayAll();
+        when(userServiceMock.findAll())
+                .thenReturn(users);
 
         // act
         final Response response = usersResource.findAll();
@@ -144,7 +148,7 @@ public class UsersResourceTest {
         assertThat(response.getStatus(), is(OK.getStatusCode()));
         assertThat(responseUser1, is(user1));
         assertThat(responseUser2, is(user2));
-        mockProvider.verifyAll();
+        verify(userServiceMock, times(1)).findAll();
     }
 
     @Test
