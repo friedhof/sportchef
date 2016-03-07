@@ -107,7 +107,7 @@ public class AuthenticationServiceTest {
         final String token = validateChallenge(challenge);
 
         // assert
-        System.out.println(token);
+        assertThat(token.matches(".{20}\\..{38}\\..{86}"), is(true));
     }
 
     private String requestChallengeOk() {
