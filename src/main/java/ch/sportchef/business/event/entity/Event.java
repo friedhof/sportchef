@@ -19,6 +19,10 @@ package ch.sportchef.business.event.entity;
 
 import ch.sportchef.business.adapter.LocalDateAdapter;
 import ch.sportchef.business.adapter.LocalTimeAdapter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Value;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,23 +37,20 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Optional;
 
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonDeserialize(builder = EventBuilder.class)
+@Value
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String DEFAULT_CSS_BACKGROUND_COLOR = "#0096dc";
-
     @Id
     @GeneratedValue
     private Long eventId;
-
-    @Version
-    private Long version;
 
     @Size(min = 1)
     private String title;
@@ -62,83 +63,10 @@ public class Event implements Serializable {
     @XmlJavaTypeAdapter(LocalTimeAdapter.class)
     private LocalTime time;
 
-    private String cssBackgroundColor = DEFAULT_CSS_BACKGROUND_COLOR;
+    private String cssBackgroundColor;
 
-    // Required by Jackson for JSON object maping!
-    private Event() {
-        super();
-    }
+    @Version
+    @NotNull
+    private Long version;
 
-    Event(@NotNull final Long eventId,
-                 @NotNull final String title,
-                 @NotNull final String location,
-                 @NotNull final LocalDate date,
-                 @NotNull final LocalTime time,
-                 final String cssBackgroundColor) {
-        this();
-        this.eventId = eventId;
-        this.title = title;
-        this.location = location;
-        this.date = date;
-        this.time = time;
-        this.cssBackgroundColor = cssBackgroundColor;
-        this.version = (long)hashCode();
-    }
-
-    Event(@NotNull final Long eventId,
-                 @NotNull final String title,
-                 @NotNull final String location,
-                 @NotNull final LocalDate date,
-                 @NotNull final LocalTime time,
-                 final String cssBackgroundColor,
-                 @NotNull final Long version ) {
-        this(eventId, title, location, date, time, cssBackgroundColor);
-        this.version = version;
-    }
-
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
-
-    public String getCssBackgroundColor() {
-        return cssBackgroundColor;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "Event{eventId=%d, version=%d, title='%s', location='%s', date=%s, time=%s, cssBackgroundColor='%s'}",
-                eventId, version, title, location, date, time, cssBackgroundColor);
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Optional.ofNullable(eventId).map( e -> e.hashCode()).orElse(0);
-        result = 31 * result + title.hashCode();
-        result = 31 * result + location.hashCode();
-        result = 31 * result + date.hashCode();
-        result = 31 * result + time.hashCode();
-        result = 31 * result + cssBackgroundColor.hashCode();
-        return result;
-    }
 }

@@ -1,3 +1,20 @@
+/*
+ * SportChef – Sports Competition Management Software
+ * Copyright (C) 2016 Marcus Fihlon
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.event.entity.Event;
@@ -13,6 +30,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -38,13 +56,14 @@ public class EventRepositoryTest {
         final Event eventToUpdate = EventBuilder
                 .fromEvent(createdEvent)
                 .withTitle("changedTitle")
-                .buildWithVersion();
+                .build();
 
         // act
         final Event updatedEvent =  eventRepository.update(eventToUpdate);
 
         // assert
-        assertThat(updatedEvent.getTitle(), is(equalTo("changedTitle")));
+        assertThat(updatedEvent.getTitle(), is(equalTo(eventToUpdate.getTitle())));
+        assertThat(updatedEvent.getVersion(), is(not(equalTo(eventToUpdate.getVersion()))));
     }
 
     @Test(expected = OptimisticLockException.class)
@@ -55,11 +74,11 @@ public class EventRepositoryTest {
         final Event eventToUpdate1 = EventBuilder
                 .fromEvent(createdEvent)
                 .withTitle("changedTitle1")
-                .buildWithVersion();
+                .build();
         final Event eventToUpdate2 = EventBuilder
                 .fromEvent(createdEvent)
                 .withTitle("changedTitle2")
-                .buildWithVersion();
+                .build();
 
         // act
         eventRepository.update(eventToUpdate1);

@@ -90,7 +90,7 @@ public class EventImageService {
         final Event event = eventService.findByEventId(eventId).get();
         final Event eventToUpdate = EventBuilder.fromEvent(event)
                 .withCssBackgroundColor(averageColor)
-                .buildWithVersion();
+                .build();
         eventService.update(eventToUpdate);
     }
 

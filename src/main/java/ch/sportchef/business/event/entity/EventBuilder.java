@@ -17,6 +17,10 @@
  */
 package ch.sportchef.business.event.entity;
 
+import ch.sportchef.business.adapter.LocalDateAdapter;
+import ch.sportchef.business.adapter.LocalTimeAdapter;
+
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -26,8 +30,8 @@ public class EventBuilder {
     private String location;
     private LocalDate date;
     private LocalTime time;
-    private String cssBackgroundColor = "#000000";
-    private Long version;
+    private String cssBackgroundColor;
+    private Long version = 0L;
 
     private EventBuilder() {
     }
@@ -68,11 +72,13 @@ public class EventBuilder {
         return this;
     }
 
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     public EventBuilder withDate(LocalDate date) {
         this.date = date;
         return this;
     }
 
+    @XmlJavaTypeAdapter(LocalTimeAdapter.class)
     public EventBuilder withTime(LocalTime time) {
         this.time = time;
         return this;
@@ -88,9 +94,6 @@ public class EventBuilder {
     }
 
     public Event build() {
-        return new Event(eventId, title, location, date, time, cssBackgroundColor);
-    }
-    public Event buildWithVersion() {
-        return new Event(eventId, title, location, date, time, cssBackgroundColor,version);
+        return new Event(eventId, title, location, date, time, cssBackgroundColor, version);
     }
 }
