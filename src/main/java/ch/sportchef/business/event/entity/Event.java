@@ -17,8 +17,6 @@
  */
 package ch.sportchef.business.event.entity;
 
-import ch.sportchef.business.adapter.LocalDateAdapter;
-import ch.sportchef.business.adapter.LocalTimeAdapter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +27,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -51,10 +48,8 @@ public class Event implements Serializable {
 
     private String location;
 
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate date;
 
-    @XmlJavaTypeAdapter(LocalTimeAdapter.class)
     private LocalTime time;
 
     private String cssBackgroundColor;
