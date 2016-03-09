@@ -21,6 +21,7 @@ import ch.sportchef.business.exception.ExpectationFailedException;
 import ch.sportchef.business.user.entity.User;
 import ch.sportchef.business.user.entity.UserBuilder;
 
+import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -45,14 +46,26 @@ class UserRepository implements Serializable {
             throw new ExpectationFailedException("Email address has to be unique");
         }
         final Long userId = userSeq.incrementAndGet();
-        final User userToCreate = UserBuilder.fromUser(user).withUserId(userId).build();
+        final Long version = Long.valueOf(user.hashCode());
+        final User userToCreate = UserBuilder.fromUser(user)
+                .withUserId(userId)
+                .withVersion(version)
+                .build();
         this.users.put(userId, userToCreate);
         return userToCreate;
     }
 
     User update(@NotNull final User user) {
-        this.users.put(user.getUserId(), user);
-        return user;
+        final User previousUser = users.getOrDefault(user.getUserId(), user);
+        if (!previousUser.getVersion().equals(user.getVersion())) {
+            throw new OptimisticLockException("You tried to update an user that was modified concurrently!");
+        }
+        final Long version = Long.valueOf(user.hashCode());
+        final User userToUpdate = UserBuilder.fromUser(user)
+                .withVersion(version)
+                .build();
+        users.put(userToUpdate.getUserId(), userToUpdate);
+        return userToUpdate;
     }
 
     Optional<User> findByUserId(@NotNull final Long userId) {
