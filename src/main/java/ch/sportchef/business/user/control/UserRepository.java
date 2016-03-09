@@ -19,7 +19,6 @@ package ch.sportchef.business.user.control;
 
 import ch.sportchef.business.exception.ExpectationFailedException;
 import ch.sportchef.business.user.entity.User;
-import ch.sportchef.business.user.entity.UserBuilder;
 
 import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
@@ -47,9 +46,9 @@ class UserRepository implements Serializable {
         }
         final Long userId = userSeq.incrementAndGet();
         final Long version = Long.valueOf(user.hashCode());
-        final User userToCreate = UserBuilder.fromUser(user)
-                .withUserId(userId)
-                .withVersion(version)
+        final User userToCreate = user.toBuilder()
+                .userId(userId)
+                .version(version)
                 .build();
         this.users.put(userId, userToCreate);
         return userToCreate;
@@ -61,8 +60,8 @@ class UserRepository implements Serializable {
             throw new OptimisticLockException("You tried to update an user that was modified concurrently!");
         }
         final Long version = Long.valueOf(user.hashCode());
-        final User userToUpdate = UserBuilder.fromUser(user)
-                .withVersion(version)
+        final User userToUpdate = user.toBuilder()
+                .version(version)
                 .build();
         users.put(userToUpdate.getUserId(), userToUpdate);
         return userToUpdate;

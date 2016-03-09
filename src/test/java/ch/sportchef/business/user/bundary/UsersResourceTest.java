@@ -22,7 +22,6 @@ import ch.sportchef.business.user.boundary.UserResource;
 import ch.sportchef.business.user.boundary.UsersResource;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import ch.sportchef.business.user.entity.UserBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
@@ -68,22 +67,22 @@ public class UsersResourceTest {
     private UriBuilder uriBuilderMock;
 
     private User createJohnDoe(@NotNull final Long userId) {
-        return UserBuilder.anUser()
-                .withUserId(userId)
-                .withFirstName("John")
-                .withLastName("Doe")
-                .withPhone("+41 79 555 00 01")
-                .withEmail("john.doe@sportchef.ch")
+        return User.builder()
+                .userId(userId)
+                .firstName("John")
+                .lastName("Doe")
+                .phone("+41 79 555 00 01")
+                .email("john.doe@sportchef.ch")
                 .build();
     }
 
     private User createJaneDoe(@NotNull final Long userId) {
-        return UserBuilder.anUser()
-                .withUserId(userId)
-                .withFirstName("Jane")
-                .withLastName("Doe")
-                .withPhone("+41 79 555 00 02")
-                .withEmail("jane.doe@sportchef.ch")
+        return User.builder()
+                .userId(userId)
+                .firstName("Jane")
+                .lastName("Doe")
+                .phone("+41 79 555 00 02")
+                .email("jane.doe@sportchef.ch")
                 .build();
     }
 
