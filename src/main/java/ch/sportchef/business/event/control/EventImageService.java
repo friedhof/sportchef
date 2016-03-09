@@ -20,7 +20,6 @@ package ch.sportchef.business.event.control;
 import ch.sportchef.business.AverageColorCalculator;
 import ch.sportchef.business.ImageResizer;
 import ch.sportchef.business.event.entity.Event;
-import ch.sportchef.business.event.entity.EventBuilder;
 import org.apache.commons.io.IOUtils;
 import pl.setblack.badass.Politician;
 
@@ -88,9 +87,9 @@ public class EventImageService {
         outputImage.flush();
 
         final Event event = eventService.findByEventId(eventId).get();
-        final Event eventToUpdate = EventBuilder.fromEvent(event)
-                .withCssBackgroundColor(averageColor)
-                .buildWithVersion();
+        final Event eventToUpdate = event.toBuilder()
+                .cssBackgroundColor(averageColor)
+                .build();
         eventService.update(eventToUpdate);
     }
 

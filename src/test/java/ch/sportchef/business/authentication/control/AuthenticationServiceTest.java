@@ -1,10 +1,26 @@
+/*
+ * SportChef – Sports Competition Management Software
+ * Copyright (C) 2016 Marcus Fihlon
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ch.sportchef.business.authentication.control;
 
 import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import ch.sportchef.business.user.entity.UserBuilder;
 import com.dumbster.smtp.ServerOptions;
 import com.dumbster.smtp.SmtpServer;
 import com.dumbster.smtp.SmtpServerFactory;
@@ -53,12 +69,12 @@ public class AuthenticationServiceTest {
     private ConfigurationService configurationServiceMock;
 
     private User createTestUser() {
-        return UserBuilder.anUser()
-                .withUserId(TEST_USER_ID)
-                .withFirstName(TEST_USER_FIRSTNAME)
-                .withLastName(TEST_USER_LASTNAME)
-                .withPhone(TEST_USER_PHONE)
-                .withEmail(TEST_USER_EMAIL)
+        return User.builder()
+                .userId(TEST_USER_ID)
+                .firstName(TEST_USER_FIRSTNAME)
+                .lastName(TEST_USER_LASTNAME)
+                .phone(TEST_USER_PHONE)
+                .email(TEST_USER_EMAIL)
                 .build();
     }
 

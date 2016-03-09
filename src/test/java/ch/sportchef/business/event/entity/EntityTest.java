@@ -41,7 +41,7 @@ public class EntityTest {
 
     @BeforeClass
     public static void setUp() {
-        event = new Event(EVENT_ID, EVENT_TITLE, EVENT_LOCATION, EVENT_DATE, EVENT_TIME, EVENT_CSS_BACKGROUND_COLOR);
+        event = new Event(EVENT_ID, EVENT_TITLE, EVENT_LOCATION, EVENT_DATE, EVENT_TIME, EVENT_CSS_BACKGROUND_COLOR, null);
     }
 
     @AfterClass
@@ -83,8 +83,8 @@ public class EntityTest {
     public void toStringTest() {
         // arrange
         final String toStringExpect = String.format(
-                "Event{eventId=%d, version=%d, title='%s', location='%s', date=%s, time=%s, cssBackgroundColor='%s'}",
-                EVENT_ID, event.getVersion(), EVENT_TITLE, EVENT_LOCATION, EVENT_DATE, EVENT_TIME, EVENT_CSS_BACKGROUND_COLOR);
+                "Event(eventId=%d, title=%s, location=%s, date=%s, time=%s, cssBackgroundColor=%s, version=%d)",
+                EVENT_ID, EVENT_TITLE, EVENT_LOCATION, EVENT_DATE, EVENT_TIME, EVENT_CSS_BACKGROUND_COLOR, event.getVersion());
 
         // act
         final String toStringIs = event.toString();

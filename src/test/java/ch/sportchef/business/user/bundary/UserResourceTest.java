@@ -20,7 +20,6 @@ package ch.sportchef.business.user.bundary;
 import ch.sportchef.business.user.boundary.UserResource;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import ch.sportchef.business.user.entity.UserBuilder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -67,12 +66,13 @@ public class UserResourceTest {
     }
 
     private User createTestUser() {
-        return UserBuilder.anUser()
-                .withUserId(1L)
-                .withFirstName("John")
-                .withLastName("Doe")
-                .withPhone("+41 79 555 00 01")
-                .withEmail("john.doe@sportchef.ch").build();
+        return User.builder()
+                .userId(1L)
+                .firstName("John")
+                .lastName("Doe")
+                .phone("+41 79 555 00 01")
+                .email("john.doe@sportchef.ch")
+                .build();
     }
 
     @Test

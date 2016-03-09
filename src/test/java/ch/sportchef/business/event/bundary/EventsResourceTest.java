@@ -21,7 +21,6 @@ import ch.sportchef.business.event.boundary.EventResource;
 import ch.sportchef.business.event.boundary.EventsResource;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
-import ch.sportchef.business.event.entity.EventBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
@@ -70,15 +69,15 @@ public class EventsResourceTest {
     @Test
     public void saveWithSuccess() throws URISyntaxException {
         // arrange
-        final Event eventToCreate = EventBuilder.anEvent()
-                .withEventId(0L)
-                .withTitle("Testevent")
-                .withLocation("Testlocation")
-                .withDate(LocalDate.of(2099, Month.DECEMBER, 31))
-                .withTime(LocalTime.of(22, 0))
+        final Event eventToCreate = Event.builder()
+                .eventId(0L)
+                .title("Testevent")
+                .location("Testlocation")
+                .date(LocalDate.of(2099, Month.DECEMBER, 31))
+                .time(LocalTime.of(22, 0))
                 .build();
-        final Event savedEvent = EventBuilder.fromEvent(eventToCreate)
-                .withEventId(1L)
+        final Event savedEvent = eventToCreate.toBuilder()
+                .eventId(1L)
                 .build();
         final String location = "http://localhost:8080/sportchef/api/events/1";
         final URI uri = new URI(location);
@@ -107,15 +106,15 @@ public class EventsResourceTest {
     @Test
     public void findAll() {
         // arrange
-        final Event event1 = EventBuilder.anEvent()
-                .withEventId(1L)
-                .withTitle("Testevent")
-                .withLocation("Testlocation")
-                .withDate(LocalDate.of(2099, Month.DECEMBER, 31))
-                .withTime(LocalTime.of(22, 0))
+        final Event event1 = Event.builder()
+                .eventId(1L)
+                .title("Testevent")
+                .location("Testlocation")
+                .date(LocalDate.of(2099, Month.DECEMBER, 31))
+                .time(LocalTime.of(22, 0))
                 .build();
-        final Event event2 = EventBuilder.fromEvent(event1)
-                .withEventId(2L)
+        final Event event2 = event1.toBuilder()
+                .eventId(2L)
                 .build();
         final List<Event> events = new ArrayList<>();
         events.add(event1);
