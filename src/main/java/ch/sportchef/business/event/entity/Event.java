@@ -21,6 +21,7 @@ import ch.sportchef.business.adapter.LocalDateAdapter;
 import ch.sportchef.business.adapter.LocalTimeAdapter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Value;
 
 import javax.persistence.Entity;
@@ -36,6 +37,7 @@ import java.time.LocalTime;
 @Entity
 @Value
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Builder(toBuilder = true)
 public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;

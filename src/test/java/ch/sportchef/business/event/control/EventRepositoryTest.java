@@ -18,13 +18,13 @@
 package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.event.entity.Event;
-import ch.sportchef.business.event.entity.EventBuilder;
 import org.junit.Test;
 
 import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,12 +37,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class EventRepositoryTest {
 
     private Event createEvent(@NotNull final EventRepository eventRepository) {
-        final Event baseEvent = EventBuilder
-                .anEvent()
-                .withTitle("tetTitle")
-                .withLocation("Basel Hackergarten")
-                .withDate(LocalDate.of(2016, 4, 1))
-                .withTime(LocalTime.of(10, 12))
+        final Event baseEvent = Event.builder()
+                .title("Testevent")
+                .location("Testlocation")
+                .date(LocalDate.of(2099, Month.DECEMBER, 31))
+                .time(LocalTime.of(22, 0))
                 .build();
 
         return eventRepository.create(baseEvent);
@@ -53,9 +52,8 @@ public class EventRepositoryTest {
         // arrange
         final EventRepository eventRepository = new EventRepository();
         final Event createdEvent = createEvent(eventRepository);
-        final Event eventToUpdate = EventBuilder
-                .fromEvent(createdEvent)
-                .withTitle("changedTitle")
+        final Event eventToUpdate = createdEvent.toBuilder()
+                .title("Changed Title")
                 .build();
 
         // act
@@ -71,13 +69,11 @@ public class EventRepositoryTest {
         // arrange
         final EventRepository eventRepository = new EventRepository();
         final Event createdEvent = createEvent(eventRepository);
-        final Event eventToUpdate1 = EventBuilder
-                .fromEvent(createdEvent)
-                .withTitle("changedTitle1")
+        final Event eventToUpdate1 = createdEvent.toBuilder()
+                .title("changedTitle1")
                 .build();
-        final Event eventToUpdate2 = EventBuilder
-                .fromEvent(createdEvent)
-                .withTitle("changedTitle2")
+        final Event eventToUpdate2 = createdEvent.toBuilder()
+                .title("changedTitle2")
                 .build();
 
         // act

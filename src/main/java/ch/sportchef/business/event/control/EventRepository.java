@@ -18,7 +18,6 @@
 package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.event.entity.Event;
-import ch.sportchef.business.event.entity.EventBuilder;
 
 import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
@@ -43,10 +42,10 @@ class EventRepository implements Serializable {
 
     Event create(@NotNull final Event event) {
         final Long eventId = eventSeq.incrementAndGet();
-        final Long version = Long.valueOf(event.hashCode());
-        final Event eventToCreate = EventBuilder.fromEvent(event)
-                .withEventId(eventId)
-                .withVersion(version)
+        final long version = event.hashCode();
+        final Event eventToCreate = event.toBuilder()
+                .eventId(eventId)
+                .version(version)
                 .build();
         events.put(eventId, eventToCreate);
         return eventToCreate;
@@ -57,11 +56,11 @@ class EventRepository implements Serializable {
         if (!previousEvent.getVersion().equals(event.getVersion())) {
             throw new OptimisticLockException("You tried to update an event that was modified concurrently!");
         }
-        final Long version = Long.valueOf(event.hashCode());
-        final Event eventToUpdate = EventBuilder.fromEvent(event)
-                .withVersion(version)
+        final long version = event.hashCode();
+        final Event eventToUpdate = event.toBuilder()
+                .version(version)
                 .build();
-        events.put(eventToUpdate.getEventId(), eventToUpdate);
+        events.put(event.getEventId(), eventToUpdate);
         return eventToUpdate;
     }
 

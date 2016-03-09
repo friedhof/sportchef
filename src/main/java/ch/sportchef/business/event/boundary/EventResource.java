@@ -20,7 +20,6 @@ package ch.sportchef.business.event.boundary;
 import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
-import ch.sportchef.business.event.entity.EventBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -61,8 +60,8 @@ public class EventResource {
     @PUT
     public Response update(@Valid final Event event, @Context final UriInfo info) {
         find(); // only update existing events
-        final Event eventToUpdate = EventBuilder.fromEvent(event)
-                .withEventId(eventId)
+        final Event eventToUpdate = event.toBuilder()
+                .eventId(eventId)
                 .build();
         final Event updatedEvent = eventService.update(eventToUpdate);
         final URI uri = info.getAbsolutePathBuilder().build();
