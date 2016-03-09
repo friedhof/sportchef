@@ -17,9 +17,6 @@
  */
 package ch.sportchef.business.user.entity;
 
-import ch.sportchef.business.user.entity.User.UserBuilder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,15 +28,9 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 @Entity
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-@JsonDeserialize(builder = UserBuilder.class)
 @Value
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Builder(toBuilder = true)
@@ -66,9 +57,5 @@ public class User implements Serializable {
     @Version
     @NotNull
     private Long version;
-
-    @JsonPOJOBuilder(withPrefix = "")
-    public static final class UserBuilder {
-    }
 
 }

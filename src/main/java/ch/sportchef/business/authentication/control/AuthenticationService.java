@@ -5,7 +5,6 @@ import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.jsonwebtoken.Jwts;
@@ -142,7 +141,6 @@ public class AuthenticationService {
             final Instant expirationInstant = expiration.atZone(ZoneId.systemDefault()).toInstant();
             final Date expirationDate = Date.from(expirationInstant);
 
-            final ObjectMapper mapper = new ObjectMapper();
             final String subject = user.get().getUserId().toString();
 
             token = Jwts.builder()
