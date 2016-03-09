@@ -43,7 +43,7 @@ class EventRepository implements Serializable {
 
     Event create(@NotNull final Event event) {
         final Long eventId = eventSeq.incrementAndGet();
-        final long version = event.hashCode();
+        final Long version = Long.valueOf(event.hashCode());
         final Event eventToCreate = EventBuilder.fromEvent(event)
                 .withEventId(eventId)
                 .withVersion(version)
@@ -57,11 +57,11 @@ class EventRepository implements Serializable {
         if (!previousEvent.getVersion().equals(event.getVersion())) {
             throw new OptimisticLockException("You tried to update an event that was modified concurrently!");
         }
-        final long version = event.hashCode();
+        final Long version = Long.valueOf(event.hashCode());
         final Event eventToUpdate = EventBuilder.fromEvent(event)
                 .withVersion(version)
                 .build();
-        events.put(event.getEventId(), eventToUpdate);
+        events.put(eventToUpdate.getEventId(), eventToUpdate);
         return eventToUpdate;
     }
 
