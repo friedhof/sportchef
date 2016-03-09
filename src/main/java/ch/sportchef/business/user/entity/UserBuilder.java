@@ -23,6 +23,7 @@ public class UserBuilder {
     private String lastName;
     private String phone;
     private String email;
+    private Long version = 0L;
 
     private UserBuilder() {
     }
@@ -65,12 +66,16 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder withVersion(Long version) {
+        this.version = version;
+        return this;
+    }
+
     public UserBuilder but() {
         return anUser().withUserId(userId).withFirstName(firstName).withLastName(lastName).withPhone(phone).withEmail(email);
     }
 
     public User build() {
-        User user = new User(userId, firstName, lastName, phone, email);
-        return user;
+        return new User(userId, firstName, lastName, phone, email, version);
     }
 }
