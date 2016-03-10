@@ -20,10 +20,8 @@ package ch.sportchef.business.configuration.control;
 import ch.sportchef.business.configuration.entity.Configuration;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
-@Named
 @Singleton
 public class ConfigurationService {
 
