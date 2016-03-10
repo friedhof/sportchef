@@ -111,6 +111,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-mockito-release-full</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.bitmechanic</groupId>
             <artifactId>dumbster</artifactId>
             <version>1.9.0.2</version>
