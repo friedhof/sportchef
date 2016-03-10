@@ -33,7 +33,7 @@ import java.time.LocalTime;
 
 @Entity
 @Value
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
 public class Event implements Serializable {
 
