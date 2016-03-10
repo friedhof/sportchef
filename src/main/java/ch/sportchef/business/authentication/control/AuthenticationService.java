@@ -20,7 +20,6 @@ import pl.setblack.badass.Politician;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.security.Key;
@@ -35,7 +34,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-@Named
 @Singleton
 public class AuthenticationService {
 
