@@ -31,7 +31,7 @@ import java.io.Serializable;
 
 @Entity
 @Value
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
 public class User implements Serializable {
 

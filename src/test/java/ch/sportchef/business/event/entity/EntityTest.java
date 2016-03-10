@@ -41,7 +41,14 @@ public class EntityTest {
 
     @BeforeClass
     public static void setUp() {
-        event = new Event(EVENT_ID, EVENT_TITLE, EVENT_LOCATION, EVENT_DATE, EVENT_TIME, EVENT_CSS_BACKGROUND_COLOR, null);
+        event = Event.builder()
+                .eventId(EVENT_ID)
+                .title(EVENT_TITLE)
+                .location(EVENT_LOCATION)
+                .date(EVENT_DATE)
+                .time(EVENT_TIME)
+                .cssBackgroundColor(EVENT_CSS_BACKGROUND_COLOR)
+                .build();
     }
 
     @AfterClass
