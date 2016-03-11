@@ -8,3 +8,11 @@ before_install:
 
 after_success:
   - mvn jacoco:report coveralls:report
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/eee27732e50d40f73bf2
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
