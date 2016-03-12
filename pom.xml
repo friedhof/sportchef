@@ -210,18 +210,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.2.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.3</version>
@@ -237,7 +225,6 @@
                     </resources>
                     <imageTags>
                         <imageTag>${project.version}</imageTag>
-                        <imageTag>${git.commit.id.abbrev}</imageTag>
                         <imageTag>latest</imageTag>
                     </imageTags>
                     <pushImage>false</pushImage>

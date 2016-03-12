@@ -25,10 +25,6 @@ Example:
 
 `docker run -p 80:8080 -v /home/mcpringle/.sportchef:/opt/jboss/.sportchef -it mcpringle/sportchef`
 
-All docker images are tagged with the corresponding git commit hash. You can run a special container by adding the commit hash at the end of the call, separated by a colon:
-
-`docker run -p 80:8080 -v /home/mcpringle/.sportchef:/opt/jboss/.sportchef -it mcpringle/sportchef:5d1eef4`
-
 ## Using Application Server
 
 If you have an own application server running, you can deploy the *SportChef* archive `sportchef.war`.
