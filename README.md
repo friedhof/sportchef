@@ -15,6 +15,10 @@ You should have received a copy of the GNU Affero General Public License along w
 
 # Release Notes
 
+## Version 1.1.1
+
+- Bugfix for infrequent `NullPointerException` after creating a new event
+
 ## Version 1.1
 
 - Default images are assigned to events without an image
