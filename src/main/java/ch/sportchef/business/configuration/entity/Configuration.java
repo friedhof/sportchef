@@ -20,13 +20,10 @@ package ch.sportchef.business.configuration.entity;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public class Configuration {
 
     private static final String ADMIN_PASSWORD_KEY = "admin.password";
-
-    private static final Logger LOGGER = Logger.getLogger(Configuration.class.getName());
 
     private final Properties properties = new Properties();
 
