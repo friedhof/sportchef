@@ -30,9 +30,8 @@ import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.NotFoundException;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -73,17 +72,16 @@ public class EventImageService {
     }
 
     public void uploadImage(@NotNull final Long eventId, @NotNull final byte[] image) throws IOException {
+        final InputStream imageInputStream = new ByteArrayInputStream(image);
+        final BufferedImage inputImage = ImageIO.read(imageInputStream);
+        final BufferedImage outputImage = ImageResizer.resizeAndCrop(inputImage, IMAGE_WIDTH, IMAGE_HEIGHT);
+
         final File file = new File(imageUploadPath, String.format("%d%s", eventId, FILE_EXTENSION)); //NON-NLS
-        file.createNewFile();
-        try (final BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file), 8192)) {
-            outputStream.write(image);
-        }
+        ImageIO.write(outputImage, FILE_TYPE, file);
 
         final String averageColor;
-        final BufferedImage inputImage = ImageIO.read(file);
-        final BufferedImage outputImage = ImageResizer.resizeAndCrop(inputImage, IMAGE_WIDTH, IMAGE_HEIGHT);
-        ImageIO.write(outputImage, FILE_TYPE, file);
         averageColor = AverageColorCalculator.getAverageColorAsHex(outputImage);
+
         inputImage.flush();
         outputImage.flush();
 
