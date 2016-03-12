@@ -32,12 +32,10 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 @Singleton
 public class AuthenticationService {
 
-    private static final Logger LOGGER = Logger.getLogger(AuthenticationService.class.getName());
     private static final String CHALLENGE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int CHALLENGE_LENGTH = 10;
     private static final TemporalAmount TOKEN_EXPIRATION_TIME = Duration.ofDays(1);

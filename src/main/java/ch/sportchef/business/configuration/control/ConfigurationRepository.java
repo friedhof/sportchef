@@ -18,17 +18,18 @@
 package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 class ConfigurationRepository {
 
-    private static final Logger LOGGER = Logger.getLogger(ConfigurationRepository.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationRepository.class);
 
     private  static final String DEFAULT_CONFIGURATION_FILE = "cfg_default.properties"; //NON-NLS
     private  static final String CUSTOM_CONFIGURATION_FILE = "cfg_custom.properties"; //NON-NLS
@@ -57,9 +58,8 @@ class ConfigurationRepository {
                              .getResourceAsStream(fileName)) {
             properties.load(stream);
         } catch (final IOException e) {
-            LOGGER.severe(String.format(
-                    "Could not load %s configuration from file '%s': %s", //NON-NLS
-                    type, fileName, e.getMessage()));
+            LOGGER.error("Could not load {} configuration from file '{}': {}", //NON-NLS
+                    type, fileName, e.getMessage());
         }
         return properties;
     }
