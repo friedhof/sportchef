@@ -8,7 +8,6 @@ doc/sportchef_technical_documentation.lot
 doc/sportchef_technical_documentation.out
 doc/sportchef_technical_documentation.synctex.gz
 doc/sportchef_technical_documentation.toc
-src/main/resources/cfg_custom.properties
 src/main/resources/rebel.xml
 src/main/webapp/bower_components
 src/main/webapp/imprint.md
