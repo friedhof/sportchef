@@ -93,7 +93,7 @@ public class EventImageService {
     }
 
     public void chooseRandomDefaultImage(@NotNull final Long eventId) {
-        final int index = new Random().nextInt(14);
+        final int index = new Random().nextInt(14) + 1;
         final String filename = String.format("default-event-image-%03d.png", index);
         Politician.beatAroundTheBush(() -> {
             try (final InputStream inputStream =
