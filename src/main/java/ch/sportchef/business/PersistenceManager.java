@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import pl.setblack.airomem.core.SimpleController;
 
 import java.io.Serializable;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Supplier;
@@ -47,7 +46,7 @@ public enum PersistenceManager {
             final Class<? extends Serializable> clazz, final Supplier<T> constructor) {
         final String dir = DATA_DIRECTORY.resolve(clazz.getName()).toString();
         LOGGER.info("Using persistence store '{}' for entity '{}'.",
-                FileSystems.getDefault().getPath(dir).toFile().getAbsolutePath(),
+                Paths.get(System.getProperty("user.home"), dir).toAbsolutePath(),
                 clazz.getName());
         return SimpleController.loadOptional(dir, constructor);
     }
