@@ -226,6 +226,7 @@
                         <imageTag>${project.version}</imageTag>
                         <imageTag>latest</imageTag>
                     </imageTags>
+                    <forceTags>true</forceTags>
                     <pushImage>false</pushImage>
                 </configuration>
             </plugin>
