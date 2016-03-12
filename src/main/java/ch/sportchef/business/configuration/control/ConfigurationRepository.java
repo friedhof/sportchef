@@ -21,9 +21,11 @@ import ch.sportchef.business.configuration.entity.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 
@@ -40,27 +42,36 @@ class ConfigurationRepository {
     ConfigurationRepository() {
         final Properties properties = new Properties();
 
-        // load default configuration first
-        loadProperties("default", DEFAULT_CONFIGURATION_FILE) //NON-NLS
-                .forEach(properties::put);
-
-        // load custom configuration
-        loadProperties("custom", CUSTOM_CONFIGURATION_FILE) //NON-NLS
-                .forEach(properties::put);
+        loadDefaultConfiguration().forEach(properties::put);
+        loadCustomConfiguration().forEach(properties::put);
 
         configuration = new Configuration(properties);
     }
 
-    private static Map<Object, Object> loadProperties(@NotNull final String type, @NotNull final String fileName) {
+    private static Map<Object, Object> loadDefaultConfiguration() {
         final Properties properties = new Properties();
         try (final InputStream stream =
                      Thread.currentThread().getContextClassLoader()
-                             .getResourceAsStream(fileName)) {
+                             .getResourceAsStream(DEFAULT_CONFIGURATION_FILE)) {
             properties.load(stream);
         } catch (final IOException e) {
-            LOGGER.error("Could not load {} configuration from file '{}': {}", //NON-NLS
-                    type, fileName, e.getMessage());
+            LOGGER.error("Could not load default configuration from file '{}': {}", //NON-NLS
+                    DEFAULT_CONFIGURATION_FILE, e.getMessage());
         }
+
+        return properties;
+    }
+
+    private static Map<Object, Object> loadCustomConfiguration() {
+        final Properties properties = new Properties();
+        final File file = Paths.get(System.getProperty("user.home"), ".sportchef", CUSTOM_CONFIGURATION_FILE).toFile();
+        try (final InputStream stream = new FileInputStream(file)) {
+            properties.load(stream);
+        } catch (final IOException e) {
+            LOGGER.error("Could not load custom configuration from file '{}': {}", //NON-NLS
+                    CUSTOM_CONFIGURATION_FILE, e.getMessage());
+        }
+
         return properties;
     }
 
