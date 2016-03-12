@@ -13,6 +13,22 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Running *SportChef*
+
+## Using Docker
+
+The *SportChef* docker image is available on DockerHub. To run *SportChef*, you have to specify a port mapping to map the ports of the application server inside the container (8080) to a port on your machine (e.g. 80) and you have to specify a folder on your machine to store the permanent data. The complete docker call looks like this:
+
+`docker run -p [local port]:8080 -v [local data path]:/opt/jboss/.sportchef -it mcpringle/sportchef`
+
+Example:
+
+`docker run -p 80:8080 -v /home/mcpringle/.sportchef:/opt/jboss/.sportchef -it mcpringle/sportchef`
+
+## Using Application Server
+
+If you have an own application server running, you can deploy the *SportChef* archive `sportchef.war`.
+
 # Release Notes
 
 ## Version 1.1
