@@ -25,7 +25,6 @@ import pl.setblack.badass.Politician;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.NotFoundException;
@@ -38,7 +37,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Random;
 
-@Named
 @Singleton
 public class EventImageService {
 
