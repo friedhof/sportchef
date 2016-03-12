@@ -110,8 +110,9 @@ public class EventImageService {
         final File file = new File(imageUploadPath, eventId + FILE_EXTENSION);
         if (file.exists()) {
             file.delete();
+        } else {
+            throw new NotFoundException(String.format("event with id '%d' has no image", eventId)); //NON-NLS
         }
-        throw new NotFoundException(String.format("event with id '%d' has no image", eventId)); //NON-NLS
     }
 
 }
