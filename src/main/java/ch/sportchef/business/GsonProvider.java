@@ -95,7 +95,7 @@ public class GsonProvider implements MessageBodyReader<Object>, MessageBodyWrite
             final Type genericType,
             final Annotation[] annotations,
             final MediaType mediaType) {
-        return -1;
+        return -1L;
     }
 
     @Override
