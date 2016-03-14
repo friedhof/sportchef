@@ -18,11 +18,13 @@
 package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
+import lombok.ToString;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
+@ToString
 public class ConfigurationService {
 
     @Inject
@@ -31,10 +33,5 @@ public class ConfigurationService {
     @SuppressWarnings("MethodReturnOfConcreteClass")
     public Configuration getConfiguration() {
         return configurationRepository.getConfiguration();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("ConfigurationService{configurationRepository=%s}", configurationRepository); //NON-NLS
     }
 }
