@@ -17,10 +17,13 @@
  */
 package ch.sportchef.business.configuration.entity;
 
+import lombok.ToString;
+
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.Properties;
 
+@ToString
 public class Configuration {
 
     private static final String ADMIN_PASSWORD_KEY = "admin.password";
@@ -59,8 +62,4 @@ public class Configuration {
         return properties.getProperty("smtp.from", null);
     }
 
-    @Override
-    public String toString() {
-        return String.format("Configuration{properties=%s}", properties); //NON-NLS
-    }
 }

@@ -18,20 +18,18 @@
 package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.ToString;
+import pl.setblack.badass.Politician;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 
+@ToString
 class ConfigurationRepository {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationRepository.class);
 
     private  static final String DEFAULT_CONFIGURATION_FILE = "cfg_default.properties"; //NON-NLS
     private  static final String CUSTOM_CONFIGURATION_FILE = "cfg_custom.properties"; //NON-NLS
@@ -49,30 +47,28 @@ class ConfigurationRepository {
     }
 
     private static Map<Object, Object> loadDefaultConfiguration() {
-        final Properties properties = new Properties();
-        try (final InputStream stream =
-                     Thread.currentThread().getContextClassLoader()
-                             .getResourceAsStream(DEFAULT_CONFIGURATION_FILE)) {
-            properties.load(stream);
-        } catch (final IOException e) {
-            LOGGER.error("Could not load default configuration from file '{}': {}", //NON-NLS
-                    DEFAULT_CONFIGURATION_FILE, e.getMessage());
-        }
+        return Politician.beatAroundTheBush(() -> {
+            final Properties properties = new Properties();
+            try (final InputStream stream =
+                         Thread.currentThread().getContextClassLoader()
+                                 .getResourceAsStream(DEFAULT_CONFIGURATION_FILE)) {
+                properties.load(stream);
+            }
 
-        return properties;
+            return properties;
+        });
     }
 
     private static Map<Object, Object> loadCustomConfiguration() {
-        final Properties properties = new Properties();
-        final File file = Paths.get(System.getProperty("user.home"), ".sportchef", CUSTOM_CONFIGURATION_FILE).toFile();
-        try (final InputStream stream = new FileInputStream(file)) {
-            properties.load(stream);
-        } catch (final IOException e) {
-            LOGGER.error("Could not load custom configuration from file '{}': {}", //NON-NLS
-                    CUSTOM_CONFIGURATION_FILE, e.getMessage());
-        }
+        return Politician.beatAroundTheBush(() -> {
+            final Properties properties = new Properties();
+            final File file = Paths.get(System.getProperty("user.home"), ".sportchef", CUSTOM_CONFIGURATION_FILE).toFile();
+            try (final InputStream stream = new FileInputStream(file)) {
+                properties.load(stream);
+            }
 
-        return properties;
+            return properties;
+        });
     }
 
     @SuppressWarnings("MethodReturnOfConcreteClass")
@@ -80,8 +76,4 @@ class ConfigurationRepository {
         return configuration;
     }
 
-    @Override
-    public String toString() {
-        return String.format("ConfigurationRepository{configuration=%s}", configuration); //NON-NLS
-    }
 }
