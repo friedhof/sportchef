@@ -85,6 +85,6 @@ public class ConfigurationTest {
 
     @Test
     public void toStringTest() {
-        assertThat(configuration.toString(), startsWith("Configuration{properties="));
+        assertThat(configuration.toString(), startsWith("Configuration(properties="));
     }
 }

@@ -20,6 +20,7 @@ package ch.sportchef.business.configuration.control;
 import ch.sportchef.business.configuration.entity.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import lombok.ToString;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 
+@ToString
 class ConfigurationRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationRepository.class);
@@ -80,8 +82,4 @@ class ConfigurationRepository {
         return configuration;
     }
 
-    @Override
-    public String toString() {
-        return String.format("ConfigurationRepository{configuration=%s}", configuration); //NON-NLS
-    }
 }
