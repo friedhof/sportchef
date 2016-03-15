@@ -1,6 +1,6 @@
 /*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015, 2016 Marcus Fihlon
+ * Copyright (C) 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,9 +17,22 @@
  */
 package ch.sportchef.business;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import org.junit.Test;
 
-@ApplicationPath("api")
-public class JAXRSConfiguration extends Application {
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+public class JAXRSConfigurationTest {
+
+    @Test
+    public void testInstantiation() {
+        // arrange
+
+        // act
+        final JAXRSConfiguration jaxrsConfiguration = new JAXRSConfiguration();
+
+        // assert
+        assertThat(jaxrsConfiguration, notNullValue());
+    }
+
 }
