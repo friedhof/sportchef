@@ -76,18 +76,19 @@ public class EventImageResource {
 
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadImage(@Context HttpServletRequest request) throws IOException, ServletException {
+    public Response uploadImage(@Context final HttpServletRequest request) throws IOException, ServletException {
         final String contentType = request.getContentType();
-        final byte[] boundary = contentType.substring(contentType.indexOf("boundary=") + 9).getBytes();
+        final byte[] boundary = contentType.substring(contentType.indexOf("boundary=") + 9).getBytes(); //NON-NLS
 
         try (final BufferedInputStream inputStream = new BufferedInputStream(request.getInputStream(), 8192)) {
             final MultipartStream multipartStream = new MultipartStream(inputStream, boundary, 8192, null);
             boolean nextPart = multipartStream.skipPreamble();
+            //noinspection LoopStatementThatDoesntLoop
             while (nextPart) {
                 multipartStream.readHeaders(); // don't remove, strips headers off
+                //noinspection NestedTryStatement
                 try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)) {
                     multipartStream.readBodyData(outputStream);
-                    nextPart = multipartStream.readBoundary();
                     final byte[] image = outputStream.toByteArray();
                     eventImageService.uploadImage(eventId, image);
                     return Response.ok().build();
