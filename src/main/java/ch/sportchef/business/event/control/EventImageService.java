@@ -20,47 +20,51 @@ package ch.sportchef.business.event.control;
 import ch.sportchef.business.AverageColorCalculator;
 import ch.sportchef.business.ImageResizer;
 import ch.sportchef.business.event.entity.Event;
+import org.apache.commons.io.IOUtils;
+import pl.setblack.badass.Politician;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.NotFoundException;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Random;
 
-@Named
 @Singleton
 public class EventImageService {
 
     private static final String FILE_EXTENSION = ".png"; //NON-NLS
     private static final String FILE_TYPE = "PNG"; //NON-NLS
-    private static final File IMAGE_UPLOAD_PATH;
     private static final int IMAGE_HEIGHT = 200;
     private static final int IMAGE_WIDTH = 350;
 
-    static {
+    private File imageUploadPath;
+
+    @Inject
+    private EventService eventService;
+
+    @PostConstruct
+    private void init() {
         // build path to image upload folder
         final String imageUploadFolder = String.format("%s%s.sportchef%simages%sevents", //NON-NLS
                 System.getProperty("user.home"), File.separator, File.separator, File.separator);
 
         // create the image upload folder if it does not exist
-        IMAGE_UPLOAD_PATH = new File(imageUploadFolder);
-        if (!IMAGE_UPLOAD_PATH.exists()) {
-            IMAGE_UPLOAD_PATH.mkdirs();
+        imageUploadPath = new File(imageUploadFolder);
+        if (!imageUploadPath.exists()) {
+            imageUploadPath.mkdirs();
         }
     }
 
-    @Inject
-    private EventService eventService;
-
     public byte[] getImage(@NotNull final Long eventId) throws IOException {
-        final File file = new File(IMAGE_UPLOAD_PATH, String.format("%d%s", eventId, FILE_EXTENSION)); //NON-NLS
+        final File file = new File(imageUploadPath, String.format("%d%s", eventId, FILE_EXTENSION)); //NON-NLS
         if (file.exists()) {
             return Files.readAllBytes(file.toPath());
         }
@@ -68,31 +72,45 @@ public class EventImageService {
     }
 
     public void uploadImage(@NotNull final Long eventId, @NotNull final byte[] image) throws IOException {
-        final File file = new File(IMAGE_UPLOAD_PATH, String.format("%d%s", eventId, FILE_EXTENSION)); //NON-NLS
-        file.createNewFile();
-        try (final BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file), 8192)) {
-            outputStream.write(image);
-        }
+        final InputStream imageInputStream = new ByteArrayInputStream(image);
+        final BufferedImage inputImage = ImageIO.read(imageInputStream);
+        final BufferedImage outputImage = ImageResizer.resizeAndCrop(inputImage, IMAGE_WIDTH, IMAGE_HEIGHT);
+
+        final File file = new File(imageUploadPath, String.format("%d%s", eventId, FILE_EXTENSION)); //NON-NLS
+        ImageIO.write(outputImage, FILE_TYPE, file);
 
         final String averageColor;
-        final BufferedImage inputImage = ImageIO.read(file);
-        final BufferedImage outputImage = ImageResizer.resizeAndCrop(inputImage, IMAGE_WIDTH, IMAGE_HEIGHT);
-        ImageIO.write(outputImage, FILE_TYPE, file);
         averageColor = AverageColorCalculator.getAverageColorAsHex(outputImage);
+
         inputImage.flush();
         outputImage.flush();
 
         final Event event = eventService.findByEventId(eventId).get();
-        final Event eventToUpdate = new Event(event.getEventId(), event.getTitle(), event.getLocation(), event.getDate(), event.getTime(), averageColor);
+        final Event eventToUpdate = event.toBuilder()
+                .cssBackgroundColor(averageColor)
+                .build();
         eventService.update(eventToUpdate);
     }
 
+    public void chooseRandomDefaultImage(@NotNull final Long eventId) {
+        final int index = new Random().nextInt(14) + 1;
+        final String filename = String.format("default-event-image-%03d.png", index);
+        Politician.beatAroundTheBush(() -> {
+            try (final InputStream inputStream =
+                         Thread.currentThread().getContextClassLoader().getResourceAsStream(filename)) {
+                final byte[] image = IOUtils.toByteArray(inputStream);
+                uploadImage(eventId, image);
+            }
+        });
+    }
+
     public void deleteImage(@NotNull final Long eventId) {
-        final File file = new File(IMAGE_UPLOAD_PATH, eventId + FILE_EXTENSION);
+        final File file = new File(imageUploadPath, eventId + FILE_EXTENSION);
         if (file.exists()) {
             file.delete();
+        } else {
+            throw new NotFoundException(String.format("event with id '%d' has no image", eventId)); //NON-NLS
         }
-        throw new NotFoundException(String.format("event with id '%d' has no image", eventId)); //NON-NLS
     }
 
 }

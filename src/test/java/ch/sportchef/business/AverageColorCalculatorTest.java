@@ -34,7 +34,9 @@ public class AverageColorCalculatorTest {
 
     private static final String[][] TEST_IMAGES = {
             { "test-grey-dark.png",  "#5E5E5E" }, //NON-NLS
-            { "test-grey-light.png", "#A0A0A0" }  //NON-NLS
+            { "test-grey-light.png", "#A0A0A0" }, //NON-NLS
+            { "test-grey.png",       "#C8C8C8" }, //NON-NLS
+            { "test-white.png",      "#C8C8C8" }  //NON-NLS
     };
 
     @Test

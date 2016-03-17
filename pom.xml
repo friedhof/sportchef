@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ch.sportchef</groupId>
     <artifactId>sportchef</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <packaging>war</packaging>
     <dependencyManagement>
         <dependencies>
@@ -22,6 +22,27 @@
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.18</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fatboyindustrial.gson-javatime-serialisers</groupId>
+            <artifactId>gson-javatime-serialisers</artifactId>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -77,44 +98,44 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>de.akquinet.jbosscc</groupId>
-            <artifactId>jbosscc-needle</artifactId>
-            <version>2.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency> <!-- needed but not provided by jbosscc-needle -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.16</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency> <!-- needed but not provided by jbosscc-needle -->
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>3.4</version>
+            <groupId>org.needle4j</groupId>
+            <artifactId>needle4j</artifactId>
+            <version>2.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.airhacks.rulz</groupId>
-            <artifactId>jaxrsclient</artifactId>
-            <version>0.0.3</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-core</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.bitmechanic</groupId>
+            <artifactId>dumbster</artifactId>
+            <version>1.9.0.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>2.22.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.0.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-processing</artifactId>
             <version>2.22.2</version>
             <scope>test</scope>
         </dependency>
@@ -127,7 +148,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
-            <version>4.5.1</version>
+            <version>4.5.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -177,7 +198,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.5.201505241946</version>
+                <version>0.7.6.201602180812</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -186,6 +207,28 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.3</version>
+                <configuration>
+                    <imageName>mcpringle/${project.artifactId}</imageName>
+                    <baseImage>jboss/wildfly</baseImage>
+                    <resources>
+                        <resource>
+                            <targetPath>/opt/jboss/wildfly/standalone/deployments/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.war</include>
+                        </resource>
+                    </resources>
+                    <imageTags>
+                        <imageTag>${project.version}</imageTag>
+                        <imageTag>latest</imageTag>
+                    </imageTags>
+                    <forceTags>true</forceTags>
+                    <pushImage>false</pushImage>
+                </configuration>
             </plugin>
         </plugins>
     </build>

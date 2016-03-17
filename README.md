@@ -1,7 +1,7 @@
 *SportChef*
-======
+===========
 
-[![Build Status](https://travis-ci.org/McPringle/sportchef.svg?branch=develop)](https://travis-ci.org/McPringle/sportchef) [![Coverage Status](https://coveralls.io/repos/github/McPringle/sportchef/badge.svg?branch=develop)](https://coveralls.io/github/McPringle/sportchef?branch=develop) [![Dependency Status](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c) [![Dependency Status](https://www.versioneye.com/user/projects/562e699636d0ab00210013b8/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699636d0ab00210013b8) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/issue)](http://issuestats.com/github/McPringle/sportchef) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/pr)](http://issuestats.com/github/McPringle/sportchef) [![Join the chat at https://gitter.im/McPringle/sportchef](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/McPringle/sportchef?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/McPringle/sportchef.svg?branch=develop)](https://travis-ci.org/McPringle/sportchef) [![Coverage Status](https://coveralls.io/repos/github/McPringle/sportchef/badge.svg?branch=develop)](https://coveralls.io/github/McPringle/sportchef?branch=develop) [![Codacy Badge](https://api.codacy.com/project/badge/grade/c9339611012742f68b0d8e0f0dcd2064)](https://www.codacy.com/app/McPringle/sportchef) [![Dependency Status](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699c36d0ab001600160c) [![Dependency Status](https://www.versioneye.com/user/projects/562e699636d0ab00210013b8/badge.svg?style=flat)](https://www.versioneye.com/user/projects/562e699636d0ab00210013b8)<br/>[![Stories in Ready](https://badge.waffle.io/McPringle/sportchef.png?label=ready&title=Ready)](http://waffle.io/McPringle/sportchef) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/issue)](http://issuestats.com/github/McPringle/sportchef) [![Issue Stats](http://issuestats.com/github/McPringle/sportchef/badge/pr)](http://issuestats.com/github/McPringle/sportchef) [![Join the chat at https://gitter.im/McPringle/sportchef](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/McPringle/sportchef?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)<br/>[![](https://badge.imagelayers.io/mcpringle/sportchef:latest.svg)](https://imagelayers.io/?images=mcpringle/sportchef:latest)
 
 **Sports Competition Management Software with a modern and fast architecture. Java based backend with a RESTful JSON API and a HTML 5 client with a modern UI.**
 
@@ -12,6 +12,49 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Running *SportChef*
+
+## Using Docker
+
+The *SportChef* docker image is available on DockerHub. To run *SportChef*, you have to specify a port mapping to map the ports of the application server inside the container (8080) to a port on your machine (e.g. 80) and you have to specify a folder on your machine to store the permanent data. The complete docker call looks like this:
+
+`docker run -p [local port]:8080 -v [local data path]:/opt/jboss/.sportchef -it mcpringle/sportchef`
+
+Example:
+
+`docker run -p 80:8080 -v /home/mcpringle/.sportchef:/opt/jboss/.sportchef -it mcpringle/sportchef`
+
+## Using Application Server
+
+If you have an own application server running, you can deploy the *SportChef* archive `sportchef.war`.
+
+# Release Notes
+
+## Version 1.1.1
+
+- Bugfix for infrequent `NullPointerException` after creating a new event
+
+## Version 1.1
+
+- Default images are assigned to events without an image
+- The imprint now opens in a dialog instead of a separate page
+- Started with integration builds
+- Added a lot of automated tests
+- Measure the test coverage
+- Static code analysis to increase code quality
+- Fixed a lot of small bugs
+- Increased code quality
+
+## Version 1.0
+
+- List all events on one page
+- Use persistence framework (no database)
+- Add imprint page
+- New administration page
+- Custom configuration file
+- Resize event images on upload
+- Calculate background color of events based on the event image
 
 # Technology
 
@@ -38,6 +81,7 @@ We use a [Maven](https://maven.apache.org/) build to tie everything together. As
 A huge thank you to all the contributors! All contributors are listed below (sorted alphabetically by GitHub username):
 
 - [CoalaJoe](https://github.com/CoalaJoe)
+- [Interactiondesigner](https://github.com/Interactiondesigner)
 - [jarekratajski](https://github.com/jarekratajski)
 - [McPringle](https://github.com/McPringle)
 - [PReimers](https://github.com/PReimers)
@@ -49,8 +93,8 @@ If you are a contributor and you are missing on this list, please add your entry
 | Version | Planned Release Date  | Status           |
 | ------- | --------------------- | ---------------- |
 |    v1.0 | End of January 2016   | released         |
-|    v1.1 | End of February 2016  | work in progress |
-|    v1.2 | End of March 2016     |                  |
+|    v1.1 | End of February 2016  | released         |
+|    v1.2 | End of March 2016     | work in progress |
 |    v2.0 | End of April 2016     |                  |
 |    v2.1 | End of May 2016       |                  |
 |    v2.2 | End of June 2016      |                  |
@@ -61,6 +105,24 @@ If you are a contributor and you are missing on this list, please add your entry
 |    v4.1 | End of November 2016  |                  |
 |    v4.2 | End of December 2016  |                  |
 
+## Overview of issues
+
+We use [Waffle.io](http://waffle.io/McPringle/sportchef) for a really useful overview of our issues. Our issues can have one of five states. The states are:
+
+| Status      | Explanation                                                                        |
+| ----------- | ---------------------------------------------------------------------------------- |
+| Backlog     | All open issues *not ready* to be worked on.                                       |
+| Ready       | All open issues *ready* to be worked on.                                           |
+| In Progress | All issues, somebody *is working* on.                                              |
+| In Review   | Implementation is finished but should be reviewed or is waiting as a pull request. |
+| Done        | Issues closed in the last week.                                                    |
+
+**If you would like to contribute to *SportChef*, please choose an issue from the *Ready* column and add a comment, so that we know what issue you choosed and we're able to update the status of the issue.**
+
+If you prefer an issue which is not yet ready and listed in the *Backlog*, please add a comment before starting to work on it, so we can discuss the issue beforehand and take it to the *Ready* state.
+
+If there is an issue already *In Progress* and you would like to help, please add a comment to the issue to get in contact with the assigned developer.
+
 ## Source code management
 
 ### GIT Workflow Rules
@@ -68,6 +130,8 @@ If you are a contributor and you are missing on this list, please add your entry
 We use the GitFlow workflow for *SportChef*. You can read a really good explanation of GitFlow on the Blog of [Vincent Driessen](http://nvie.com/): [A successful Git branching model](http://nvie.com/posts/a-successful-git-branching-model/)
 
 ![GitFlow Workflow Visualization by Seibert Media](https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-4.png)
+
+**Important: If you start to work on a new feature, please start on the *develop* branch!**
 
 ### Keep your fork in sync
 

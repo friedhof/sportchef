@@ -21,13 +21,11 @@ import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.event.entity.Event;
 import pl.setblack.airomem.core.SimpleController;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-@Named
 @Singleton
 public class EventService {
 

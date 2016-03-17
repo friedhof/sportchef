@@ -18,18 +18,17 @@
 package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.event.entity.Event;
-import ch.sportchef.business.event.entity.EventBuilder;
 
 import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
 
 class EventRepository implements Serializable {
@@ -43,20 +42,26 @@ class EventRepository implements Serializable {
 
     Event create(@NotNull final Event event) {
         final Long eventId = eventSeq.incrementAndGet();
-        final Event eventToCreate = EventBuilder.fromEvent(event).withEventId(eventId).build();
+        final long version = event.hashCode();
+        final Event eventToCreate = event.toBuilder()
+                .eventId(eventId)
+                .version(version)
+                .build();
         events.put(eventId, eventToCreate);
         return eventToCreate;
     }
 
     Event update(@NotNull final Event event) {
         final Event previousEvent = events.getOrDefault(event.getEventId(), event);
-        if (previousEvent.getVersion() != event.getVersion()) {
+        if (!previousEvent.getVersion().equals(event.getVersion())) {
             throw new OptimisticLockException("You tried to update an event that was modified concurrently!");
-        } else {
-            events.put(event.getEventId(), EventBuilder.fromEvent(event).build());
-            return event;
         }
-
+        final long version = event.hashCode();
+        final Event eventToUpdate = event.toBuilder()
+                .version(version)
+                .build();
+        events.put(event.getEventId(), eventToUpdate);
+        return eventToUpdate;
     }
 
     Optional<Event> findByEventId(final long eventId) {
@@ -65,7 +70,11 @@ class EventRepository implements Serializable {
 
     List<Event> findAll() {
        return events.values().stream()
-               .sorted(comparingLong(Event::getEventId))
+               .sorted((event1, event2) -> {
+                   final LocalDateTime event1DateTime = LocalDateTime.of(event1.getDate(), event1.getTime());
+                   final LocalDateTime event2DateTime = LocalDateTime.of(event2.getDate(), event2.getTime());
+                   return event1DateTime.compareTo(event2DateTime);
+               })
                .collect(toList());
     }
 

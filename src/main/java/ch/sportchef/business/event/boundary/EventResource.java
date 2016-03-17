@@ -1,6 +1,6 @@
-/**
+/*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015 Marcus Fihlon
+ * Copyright (C) 2015, 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,7 +13,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/ <http://www.gnu.org/licenses/>>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.event.boundary;
 
@@ -60,7 +60,9 @@ public class EventResource {
     @PUT
     public Response update(@Valid final Event event, @Context final UriInfo info) {
         find(); // only update existing events
-        final Event eventToUpdate = new Event(eventId, event.getTitle(), event.getLocation(), event.getDate(), event.getTime());
+        final Event eventToUpdate = event.toBuilder()
+                .eventId(eventId)
+                .build();
         final Event updatedEvent = eventService.update(eventToUpdate);
         final URI uri = info.getAbsolutePathBuilder().build();
         return Response.ok(updatedEvent).header("Location", uri.toString()).build();

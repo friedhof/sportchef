@@ -17,143 +17,44 @@
  */
 package ch.sportchef.business.event.entity;
 
-import ch.sportchef.business.adapter.LocalDateAdapter;
-import ch.sportchef.business.adapter.LocalTimeAdapter;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Optional;
 
 @Entity
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(toBuilder = true)
 public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String DEFAULT_CSS_BACKGROUND_COLOR = "#0096dc";
-
     @Id
     @GeneratedValue
     private Long eventId;
-
-    @Version
-    private Long version;
 
     @Size(min = 1)
     private String title;
 
     private String location;
 
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate date;
 
-    @XmlJavaTypeAdapter(LocalTimeAdapter.class)
     private LocalTime time;
 
-    private String cssBackgroundColor = DEFAULT_CSS_BACKGROUND_COLOR;
+    private String cssBackgroundColor;
 
-    public Event() {
-        super();
-    }
+    @Version
+    private Long version;
 
-    public Event(@NotNull final Long eventId,
-                 @NotNull final String title,
-                 @NotNull final String location,
-                 @NotNull final LocalDate date,
-                 @NotNull final LocalTime time) {
-        this(eventId, title, location, date, time, DEFAULT_CSS_BACKGROUND_COLOR);
-    }
-    public Event(@NotNull final Long eventId,
-                 @NotNull final String title,
-                 @NotNull final String location,
-                 @NotNull final LocalDate date,
-                 @NotNull final LocalTime time,
-                 final String cssBackgroundColor) {
-        this();
-        this.eventId = eventId;
-        this.title = title;
-        this.location = location;
-        this.date = date;
-        this.time = time;
-        this.cssBackgroundColor = cssBackgroundColor;
-        this.version = (long)hashCode();
-    }
-
-
-    public Event(@NotNull final Long eventId,
-                 @NotNull final String title,
-                 @NotNull final String location,
-                 @NotNull final LocalDate date,
-                 @NotNull final LocalTime time,
-                 final String cssBackgroundColor,
-                 @NotNull final Long version ) {
-        this();
-        this.eventId = eventId;
-        this.title = title;
-        this.location = location;
-        this.date = date;
-        this.time = time;
-        this.cssBackgroundColor = cssBackgroundColor;
-        this.version = version;
-    }
-
-
-
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
-
-    public String getCssBackgroundColor() {
-        return cssBackgroundColor;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "Event{eventId=%d, version=%d, title='%s', location='%s', date=%s, time=%s, cssBackgroundColor='%s'}",
-                eventId, version, title, location, date, time, cssBackgroundColor);
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Optional.ofNullable(eventId).map( e -> e.hashCode()).orElse(0);
-        result = 31 * result + title.hashCode();
-        result = 31 * result + location.hashCode();
-        result = 31 * result + date.hashCode();
-        result = 31 * result + time.hashCode();
-        result = 31 * result + cssBackgroundColor.hashCode();
-        return result;
-    }
 }

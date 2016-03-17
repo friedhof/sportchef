@@ -18,14 +18,14 @@
 package ch.sportchef.business.event.bundary;
 
 import ch.sportchef.business.event.boundary.EventResource;
-import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.boundary.EventsResource;
+import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
-import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
-import de.akquinet.jbosscc.needle.junit.NeedleRule;
-import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleBuilders;
+import org.needle4j.junit.NeedleRule;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -41,22 +41,21 @@ import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.OK;
-import static org.easymock.EasyMock.anyString;
-import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class EventsResourceTest {
 
     @Rule
-    public NeedleRule needleRule = new NeedleRule();
+    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
 
     @ObjectUnderTest
     private EventsResource eventsResource;
-
-    @Inject
-    private EasyMockProvider mockProvider;
 
     @Inject
     private EventService eventServiceMock;
@@ -70,18 +69,27 @@ public class EventsResourceTest {
     @Test
     public void saveWithSuccess() throws URISyntaxException {
         // arrange
-        final Event eventToCreate = new Event(0L, "Testevent", "Testlocation",
-                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
-        final Event savedEvent = new Event(1L, "Testevent", "Testlocation",
-                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final Event eventToCreate = Event.builder()
+                .eventId(0L)
+                .title("Testevent")
+                .location("Testlocation")
+                .date(LocalDate.of(2099, Month.DECEMBER, 31))
+                .time(LocalTime.of(22, 0))
+                .build();
+        final Event savedEvent = eventToCreate.toBuilder()
+                .eventId(1L)
+                .build();
         final String location = "http://localhost:8080/sportchef/api/events/1";
         final URI uri = new URI(location);
 
-        expect(eventServiceMock.create(eventToCreate)).andStubReturn(savedEvent);
-        expect(uriInfoMock.getAbsolutePathBuilder()).andStubReturn(uriBuilderMock);
-        expect(uriBuilderMock.path(anyString())).andStubReturn(uriBuilderMock);
-        expect(uriBuilderMock.build()).andStubReturn(uri);
-        mockProvider.replayAll();
+        when(eventServiceMock.create(eventToCreate))
+                .thenReturn(savedEvent);
+        when(uriInfoMock.getAbsolutePathBuilder())
+                .thenReturn(uriBuilderMock);
+        when(uriBuilderMock.path(anyString()))
+                .thenReturn(uriBuilderMock);
+        when(uriBuilderMock.build())
+                .thenReturn(uri);
 
         // act
         final Response response = eventsResource.save(eventToCreate, uriInfoMock);
@@ -89,21 +97,30 @@ public class EventsResourceTest {
         //assert
         assertThat(response.getStatus(), is(CREATED.getStatusCode()));
         assertThat(response.getHeaderString("Location"), is(location));
-        mockProvider.verifyAll();
+        verify(eventServiceMock, times(1)).create(eventToCreate);
+        verify(uriInfoMock, times(1)).getAbsolutePathBuilder();
+        verify(uriBuilderMock, times(1)).path(anyString());
+        verify(uriBuilderMock, times(1)).build();
     }
 
     @Test
     public void findAll() {
         // arrange
-        final Event event1 = new Event(1L, "Testevent", "Testlocation",
-                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
-        final Event event2 = new Event(2L, "Testevent", "Testlocation",
-                LocalDate.of(2099, Month.DECEMBER, 31), LocalTime.of(22, 0));
+        final Event event1 = Event.builder()
+                .eventId(1L)
+                .title("Testevent")
+                .location("Testlocation")
+                .date(LocalDate.of(2099, Month.DECEMBER, 31))
+                .time(LocalTime.of(22, 0))
+                .build();
+        final Event event2 = event1.toBuilder()
+                .eventId(2L)
+                .build();
         final List<Event> events = new ArrayList<>();
         events.add(event1);
         events.add(event2);
-        expect(eventServiceMock.findAll()).andStubReturn(events);
-        mockProvider.replayAll();
+        when(eventServiceMock.findAll())
+                .thenReturn(events);
 
         // act
         final Response response = eventsResource.findAll();
@@ -115,7 +132,7 @@ public class EventsResourceTest {
         assertThat(response.getStatus(), is(OK.getStatusCode()));
         assertThat(responseEvent1, is(event1));
         assertThat(responseEvent2, is(event2));
-        mockProvider.verifyAll();
+        verify(eventServiceMock, times(1)).findAll();
     }
 
     @Test

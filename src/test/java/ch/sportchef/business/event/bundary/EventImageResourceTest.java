@@ -20,8 +20,6 @@ package ch.sportchef.business.event.bundary;
 import ch.sportchef.business.event.boundary.EventImageResource;
 import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
-import de.akquinet.jbosscc.needle.junit.NeedleRule;
-import de.akquinet.jbosscc.needle.mock.EasyMockProvider;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
@@ -30,6 +28,9 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.needle4j.junit.NeedleBuilders;
+import org.needle4j.junit.NeedleRule;
+import org.needle4j.mock.EasyMockProvider;
 
 import javax.inject.Inject;
 import javax.servlet.ReadListener;
@@ -52,23 +53,22 @@ import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.TEMPORARY_REDIRECT;
-import static org.easymock.EasyMock.anyLong;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class EventImageResourceTest {
 
     private static final String TEST_IMAGE_NAME = "test-350x200.png";
 
     @Rule
-    public NeedleRule needleRule = new NeedleRule();
+    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
 
     private EventImageResource eventImageResource;
-
-    @Inject
-    private EasyMockProvider mockProvider;
 
     @Inject
     private EventService eventServiceMock;
@@ -93,8 +93,8 @@ public class EventImageResourceTest {
     public void getImageOK() throws IOException, URISyntaxException {
         // arrange
         final byte[] image = readTestImage();
-        expect(eventImageServiceMock.getImage(1L)).andStubReturn(image);
-        mockProvider.replayAll();
+        when(eventImageServiceMock.getImage(1L))
+                .thenReturn(image);
 
         // act
         final Response response = eventImageResource.getImage();
@@ -107,14 +107,14 @@ public class EventImageResourceTest {
 
         assertThat(response.getStatus(), is(OK.getStatusCode()));
         assertThat(imageResponse, is(image));
-        mockProvider.verifyAll();
+        verify(eventImageServiceMock, times(1)).getImage(1L);
     }
 
     @Test
     public void getImageTemporaryRedirect() throws IOException, URISyntaxException {
         // arrange
-        expect(eventImageServiceMock.getImage(1L)).andStubThrow(new NotFoundException());
-        mockProvider.replayAll();
+        when(eventImageServiceMock.getImage(1L))
+                .thenThrow(new NotFoundException());
 
         // act
         final Response response = eventImageResource.getImage();
@@ -122,7 +122,7 @@ public class EventImageResourceTest {
         // assert
         assertThat(response.getStatus(), is(TEMPORARY_REDIRECT.getStatusCode()));
         assertThat(response.getLocation().toString(), is("http://placehold.it/350x200"));
-        mockProvider.verifyAll();
+        verify(eventImageServiceMock, times(1)).getImage(1L);
     }
 
     @Test
@@ -138,19 +138,19 @@ public class EventImageResourceTest {
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(requestContent.toByteArray());
         final ServletInputStreamMock inputStreamMock = new ServletInputStreamMock(inputStream);
         final String contentType = multipartRequestEntity.getContentType();
-
-        expect(httpServletRequest.getContentType()).andStubReturn(contentType);
-        expect(httpServletRequest.getInputStream()).andStubReturn(inputStreamMock);
-
-        eventImageServiceMock.uploadImage(anyLong(), anyObject());
-        mockProvider.replayAll();
+        when(httpServletRequest.getContentType())
+                .thenReturn(contentType);
+        when(httpServletRequest.getInputStream())
+                .thenReturn(inputStreamMock);
 
         // act
         final Response response = eventImageResource.uploadImage(httpServletRequest);
 
         // assert
         assertThat(response.getStatus(), is(OK.getStatusCode()));
-        mockProvider.verifyAll();
+        verify(httpServletRequest, times(1)).getContentType();
+        verify(httpServletRequest, times(1)).getInputStream();
+        verify(eventImageServiceMock, times(1)).uploadImage(anyLong(), anyObject());
     }
 
     @Test
@@ -159,18 +159,18 @@ public class EventImageResourceTest {
         final byte[] image = readTestImage();
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(image);
         final ServletInputStreamMock inputStreamMock = new ServletInputStreamMock(inputStream);
-
-        expect(httpServletRequest.getContentType()).andStubReturn(
-                MediaType.MULTIPART_FORM_DATA);
-        expect(httpServletRequest.getInputStream()).andStubReturn(inputStreamMock);
-        mockProvider.replayAll();
+        when(httpServletRequest.getContentType())
+                .thenReturn(MediaType.MULTIPART_FORM_DATA);
+        when(httpServletRequest.getInputStream())
+                .thenReturn(inputStreamMock);
 
         // act
         final Response response = eventImageResource.uploadImage(httpServletRequest);
 
         // assert
         assertThat(response.getStatus(), is(BAD_REQUEST.getStatusCode()));
-        mockProvider.verifyAll();
+        verify(httpServletRequest, times(1)).getContentType();
+        verify(httpServletRequest, times(1)).getInputStream();
     }
 
     @Test

@@ -5,7 +5,6 @@ import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.jsonwebtoken.Jwts;
@@ -17,10 +16,10 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.picketlink.Identity;
 import org.picketlink.credential.DefaultLoginCredentials;
+import pl.setblack.badass.Politician;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.security.Key;
@@ -33,13 +32,10 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
-@Named
 @Singleton
 public class AuthenticationService {
 
-    private static final Logger LOGGER = Logger.getLogger(AuthenticationService.class.getName());
     private static final String CHALLENGE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int CHALLENGE_LENGTH = 10;
     private static final TemporalAmount TOKEN_EXPIRATION_TIME = Duration.ofDays(1);
@@ -61,12 +57,13 @@ public class AuthenticationService {
                 .build();
     }
 
-    public boolean requestChallenge(@NotNull final String email) throws EmailException {
+    public boolean requestChallenge(@NotNull final String email) {
         final Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()) {
             final String challenge = generateChallenge();
             challengeCache.put(email, challenge);
-            sendChallenge(email, challenge);
+            Politician.beatAroundTheBush(() ->
+                    sendChallenge(email, challenge));
             return true;
         }
         return false;
@@ -140,7 +137,6 @@ public class AuthenticationService {
             final Instant expirationInstant = expiration.atZone(ZoneId.systemDefault()).toInstant();
             final Date expirationDate = Date.from(expirationInstant);
 
-            final ObjectMapper mapper = new ObjectMapper();
             final String subject = user.get().getUserId().toString();
 
             token = Jwts.builder()

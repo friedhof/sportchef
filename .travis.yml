@@ -3,8 +3,28 @@ language: java
 jdk:
   - oraclejdk8
 
+services:
+  - docker
+
 before_install:
   - npm install -g bower
 
 after_success:
-  - mvn jacoco:report coveralls:report
+  - mvn jacoco:report coveralls:report docker:build
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - export REPO=mcpringle/sportchef
+  - docker push $REPO
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/eee27732e50d40f73bf2
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: always    # options: [always|never|change] default: always
+
+env:
+  global:
+  - secure: wasWW/zaDmglU89QBhHZkHjVO6TCqbD8hLCO5F9ypo4o7OJWBphjymDDpxNiag0QArpMQWHRqIRuF3pUXBwgbphaP3nD8n/gOHNqlU09aGOsb7BQI6p5iUeC9cF180tBqedloXQ2wmVN4zQMBKsrQfZmhwzdzp//npCENLLw9Lm5GaUJh5zSrLYKsjZED67FOW/Gyc8qQjINB0bLzRyLFufWntXAy7AM0bDEVsXUMjMg7lKsCyvhxjrt8ik4Y5vFclvtoGUF5RvPiy2/CSWF6S+4lYrinC9eHt1sikNg9Wb/sSI8qJgVlLNUOJ19TQjlJM58cg8ebHTnlYebZ8O7+qPFNDp0uZDOyb1sma5vJ5gm1zbzWnmgzJCw67bR+wSIWbe5kOYV72YXOJJoB1VFsyuXRlrJFM/S/EP6aVQxTHj10IN9s/g6F2BVAPfZdrN1fpAR6BctTryCaNFD+SuWMH5slXxxTLFQorgoCTXGtoRmTmf11V0hnnfep1OeBTEh/xVN53/oADrYSb/5hfr3Yk0KOpf7zAf7kaif7lJDeu+oIaoZ4xGnA2LuwjE0G4YJBXZo2ATfyjFOt46x3MMOam9jWXbnfJZioSQ8yOw97DkIYS8icfylrvvGEHkRnkzMGZCb5yyphDEVMcKd7GfIx0Pr39F3o3xVYxWxNCtBUek=
+  - secure: prmHnwROG44nyXMROH2Zz/V93KKAEUwsyYHQYEwv7O/179TpnBhiwNvxjOcNAiFbGlVS3Nr0w0V9mmV5AVGq29g0pM9hcw47fN/Qzo49qXE3p+hoy+EkHBG22xCsQNW61M3Pqh+6ZFI68lmZnCRtAYVS+yoqfHs3Ov3IKfeDNEBnlRNtV18gi0EBRVpG3st0eGUPQE1sYZLY6urlQ4hlS22GEK8F5ohwIZpCek+0fNdW8PKkJE1srLZbRCxpKe4LZO+w2MZYT+u/PZ0sgWiopY8+XQ914A8mITeHj3fhEDTsu1O3YugrtYWGSUAZ7IFtKb5dsa9kwC/67oupPUqSpdAf8tDOzAGy7YEuBY+HW9im4m6fpZM/thQER65dmtx5k6isloLnqUIjSOp/L4QP7D0gDgIZzehtJxCZ3+O5Kpj/I0607g+knPh46nu+SgRFo7AlRvoDRB2E24uXF/RruDaxqW3/gvCREqj9aAsYUBZtgx2iOQdMpOJwg8zyxjRqLU55wwEF3jZOkwY1O0PXbmuFbFbDSRvCQJ6+HcXoYcYHIo7E2zJxi1KFsq0NPhW6VPnH+/qqSD1r7pbyLcQ3PXDlLPqqlaxEm0dXKMThAduI801HCQMP8STUPMwykGTX8k0O7RwMeXDdKS30d2A/+sXiZHvsJuLmmjwkIxjaLlY=
+  - secure: jO70a8H4//OIPQbVrrFGrUvxvIuwPao1x2fUoEGtzD5aXn6N3o6Lev82dmGuWWnmUu3lkBcNoHPY8HLeNRkKy1z3U4zhNmusPBuAaGltEPdeMg1E4tZoY3OJPy2tl2/BoUU/Ult80BdO2M8/6utCrrvJ6xlMQLpMeEEZJXgzCkAkHQv85e2yvKKOurFvI0GzGjW1k4QUx7GGKtcECBuSDpIQ7V3mwUb2UbsOXa9vgRVCpOQeQHk6QW4EdLb3e44NsDLdAbkIrMu8D3SHf0uP2o/jI8wUQpGvgrbrh90pCt6J+7RHmSbRlCJkowU2JjYNhq8qUBG61wbIvejDXtENCH4krH8Fc5WK5izXzxGObDfGN/DspMuy946wh0PfLSL1/YxKjVPX3498toDKlnMp/Sxsq/ysCuz8fbl+0MLQZoNAhKw25wvIUYNC+nLl0E+9M4ITC9UoFGp6uS81CMRrfZNk7/9CIueQcGIjG5s9T6Bw+NdHGGcgt2jwdjAwd8FF0bX7/SUv65WX+HB0I4BtVrmNLHjGkQCosS0h9RB487ry/0jVT0932VdFONpIHn/y8Z2VIpXknN9S8oA0tk7k/VFuwXjrZAlnJ1mEzhUQvRRT0m8gHCU5fz9xXuE9MURSp0f2+g8TJTrD/pRWFM1q0ZBVyHQkGXdOq/CdXe2UPAM=

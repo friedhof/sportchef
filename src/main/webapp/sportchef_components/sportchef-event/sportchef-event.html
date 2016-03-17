@@ -103,7 +103,7 @@
             <div class="card-content" style$="background-color: {{event.cssBackgroundColor}};">
                 <h2>{{event.title}}</h2>
                 <div class="bottomFixed">
-                    <span><iron-icon icon="icons:event"></iron-icon> {{event.date}} {{event.time}}</span><br />
+                    <span><iron-icon icon="icons:event"></iron-icon> {{event.date}} {{formatTime(event.time)}}</span><br />
                     <span><iron-icon icon="maps:place"></iron-icon> {{event.location}}</span>
                 </div>
             </div>
@@ -120,6 +120,10 @@
                     type: Number,
                     value: 0
                 }
+            },
+            formatTime: function(time) {
+                var parts = time.split(":");
+                return parts[0] + ":" + parts[1];
             }
         });
     </script>
