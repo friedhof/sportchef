@@ -5,6 +5,32 @@
     <artifactId>sportchef</artifactId>
     <version>1.2-SNAPSHOT</version>
     <packaging>war</packaging>
+    <developers>
+        <developer>
+            <id>McPringle</id>
+            <name>Marcus Fihlon</name>
+            <email>marcus@fihlon.ch</email>
+            <url>https://www.fihlon.ch/</url>
+        </developer>
+        <developer>
+            <id>freemanT</id>
+            <name>Christian Marbet</name>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Dominik Müller</name>
+        </contributor>
+        <contributor>
+            <name>Gunnar Donis</name>
+        </contributor>
+        <contributor>
+            <name>Jarek Ratajski</name>
+        </contributor>
+        <contributor>
+            <name>Patrick Reimers</name>
+        </contributor>
+    </contributors>
     <dependencyManagement>
         <dependencies>
             <dependency>
