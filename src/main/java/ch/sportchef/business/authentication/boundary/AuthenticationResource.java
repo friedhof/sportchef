@@ -18,21 +18,17 @@
 package ch.sportchef.business.authentication.boundary;
 
 import ch.sportchef.business.authentication.control.AuthenticationService;
-import org.apache.commons.mail.EmailException;
-import org.picketlink.Identity;
-import org.picketlink.credential.DefaultLoginCredentials;
+import ch.sportchef.business.authentication.entity.AuthenticationData;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -41,12 +37,6 @@ import java.util.Optional;
 @Path("authentication")
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class AuthenticationResource {
-
-    @Inject
-    private Identity identity;
-
-    @Inject
-    private DefaultLoginCredentials credentials;
 
     @Inject
     private AuthenticationService authenticationService;
@@ -65,26 +55,12 @@ public class AuthenticationResource {
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response authenticate(final DefaultLoginCredentials credential) {
-        final Optional<String> token = authenticationService.validateChallenge(identity, credential);
+    public Response authenticate(@NotNull final AuthenticationData authenticationData) {
+        final Optional<String> token = authenticationService.validateChallenge(
+                authenticationData.getEmail(), authenticationData.getChallenge());
 
         return token.isPresent() ?
                 Response.ok(Entity.text(token.get())).build() :
                 Response.status(Status.FORBIDDEN).build();
     }
-
-    @POST
-    @Consumes({MediaType.TEXT_PLAIN})
-    public Response authenticate(final String token) {
-        return authenticationService.authentication(identity, credentials, token).isPresent() ?
-                Response.ok(Entity.text(token)).build() :
-                Response.status(Status.UNAUTHORIZED).build();
-    }
-
-    @POST
-    @Consumes({MediaType.WILDCARD})
-    public Response unsupportedCredentialType(@Context HttpServletRequest request) {
-        return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).build();
-    }
-
 }
