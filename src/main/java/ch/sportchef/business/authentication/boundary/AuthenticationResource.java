@@ -87,10 +87,4 @@ public class AuthenticationResource {
         return Response.status(Response.Status.UNSUPPORTED_MEDIA_TYPE).build();
     }
 
-    @DELETE
-    public Response logout() {
-        authenticationService.logout(identity);
-        return Response.status(Response.Status.NO_CONTENT).build();
-    }
-
 }

@@ -148,11 +148,4 @@ public class AuthenticationService {
 
         return Optional.ofNullable(token);
     }
-
-    public void logout(@NotNull final Identity identity) {
-        if (identity.isLoggedIn()) {
-            identity.logout();
-        }
-    }
-
 }
