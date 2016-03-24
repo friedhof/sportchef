@@ -29,21 +29,17 @@ import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
-import org.picketlink.Identity;
-import org.picketlink.credential.DefaultLoginCredentials;
-import org.picketlink.idm.model.Account;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
+import static ch.sportchef.hamcrest.matcher.PatternMatcher.matchesPattern;
 import static java.lang.Boolean.FALSE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -120,14 +116,12 @@ public class AuthenticationServiceTest {
         // arrange
 
         // act
-        final String challenge = requestChallengeOk();
-        final String token = validateChallenge(challenge);
+        validateChallenge(requestChallenge());
 
         // assert
-        assertThat(token.matches(".{20}\\..{38}\\..{86}"), is(true));
     }
 
-    private String requestChallengeOk() {
+    private String requestChallenge() {
         // arrange
         final Optional<User> userOptional = Optional.of(createTestUser());
         when(userServiceMock.findByEmail(TEST_USER_EMAIL))
@@ -152,177 +146,16 @@ public class AuthenticationServiceTest {
         return challenge;
     }
 
-    private String validateChallenge(@NotNull final String challenge) {
+    private void validateChallenge(@NotNull final String challenge) {
         // arrange
-        final Identity identityMock = mock(Identity.class);
-        when(identityMock.isLoggedIn())
-                .thenReturn(false);
-        final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
-        when(credentialMock.getUserId())
-                .thenReturn(TEST_USER_EMAIL);
-        when(credentialMock.getPassword())
-                .thenReturn(challenge);
 
         // act
-        final Optional<String> token = authenticationService.validateChallenge(identityMock, credentialMock);
+        final Optional<String> token = authenticationService.validateChallenge(TEST_USER_EMAIL, challenge);
 
         // assert
         assertThat(token, notNullValue());
         assertThat(token.isPresent(), is(true));
-        verify(credentialMock, times(1)).getUserId();
-        verify(credentialMock, times(1)).getPassword();
-
-        return token.get();
-    }
-
-    @Test
-    public void authenticationIsLoggedInOk() {
-        // arrange
-        final Identity identityMock = mock(Identity.class);
-        when(identityMock.isLoggedIn())
-                .thenReturn(true);
-        when(identityMock.getAccount())
-                .thenReturn(mock(Account.class));
-        final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
-        final String token = "1234567890";
-
-        // act
-        final Optional<String> tokenOptional = authenticationService.authentication(identityMock, credentialMock, token);
-
-        // assert
-        assertThat(tokenOptional.isPresent(), is(true));
-        assertThat(tokenOptional.get(), is(token));
-        verify(identityMock, times(1)).isLoggedIn();
-        verify(identityMock, times(1)).getAccount();
-    }
-
-    @Test
-    public void authenticationIsLoggedInNotOk() {
-        // arrange
-        final Identity identityMock = mock(Identity.class);
-        when(identityMock.isLoggedIn())
-                .thenReturn(true);
-        when(identityMock.getAccount())
-                .thenReturn(null);
-        final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
-        final String token = "1234567890";
-
-        // act
-        final Optional<String> tokenOptional = authenticationService.authentication(identityMock, credentialMock, token);
-
-        // assert
-        assertThat(tokenOptional.isPresent(), is(false));
-        verify(identityMock, times(1)).isLoggedIn();
-        verify(identityMock, times(1)).getAccount();
-    }
-
-    @Test
-    public void authenticationIsNotLoggedInOk() {
-        // arrange
-        final Identity identityMock = mock(Identity.class);
-        when(identityMock.isLoggedIn())
-                .thenReturn(false);
-        when(identityMock.getAccount())
-                .thenReturn(mock(Account.class));
-        when(identityMock.login())
-                .thenReturn(Identity.AuthenticationResult.SUCCESS);
-        final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
-        final String token = "1234567890";
-
-        // act
-        final Optional<String> tokenOptional = authenticationService.authentication(identityMock, credentialMock, token);
-
-        // assert
-        assertThat(tokenOptional.isPresent(), is(true));
-        assertThat(tokenOptional.get(), is(token));
-        verify(identityMock, times(1)).isLoggedIn();
-        verify(identityMock, times(1)).getAccount();
-        verify(identityMock, times(1)).login();
-        verify(credentialMock, times(1)).setCredential(anyObject());
-    }
-
-    @Test
-    public void authenticationIsNotLoggedInNotOk() {
-        // arrange
-        final Identity identityMock = mock(Identity.class);
-        when(identityMock.isLoggedIn())
-                .thenReturn(false);
-        when(identityMock.getAccount())
-                .thenReturn(null);
-        when(identityMock.login())
-                .thenReturn(Identity.AuthenticationResult.FAILED);
-        final DefaultLoginCredentials credentialMock = mock(DefaultLoginCredentials.class);
-        final String token = "1234567890";
-
-        // act
-        final Optional<String> tokenOptional = authenticationService.authentication(identityMock, credentialMock, token);
-
-        // assert
-        assertThat(tokenOptional.isPresent(), is(false));
-        verify(identityMock, times(1)).isLoggedIn();
-        verify(identityMock, times(1)).getAccount();
-        verify(identityMock, times(1)).login();
-        verify(credentialMock, times(1)).setCredential(anyObject());
-    }
-
-    @Test
-    public void generateTokenOk() {
-        // arrange
-        final Optional<User> userOptional = Optional.of(createTestUser());
-        when(userServiceMock.findByEmail(TEST_USER_EMAIL))
-                .thenReturn(userOptional);
-
-        // act
-        final Optional<String> tokenOptional = authenticationService.generateToken(TEST_USER_EMAIL);
-
-        // assert
-        assertThat(tokenOptional.isPresent(), is(true));
-        assertThat(tokenOptional.get(), notNullValue());
-        verify(userServiceMock, times(1)).findByEmail(TEST_USER_EMAIL);
-    }
-
-    @Test
-    public void generateTokenNotOk() {
-        // arrange
-        when(userServiceMock.findByEmail(TEST_USER_EMAIL))
-                .thenReturn(Optional.empty());
-
-        // act
-        final Optional<String> tokenOptional = authenticationService.generateToken(TEST_USER_EMAIL);
-
-        // assert
-        assertThat(tokenOptional.isPresent(), is(false));
-        verify(userServiceMock, times(1)).findByEmail(TEST_USER_EMAIL);
-    }
-
-    @Test
-    public void logoutIsLoggedIn() {
-        // arrange
-        final Identity identityMock = mock(Identity.class);
-        when(identityMock.isLoggedIn())
-                .thenReturn(true);
-
-        // act
-        authenticationService.logout(identityMock);
-
-        // assert
-        verify(identityMock, times(1)).isLoggedIn();
-        verify(identityMock, times(1)).logout();
-    }
-
-    @Test
-    public void logoutIsNotLoggedIn() {
-        // arrange
-        final Identity identityMock = mock(Identity.class);
-        when(identityMock.isLoggedIn())
-                .thenReturn(false);
-
-        // act
-        authenticationService.logout(identityMock);
-
-        // assert
-        verify(identityMock, times(1)).isLoggedIn();
-        verify(identityMock, never()).logout();
+        assertThat(token.get(), matchesPattern(".{20}\\..{42}\\..{342}"));
     }
 
 }
