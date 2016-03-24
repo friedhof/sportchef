@@ -124,7 +124,7 @@ public class AuthenticationService {
         return token;
     }
 
-    public String generateToken(@NotNull final String email) {
+    private String generateToken(@NotNull final String email) {
         final JwtClaims claims = new JwtClaims();
         claims.setSubject(email);
 
