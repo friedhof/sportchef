@@ -131,7 +131,7 @@ public class AuthenticationService {
         final JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());
         jws.setKey(rsaJsonWebKey.getPrivateKey());
-        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
+        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA512);
 
         return Politician.beatAroundTheBush(() -> jws.getCompactSerialization());
     }
