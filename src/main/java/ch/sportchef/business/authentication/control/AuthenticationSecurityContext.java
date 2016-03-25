@@ -20,7 +20,6 @@ package ch.sportchef.business.authentication.control;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
@@ -36,7 +35,7 @@ class AuthenticationSecurityContext implements SecurityContext {
     }
 
     @Override
-    public boolean isUserInRole(@NotNull final String role) {
+    public boolean isUserInRole(final String role) {
         return securityContext.isUserInRole(role);
     }
 

@@ -21,7 +21,6 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -39,7 +38,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
     private AuthenticationService authenticationService;
 
     @Override
-    public void filter(@NotNull final ContainerRequestContext requestContext) throws IOException {
+    public void filter(final ContainerRequestContext requestContext) throws IOException {
         final String authHeaderVal = requestContext.getHeaderString("Authorization");
         if (authHeaderVal.startsWith("Bearer")) {
             final String token = authHeaderVal.split(" ")[1];

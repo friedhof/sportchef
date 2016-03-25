@@ -17,7 +17,6 @@
  */
 package ch.sportchef.business.authentication.control;
 
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -27,8 +26,8 @@ import java.util.List;
 public class AuthenticationResponseFilter implements ContainerResponseFilter {
 
     @Override
-    public void filter(@NotNull final ContainerRequestContext requestContext,
-                       @NotNull final ContainerResponseContext responseContext) {
+    public void filter(final ContainerRequestContext requestContext,
+                       final ContainerResponseContext responseContext) {
         if (requestContext.getProperty("auth-failed") != null) {
             final Boolean failed = (Boolean) requestContext.getProperty("auth-failed");
             if (failed) {
