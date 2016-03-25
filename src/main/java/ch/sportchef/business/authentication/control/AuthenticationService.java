@@ -138,4 +138,14 @@ public class AuthenticationService {
 
         return Politician.beatAroundTheBush(() -> jws.getCompactSerialization());
     }
+
+    Optional<String> validate(@NotNull String token) throws InvalidJwtException {
+        final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                .setRequireSubject()
+                .setVerificationKey(rsaJsonWebKey.getKey())
+                .build();
+        final JwtClaims jwtClaims = jwtConsumer.processToClaims(token);
+        return Optional.ofNullable((String) jwtClaims.getClaimValue("sub"));
+    }
+
 }
