@@ -45,8 +45,8 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
             final String token = authHeaderVal.split(" ")[1];
             try {
                 final Optional<String> subject = authenticationService.validate(token);
-                final SecurityContext securityContext = requestContext.getSecurityContext();
                 final String email = subject.orElseThrow(() -> new InvalidJwtException("Invalid token data"));
+                final SecurityContext securityContext = requestContext.getSecurityContext();
                 requestContext.setSecurityContext(new AuthenticationSecurityContext(securityContext, email));
             } catch (final InvalidJwtException e) {
                 requestContext.abortWith(
