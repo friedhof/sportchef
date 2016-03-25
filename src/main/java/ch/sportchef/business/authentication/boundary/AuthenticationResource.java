@@ -60,7 +60,10 @@ public class AuthenticationResource {
                 authenticationData.getEmail(), authenticationData.getChallenge());
 
         return token.isPresent() ?
-                Response.ok(Entity.text(token.get())).build() :
-                Response.status(Status.FORBIDDEN).build();
+                Response.ok(Entity.text(token.get()))
+                        .header("Token", token.get())
+                        .build() :
+                Response.status(Status.FORBIDDEN)
+                        .build();
     }
 }
