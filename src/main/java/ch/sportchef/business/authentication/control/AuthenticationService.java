@@ -35,7 +35,6 @@ import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.jose4j.lang.JoseException;
 import pl.setblack.badass.Politician;
 
 import javax.annotation.PostConstruct;
@@ -64,11 +63,11 @@ public class AuthenticationService {
     private RsaJsonWebKey rsaJsonWebKey;
 
     @PostConstruct
-    private void init() throws JoseException {
+    private void init() {
         challengeCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
-        rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
+        Politician.beatAroundTheBush(() -> rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048));
     }
 
     public boolean requestChallenge(@NotNull final String email) {
