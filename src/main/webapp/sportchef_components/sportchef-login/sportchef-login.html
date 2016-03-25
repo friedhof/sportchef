@@ -15,49 +15,58 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<link rel="import" href="../../bower_components/polymer/polymer.html"/>
-<link rel="import" href="../../bower_components/paper-button/paper-button.html"/>
-<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html"/>
-<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html"/>
-<link rel="import" href="../sportchef-jquery/sportchef-jquery.html"/>
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+<link rel="import" href="../../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html" />
+<link rel="import" href="../../bower_components/paper-input/paper-input.html" />
+<link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html" />
+<link rel="import" href="../sportchef-jquery/sportchef-jquery.html" />
 
 <dom-module id="sportchef-login">
     <template>
         <style>
-            .container {
-                max-height: 750px;
-                max-width: 750px;
-                padding-left: 10px;
-                padding-right: 10px;
+            paper-dialog {
+                width: 500px;
+                height: 250px;
             }
         </style>
 
-        <!-- <iron-ajax auto url="/sportchef/imprint.md" handle-as="text" last-response="{{imprint}}"></iron-ajax> -->
         <paper-dialog id="dialog-login" modal>
-            <paper-dialog-scrollable class="can-scroll">
-                <div class="container">{{imprint}}</div>
-            </paper-dialog-scrollable>
+            <h2>Login</h2>
+            <div>
+                <gold-email-input id="email" autofocus required auto-validate></gold-email-input>
+                <paper-input id="password" type="password" label="Challenge" />
+            </div>
             <div class="buttons">
                 <paper-button dialog-dismiss>Cancel</paper-button>
-                <paper-button id="btn-login-request-code" onClick="loginRequestCode()">Request Code</paper-button>
+                <paper-button onClick="requestChallenge();">Request Challenge</paper-button>
+                <paper-button onClick="authenticate();">Authenticate</paper-button>
             </div>
         </paper-dialog>
     </template>
 
     <script>
-        function loginRequestCode() {
+        function requestChallenge() {
+            $.ajax({
+                method: "GET",
+                url: "/sportchef/api/authentication?email=" + $("#email").val(),
+                cache: false,
+                success: function(data, textStatus, jqXHR ) {
+                    alert(textStatus);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert(textStatus + ": " + errorThrown);
+                }
+            });
+        }
+
+        function authenticate() {
             // TODO
-            // make ajax request with email address and switch to code input view
-            // then make another ajax request with code and save token
-            document.getElementById('dialog-login').close();
-        };
+            // make ajax request with email and challenge and save token
+        }
 
         Polymer({
-            is: "sportchef-login",
-
-            ready: function() {
-
-            }
+            is: "sportchef-login"
         });
     </script>
 </dom-module>
