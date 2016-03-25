@@ -41,8 +41,8 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
     @Override
     public void filter(@NotNull final ContainerRequestContext requestContext) throws IOException {
         final String authHeaderVal = requestContext.getHeaderString("Authorization");
-        final String token = authHeaderVal.split(" ")[1];
         if (authHeaderVal.startsWith("Bearer")) {
+            final String token = authHeaderVal.split(" ")[1];
             try {
                 final Optional<String> subject = authenticationService.validate(token);
                 final SecurityContext securityContext = requestContext.getSecurityContext();
