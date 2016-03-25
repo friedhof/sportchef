@@ -142,6 +142,8 @@ public class AuthenticationService {
     Optional<String> validate(@NotNull String token) throws InvalidJwtException {
         final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                 .setRequireSubject()
+                .setRequireIssuedAt()
+                .setRequireExpirationTime()
                 .setVerificationKey(rsaJsonWebKey.getKey())
                 .build();
         final JwtClaims jwtClaims = jwtConsumer.processToClaims(token);
