@@ -24,6 +24,7 @@ import ch.sportchef.business.user.entity.User;
 import com.dumbster.smtp.ServerOptions;
 import com.dumbster.smtp.SmtpServer;
 import com.dumbster.smtp.SmtpServerFactory;
+import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
@@ -111,12 +112,22 @@ public class AuthenticationServiceTest {
         verify(userServiceMock, times(1)).findByEmail(TEST_USER_EMAIL);
     }
 
-    @Test
-    public void requestAndValidateChallenge() {
+    @Test(expected = InvalidJwtException.class)
+    public void validateTokenNotOk() throws InvalidJwtException {
         // arrange
 
         // act
-        validateChallenge(requestChallenge());
+        authenticationService.validate("invalid_token");
+
+        // assert
+    }
+
+    @Test
+    public void requestAndValidateChallengeAndToken() throws InvalidJwtException {
+        // arrange
+
+        // act
+        validateToken(validateChallenge(requestChallenge()));
 
         // assert
     }
@@ -146,7 +157,7 @@ public class AuthenticationServiceTest {
         return challenge;
     }
 
-    private void validateChallenge(@NotNull final String challenge) {
+    private String validateChallenge(@NotNull final String challenge) {
         // arrange
 
         // act
@@ -156,6 +167,20 @@ public class AuthenticationServiceTest {
         assertThat(token, notNullValue());
         assertThat(token.isPresent(), is(true));
         assertThat(token.get(), matchesPattern(".{20}\\..{87}\\..{342}"));
+
+        return token.get();
+    }
+
+    private void validateToken(@NotNull final String token) throws InvalidJwtException {
+        // arrange
+
+        // act
+        final Optional<String> email = authenticationService.validate(token);
+
+        // assert
+        assertThat(email, notNullValue());
+        assertThat(email.isPresent(), is(true));
+        assertThat(email.get(), is(TEST_USER_EMAIL));
     }
 
 }
