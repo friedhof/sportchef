@@ -32,6 +32,9 @@ import org.jose4j.jwk.RsaJwkGenerator;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.lang.JoseException;
 import pl.setblack.badass.Politician;
 
@@ -39,8 +42,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
-import java.time.Duration;
-import java.time.temporal.TemporalAmount;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +51,7 @@ public class AuthenticationService {
 
     private static final String CHALLENGE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int CHALLENGE_LENGTH = 10;
-    private static final TemporalAmount TOKEN_EXPIRATION_TIME = Duration.ofDays(1);
+    private static final float TOKEN_EXPIRATION_TIME_IN_MINUTES = 60 * 8;
 
     @Inject
     private UserService userService;
@@ -127,6 +128,8 @@ public class AuthenticationService {
     private String generateToken(@NotNull final String email) {
         final JwtClaims claims = new JwtClaims();
         claims.setSubject(email);
+        claims.setIssuedAtToNow();
+        claims.setExpirationTimeMinutesInTheFuture(TOKEN_EXPIRATION_TIME_IN_MINUTES);
 
         final JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());

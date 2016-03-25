@@ -155,7 +155,7 @@ public class AuthenticationServiceTest {
         // assert
         assertThat(token, notNullValue());
         assertThat(token.isPresent(), is(true));
-        assertThat(token.get(), matchesPattern(".{20}\\..{42}\\..{342}"));
+        assertThat(token.get(), matchesPattern(".{20}\\..{87}\\..{342}"));
     }
 
 }
