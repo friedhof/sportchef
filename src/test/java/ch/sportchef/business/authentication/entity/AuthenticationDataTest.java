@@ -13,53 +13,58 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ch.sportchef.business.authentication.entity;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class SimpleTokenCredentialTest {
+public class AuthenticationDataTest {
 
-    private static final String TEST_TOKEN = "test-token";
+    private static final String TEST_EMAIL = "test-email";
+    private static final String TEST_CHALLENGE = "test-challenge";
 
-    @Test
-    public void testInvalidate() {
-        // arrange
-        final SimpleTokenCredential stc = new SimpleTokenCredential(TEST_TOKEN);
+    private AuthenticationData authenticationData;
 
-        // act
-        stc.invalidate();
-
-        // assert
-        assertThat(stc.getToken(), is(nullValue()));
+    @Before
+    public void setUp() {
+        authenticationData = new AuthenticationData(TEST_EMAIL, TEST_CHALLENGE);
     }
 
     @Test
-    public void testGetToken() {
+    public void getEmail() {
         // arrange
-        final SimpleTokenCredential stc = new SimpleTokenCredential(TEST_TOKEN);
 
         // act
-        final String token = stc.getToken();
+        final String email = authenticationData.getEmail();
 
         // assert
-        assertThat(token, is(TEST_TOKEN));
+        assertThat(email, is(TEST_EMAIL));
     }
 
     @Test
-    public void testToString() {
+    public void getChallenge() {
         // arrange
-        final SimpleTokenCredential stc = new SimpleTokenCredential(TEST_TOKEN);
 
         // act
-        final String toString = stc.toString();
+        final String challenge = authenticationData.getChallenge();
 
         // assert
-        assertThat(toString, is("SimpleTokenCredential{token='test-token'}"));
+        assertThat(challenge, is(TEST_CHALLENGE));
+    }
+
+    @Test
+    public void getStringTest() {
+        // arrange
+
+        // act
+        final String toString = authenticationData.toString();
+
+        // assert
+        assertThat(toString, is("AuthenticationData(email=test-email, challenge=test-challenge)"));
     }
 }

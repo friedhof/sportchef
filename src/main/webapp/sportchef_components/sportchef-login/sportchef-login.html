@@ -1,0 +1,109 @@
+<!--
+    SportChef – Sports Competition Management Software
+    Copyright (C) 2016 Marcus Fihlon
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+<link rel="import" href="../../bower_components/paper-button/paper-button.html" />
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html" />
+<link rel="import" href="../../bower_components/paper-input/paper-input.html" />
+<link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html" />
+<link rel="import" href="../sportchef-jquery/sportchef-jquery.html" />
+
+<dom-module id="sportchef-login">
+    <template>
+        <style>
+            paper-dialog {
+                width: 500px;
+                height: 300px;
+            }
+            .success {
+                color: green;
+            }
+            .error {
+                color: red;
+            }
+        </style>
+
+        <paper-dialog id="dialog-login" modal>
+            <h2>Login</h2>
+            <div>
+                <gold-email-input id="email" autofocus required auto-validate></gold-email-input>
+                <div id="challengeRequestMessage">Step 1: Enter your email address above and request a challenge.</div>
+                <div id="authenticateMessage">Step 2: Check your email and enter the challenge below.</div>
+                <paper-input id="challenge" type="password" label="Challenge" />
+            </div>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button onClick="requestChallenge();">Request Challenge</paper-button>
+                <paper-button onClick="authenticate();">Authenticate</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        function requestChallenge() {
+            $.ajax({
+                method: "GET",
+                url: "/sportchef/api/authentication?email=" + $("#email").val(),
+                cache: false,
+                success: function(data, textStatus, jqXHR ) {
+                    $("#challengeRequestMessage")
+                            .removeClass("error")
+                            .addClass("success")
+                            .html("A challenge was send to you by email!");
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $("#challengeRequestMessage")
+                            .removeClass("success")
+                            .addClass("error")
+                            .html(textStatus + ": " + errorThrown);
+                }
+            });
+        }
+
+        function authenticate() {
+            $.ajax({
+                method: "POST",
+                data: JSON.stringify({
+                    "email": $("#email").val(),
+                    "challenge": $("#challenge").val()
+                }),
+                contentType: "application/json",
+                url: "/sportchef/api/authentication",
+                cache: false,
+                success: function(data, textStatus, jqXHR ) {
+                    $("#authenticateMessage")
+                            .removeClass("error")
+                            .html();
+                    var token = jqXHR.getResponseHeader("Token");
+                    sessionStorage.setItem("token", token);
+                    document.getElementById("dialog-login").close();
+                    $("#btn-login").hide();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $("#authenticateMessage")
+                            .removeClass("success")
+                            .addClass("error")
+                            .html(textStatus + ": " + errorThrown);
+                }
+            });
+        }
+
+        Polymer({
+            is: "sportchef-login"
+        });
+    </script>
+</dom-module>

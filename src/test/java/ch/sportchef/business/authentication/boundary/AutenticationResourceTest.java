@@ -18,6 +18,7 @@
 package ch.sportchef.business.authentication.boundary;
 
 import ch.sportchef.business.authentication.control.AuthenticationService;
+import ch.sportchef.business.authentication.entity.AuthenticationData;
 import ch.sportchef.business.user.entity.User;
 import org.apache.commons.mail.EmailException;
 import org.junit.Rule;
@@ -25,7 +26,6 @@ import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
-import org.picketlink.credential.DefaultLoginCredentials;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.Entity;
@@ -34,9 +34,6 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -103,87 +100,36 @@ public class AutenticationResourceTest {
     @Test
     public void authenticateWithWrongEmail() {
         // arrange
-        final DefaultLoginCredentials credential = new DefaultLoginCredentials();
-        credential.setUserId("foo@bar.ch");
-        credential.setPassword("12345-abcde");
-        when(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
+        final String email = "foo@bar.ch";
+        final String challenge = "12345-abcde";
+        final AuthenticationData authenticationData = new AuthenticationData(email, challenge);
+        when(authenticationServiceMock.validateChallenge(email, challenge))
                 .thenReturn(Optional.empty());
 
         // act
-        final Response response = authenticationResource.authenticate(credential);
+        final Response response = authenticationResource.authenticate(authenticationData);
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.FORBIDDEN.getStatusCode()));
-        verify(authenticationServiceMock, times(1)).validateChallenge(anyObject(), eq(credential));
+        verify(authenticationServiceMock, times(1)).validateChallenge(email, challenge);
     }
 
     @Test
     public void authenticateWithCorrectEmail() {
         // arrange
-        final DefaultLoginCredentials credential = new DefaultLoginCredentials();
-        credential.setUserId(TEST_USER_EMAIL);
-        credential.setPassword("12345-abcde");
-        when(authenticationServiceMock.validateChallenge(anyObject(), eq(credential)))
+        final String email = TEST_USER_EMAIL;
+        final String challenge = "12345-abcde";
+        final AuthenticationData authenticationData = new AuthenticationData(email, challenge);
+        when(authenticationServiceMock.validateChallenge(email, challenge))
                 .thenReturn(Optional.of(TEST_TOKEN));
 
         // act
-        final Response response = authenticationResource.authenticate(credential);
+        final Response response = authenticationResource.authenticate(authenticationData);
 
         //assert
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
         assertThat(((Entity) response.getEntity()).getEntity(), is(TEST_TOKEN));
-        verify(authenticationServiceMock, times(1)).validateChallenge(anyObject(), eq(credential));
-    }
-
-    @Test
-    public void authenticateWithTokenSuccessful() {
-        // arrange
-        when(authenticationServiceMock.authentication(anyObject(), anyObject(), eq(TEST_TOKEN)))
-                .thenReturn(Optional.of(TEST_TOKEN));
-
-        // act
-        final Response response = authenticationResource.authenticate(TEST_TOKEN);
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
-        assertThat(((Entity) response.getEntity()).getEntity(), is(TEST_TOKEN));
-        verify(authenticationServiceMock, times(1)).authentication(anyObject(), anyObject(), eq(TEST_TOKEN));
-    }
-
-    @Test
-    public void authenticateWithTokenUnauthorized() {
-        // arrange
-        when(authenticationServiceMock.authentication(anyObject(), anyObject(), anyString()))
-                .thenReturn(Optional.empty());
-
-        // act
-        final Response response = authenticationResource.authenticate("12345-abcde");
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.UNAUTHORIZED.getStatusCode()));
-        verify(authenticationServiceMock, times(1)).authentication(anyObject(), anyObject(), anyString());
-    }
-
-    @Test
-    public void logout() {
-        // arrange
-
-        // act
-        final Response response = authenticationResource.logout();
-
-        // assert
-        assertThat(response.getStatus(), is(Response.Status.NO_CONTENT.getStatusCode()));
-    }
-
-    @Test
-    public void unsupportedMediaType() {
-        // arrange
-
-        // act
-        final Response response = authenticationResource.unsupportedCredentialType(null);
-
-        //assert
-        assertThat(response.getStatus(), is(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode()));
+        verify(authenticationServiceMock, times(1)).validateChallenge(email, challenge);
     }
 
 }

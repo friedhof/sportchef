@@ -1,34 +1,46 @@
+/*
+ * SportChef – Sports Competition Management Software
+ * Copyright (C) 2016 Marcus Fihlon
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ch.sportchef.business.authentication.control;
 
-import ch.sportchef.business.authentication.entity.SimpleTokenCredential;
 import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
-import org.picketlink.Identity;
-import org.picketlink.credential.DefaultLoginCredentials;
+import org.jose4j.jwk.RsaJsonWebKey;
+import org.jose4j.jwk.RsaJwkGenerator;
+import org.jose4j.jws.AlgorithmIdentifiers;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import pl.setblack.badass.Politician;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
-import java.security.Key;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.TemporalAmount;
-import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -38,9 +50,7 @@ public class AuthenticationService {
 
     private static final String CHALLENGE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int CHALLENGE_LENGTH = 10;
-    private static final TemporalAmount TOKEN_EXPIRATION_TIME = Duration.ofDays(1);
-
-    private final Key jwtSigningKey = MacProvider.generateKey();
+    private static final float TOKEN_EXPIRATION_TIME_IN_MINUTES = 60 * 8;
 
     @Inject
     private UserService userService;
@@ -50,11 +60,14 @@ public class AuthenticationService {
 
     private Cache<String, String> challengeCache;
 
+    private RsaJsonWebKey rsaJsonWebKey;
+
     @PostConstruct
     private void init() {
         challengeCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
+        Politician.beatAroundTheBush(() -> rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048));
     }
 
     public boolean requestChallenge(@NotNull final String email) {
@@ -99,60 +112,42 @@ public class AuthenticationService {
         mail.send();
     }
 
-    public Optional<String> validateChallenge(@NotNull final Identity identity,
-                                              @NotNull final DefaultLoginCredentials credential) {
+    public Optional<String> validateChallenge(@NotNull final String email,
+                                              @NotNull final String challenge) {
         Optional<String> token = Optional.empty();
 
-        if (!identity.isLoggedIn()) {
-            final String email = credential.getUserId();
-            final String challenge = credential.getPassword();
-
-            final String cachedChallenge = challengeCache.getIfPresent(email);
-            if (challenge.equals(cachedChallenge)) {
-                token = generateToken(email);
-            }
+        final String cachedChallenge = challengeCache.getIfPresent(email);
+        if (challenge.equals(cachedChallenge)) {
+            challengeCache.invalidate(email);
+            token = Optional.of(generateToken(email));
         }
 
         return token;
     }
 
-    public Optional<String> authentication(@NotNull final Identity identity,
-                                           @NotNull final DefaultLoginCredentials credentials,
-                                           @NotNull final String token) {
-        if (!identity.isLoggedIn()) {
-            final SimpleTokenCredential credential = new SimpleTokenCredential(token);
-            credentials.setCredential(credential);
-            identity.login();
-        }
+    private String generateToken(@NotNull final String email) {
+        final JwtClaims claims = new JwtClaims();
+        claims.setSubject(email);
+        claims.setIssuedAtToNow();
+        claims.setExpirationTimeMinutesInTheFuture(TOKEN_EXPIRATION_TIME_IN_MINUTES);
 
-        return identity.getAccount() != null ? Optional.of(token) : Optional.empty();
+        final JsonWebSignature jws = new JsonWebSignature();
+        jws.setPayload(claims.toJson());
+        jws.setKey(rsaJsonWebKey.getPrivateKey());
+        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA512);
+
+        return Politician.beatAroundTheBush(() -> jws.getCompactSerialization());
     }
 
-    public Optional<String> generateToken(@NotNull final String email) {
-        String token = null;
-
-        final Optional<User> user = userService.findByEmail(email);
-        if (user.isPresent()) {
-            final LocalDateTime expiration = LocalDateTime.now().plus(TOKEN_EXPIRATION_TIME);
-            final Instant expirationInstant = expiration.atZone(ZoneId.systemDefault()).toInstant();
-            final Date expirationDate = Date.from(expirationInstant);
-
-            final String subject = user.get().getUserId().toString();
-
-            token = Jwts.builder()
-                    .setSubject(subject)
-                    .setExpiration(expirationDate)
-                    .signWith(SignatureAlgorithm.HS512, jwtSigningKey)
-                    .compact();
-        }
-
-        return Optional.ofNullable(token);
-    }
-
-    public void logout(@NotNull final Identity identity) {
-        if (identity.isLoggedIn()) {
-            identity.logout();
-        }
+    Optional<String> validate(@NotNull String token) throws InvalidJwtException {
+        final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                .setRequireSubject()
+                .setRequireIssuedAt()
+                .setRequireExpirationTime()
+                .setVerificationKey(rsaJsonWebKey.getKey())
+                .build();
+        final JwtClaims jwtClaims = jwtConsumer.processToClaims(token);
+        return Optional.ofNullable((String) jwtClaims.getClaimValue("sub"));
     }
 
 }
