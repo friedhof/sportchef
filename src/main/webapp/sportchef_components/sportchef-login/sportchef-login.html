@@ -91,6 +91,7 @@
                     var token = jqXHR.getResponseHeader("Token");
                     sessionStorage.setItem("token", token);
                     document.getElementById("dialog-login").close();
+                    $("#btn-login").hide();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     $("#authenticateMessage")
