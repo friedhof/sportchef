@@ -118,6 +118,7 @@ public class AuthenticationService {
 
         final String cachedChallenge = challengeCache.getIfPresent(email);
         if (challenge.equals(cachedChallenge)) {
+            challengeCache.invalidate(email);
             token = Optional.of(generateToken(email));
         }
 

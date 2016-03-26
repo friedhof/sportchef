@@ -27,7 +27,13 @@
         <style>
             paper-dialog {
                 width: 500px;
-                height: 250px;
+                height: 300px;
+            }
+            .success {
+                color: green;
+            }
+            .error {
+                color: red;
             }
         </style>
 
@@ -35,7 +41,9 @@
             <h2>Login</h2>
             <div>
                 <gold-email-input id="email" autofocus required auto-validate></gold-email-input>
-                <paper-input id="password" type="password" label="Challenge" />
+                <div id="challengeRequestMessage">Step 1: Enter your email address above and request a challenge.</div>
+                <div id="authenticateMessage">Step 2: Check your email and enter the challenge below.</div>
+                <paper-input id="challenge" type="password" label="Challenge" />
             </div>
             <div class="buttons">
                 <paper-button dialog-dismiss>Cancel</paper-button>
@@ -52,17 +60,45 @@
                 url: "/sportchef/api/authentication?email=" + $("#email").val(),
                 cache: false,
                 success: function(data, textStatus, jqXHR ) {
-                    alert(textStatus);
+                    $("#challengeRequestMessage")
+                            .removeClass("error")
+                            .addClass("success")
+                            .html("A challenge was send to you by email!");
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    alert(textStatus + ": " + errorThrown);
+                    $("#challengeRequestMessage")
+                            .removeClass("success")
+                            .addClass("error")
+                            .html(textStatus + ": " + errorThrown);
                 }
             });
         }
 
         function authenticate() {
-            // TODO
-            // make ajax request with email and challenge and save token
+            $.ajax({
+                method: "POST",
+                data: JSON.stringify({
+                    "email": $("#email").val(),
+                    "challenge": $("#challenge").val()
+                }),
+                contentType: "application/json",
+                url: "/sportchef/api/authentication",
+                cache: false,
+                success: function(data, textStatus, jqXHR ) {
+                    $("#authenticateMessage")
+                            .removeClass("error")
+                            .html();
+                    var token = jqXHR.getResponseHeader("Token");
+                    sessionStorage.setItem("token", token);
+                    document.getElementById("dialog-login").close();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $("#authenticateMessage")
+                            .removeClass("success")
+                            .addClass("error")
+                            .html(textStatus + ": " + errorThrown);
+                }
+            });
         }
 
         Polymer({
