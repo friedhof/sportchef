@@ -42,6 +42,11 @@
         <system>GitHub</system>
         <url>https://github.com/McPringle/sportchef/issues</url>
     </issueManagement>
+    <scm>
+        <connection>scm:git:git://github.com/McPringle/sportchef.git</connection>
+        <developerConnection>scm:git:git@github.com:McPringle/sportchef.git</developerConnection>
+        <url>https://github.com/McPringle/sportchef</url>
+    </scm>
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
