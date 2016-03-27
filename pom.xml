@@ -5,6 +5,13 @@
     <artifactId>sportchef</artifactId>
     <version>1.2-SNAPSHOT</version>
     <packaging>war</packaging>
+    <licenses>
+        <license>
+            <name>GNU AFFERO GENERAL PUBLIC LICENSE, Version 3 (AGPL-3.0)</name>
+            <url>https://opensource.org/licenses/AGPL-3.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <developers>
         <developer>
             <id>McPringle</id>
