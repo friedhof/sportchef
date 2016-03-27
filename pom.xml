@@ -38,6 +38,10 @@
             <name>Patrick Reimers</name>
         </contributor>
     </contributors>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/McPringle/sportchef/issues</url>
+    </issueManagement>
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
