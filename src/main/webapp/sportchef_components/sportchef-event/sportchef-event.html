@@ -95,8 +95,7 @@
             }
         </style>
 
-        <iron-ajax auto url="/sportchef/api/events/{{eventid}}" handle-as="json" last-response="{{event}}"></iron-ajax>
-        <paper-card image="/sportchef/api/events/{{eventid}}/image">
+        <paper-card image="/sportchef/api/events/{{event.eventId}}/image">
             <!--<div class="fav">
                 <iron-icon icon="icons:stars"></iron-icon>
             </div>-->
@@ -116,9 +115,8 @@
             is: "sportchef-event",
             properties: {
                 // declare the eventid property
-                eventid: {
-                    type: Number,
-                    value: 0
+                event: {
+                    type: Object
                 }
             },
             formatTime: function(time) {
