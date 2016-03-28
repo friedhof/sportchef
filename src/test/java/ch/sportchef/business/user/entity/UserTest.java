@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.user.entity;
 
+import ch.sportchef.business.authentication.entity.Role;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,6 +32,7 @@ public class UserTest {
     private static final String USER_LASTNAME = "Doe";
     private static final String USER_PHONE = "+41 79 555 00 01";
     private static final String USER_EMAIL = "john.doe@sportchef.ch";
+    private static final Role USER_ROLE = Role.USER;
     private static final Long USER_VERSION = 0L;
 
     private static User user;
@@ -43,6 +45,7 @@ public class UserTest {
                 .lastName(USER_LASTNAME)
                 .phone(USER_PHONE)
                 .email(USER_EMAIL)
+                .role(USER_ROLE)
                 .version(USER_VERSION)
                 .build();
     }
@@ -78,6 +81,11 @@ public class UserTest {
     }
 
     @Test
+    public void getRole() {
+        assertThat(user.getRole(), is(USER_ROLE));
+    }
+
+    @Test
     public void getVersion() {
         assertThat(user.getVersion(), is(USER_VERSION));
     }
@@ -86,8 +94,8 @@ public class UserTest {
     public void toStringTest() {
         // arrange
         final String toStringExpect = String.format(
-                "User(userId=%d, firstName=%s, lastName=%s, phone=%s, email=%s, version=%d)",
-                USER_ID, USER_FIRSTNAME, USER_LASTNAME, USER_PHONE, USER_EMAIL, user.getVersion());
+                "User(userId=%d, firstName=%s, lastName=%s, phone=%s, email=%s, role=%s, version=%d)",
+                USER_ID, USER_FIRSTNAME, USER_LASTNAME, USER_PHONE, USER_EMAIL, USER_ROLE, user.getVersion());
 
         // act
         final String toStringIs = user.toString();

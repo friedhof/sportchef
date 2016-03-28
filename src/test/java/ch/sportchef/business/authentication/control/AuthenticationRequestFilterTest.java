@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.authentication.control;
 
+import ch.sportchef.business.user.entity.User;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class AuthenticationRequestFilterTest {
         final ContainerRequestContext requestContextMock = mock(ContainerRequestContext.class);
         when(requestContextMock.getHeaderString("Authorization")).thenReturn("Bearer valid_token");
         when(requestContextMock.getSecurityContext()).thenReturn(mock(SecurityContext.class));
-        when(authenticationService.validate("valid_token")).thenReturn(Optional.of("foo@bar"));
+        when(authenticationService.validate("valid_token")).thenReturn(Optional.of(User.builder().build()));
 
         // act
         authenticationRequestFilter.filter(requestContextMock);
