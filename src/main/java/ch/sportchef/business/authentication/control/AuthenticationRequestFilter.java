@@ -17,6 +17,8 @@
  */
 package ch.sportchef.business.authentication.control;
 
+import ch.sportchef.business.user.control.UserService;
+import ch.sportchef.business.user.entity.User;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 
 import javax.annotation.Priority;
@@ -37,16 +39,20 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
     @Inject
     private AuthenticationService authenticationService;
 
+    @Inject
+    private UserService userService;
+
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
         final String authHeaderVal = requestContext.getHeaderString("Authorization");
         if (authHeaderVal.startsWith("Bearer")) {
             final String token = authHeaderVal.split(" ")[1];
             try {
-                final Optional<String> subject = authenticationService.validate(token);
-                final String email = subject.orElseThrow(() -> new InvalidJwtException("Invalid token data"));
+                final Optional<User> userOptional = authenticationService.validate(token);
+                final User user = userOptional.orElseThrow(() -> new InvalidJwtException("Invalid token data"));
                 final SecurityContext securityContext = requestContext.getSecurityContext();
-                requestContext.setSecurityContext(new AuthenticationSecurityContext(securityContext, email));
+                requestContext.setSecurityContext(new AuthenticationSecurityContext(
+                        authenticationService, securityContext, user));
             } catch (final InvalidJwtException e) {
                 requestContext.abortWith(
                         Response.status(UNAUTHORIZED)

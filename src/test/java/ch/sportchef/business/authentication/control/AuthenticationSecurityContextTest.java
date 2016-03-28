@@ -17,12 +17,12 @@
  */
 package ch.sportchef.business.authentication.control;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import ch.sportchef.business.authentication.entity.Role;
+import ch.sportchef.business.user.entity.User;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.core.SecurityContext;
-
 import java.security.Principal;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -33,25 +33,26 @@ import static org.mockito.Mockito.when;
 public class AuthenticationSecurityContextTest {
 
     private static final String TEST_EMAIL = "foo@bar";
-    private static final String TEST_ROLE_TRUE = "test_role_true";
-    private static final String TEST_ROLE_FALSE = "test_role_false";
+    private static final Role TEST_ROLE_USER = Role.USER;
+    private static final Role TEST_ROLE_ADMIN = Role.ADMIN;
     private static final String TEST_AUTHENTICATION_SCHEME = "test_authentication_scheme";
 
-    private static AuthenticationSecurityContext authenticationSecurityContext;
+    private AuthenticationSecurityContext authenticationSecurityContext;
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
+        final User user = User.builder().email(TEST_EMAIL).build();
+
         final SecurityContext securityContextMock = mock(SecurityContext.class);
-        when(securityContextMock.isUserInRole(TEST_ROLE_TRUE)).thenReturn(true);
-        when(securityContextMock.isUserInRole(TEST_ROLE_FALSE)).thenReturn(false);
         when(securityContextMock.isSecure()).thenReturn(true);
         when(securityContextMock.getAuthenticationScheme()).thenReturn(TEST_AUTHENTICATION_SCHEME);
-        authenticationSecurityContext = new AuthenticationSecurityContext(securityContextMock, TEST_EMAIL);
-    }
 
-    @AfterClass
-    public static void tearDown() {
-        authenticationSecurityContext = null;
+        final AuthenticationService authenticationServiceMock = mock(AuthenticationService.class);
+        when(authenticationServiceMock.isUserInRole(user, TEST_ROLE_USER)).thenReturn(true);
+        when(authenticationServiceMock.isUserInRole(user, TEST_ROLE_ADMIN)).thenReturn(false);
+
+        authenticationSecurityContext = new AuthenticationSecurityContext(
+                authenticationServiceMock, securityContextMock, user);
     }
 
     @Test
@@ -66,22 +67,22 @@ public class AuthenticationSecurityContextTest {
     }
 
     @Test
-    public void isUserInRoleTrue() {
+    public void isUserInRoleUser() {
         // arrange
 
         // act
-        final boolean userInRole = authenticationSecurityContext.isUserInRole(TEST_ROLE_TRUE);
+        final boolean userInRole = authenticationSecurityContext.isUserInRole(TEST_ROLE_USER.toString());
 
         // assert
         assertThat(userInRole, is(true));
     }
 
     @Test
-    public void isUserInRoleFalse() {
+    public void isUserInRoleAdmin() {
         // arrange
 
         // act
-        final boolean userInRole = authenticationSecurityContext.isUserInRole(TEST_ROLE_FALSE);
+        final boolean userInRole = authenticationSecurityContext.isUserInRole(TEST_ROLE_ADMIN.toString());
 
         // assert
         assertThat(userInRole, is(false));

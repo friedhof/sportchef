@@ -17,26 +17,34 @@
  */
 package ch.sportchef.business.authentication.control;
 
+import ch.sportchef.business.authentication.entity.Role;
+import ch.sportchef.business.user.entity.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class AuthenticationSecurityContext implements SecurityContext {
 
+    private AuthenticationService authenticationService;
+
+    @NotNull
     private SecurityContext securityContext;
-    private String email;
+
+    @NotNull
+    private User user;
 
     @Override
     public Principal getUserPrincipal() {
-        return () -> email;
+        return () -> user.getEmail();
     }
 
     @Override
     public boolean isUserInRole(final String role) {
-        return securityContext.isUserInRole(role);
+        return authenticationService.isUserInRole(user, Role.valueOf(role));
     }
 
     @Override

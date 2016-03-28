@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.authentication.control;
 
+import ch.sportchef.business.authentication.entity.Role;
 import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
@@ -139,7 +140,7 @@ public class AuthenticationService {
         return Politician.beatAroundTheBush(() -> jws.getCompactSerialization());
     }
 
-    Optional<String> validate(@NotNull String token) throws InvalidJwtException {
+    Optional<User> validate(@NotNull String token) throws InvalidJwtException {
         final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                 .setRequireSubject()
                 .setRequireIssuedAt()
@@ -147,7 +148,11 @@ public class AuthenticationService {
                 .setVerificationKey(rsaJsonWebKey.getKey())
                 .build();
         final JwtClaims jwtClaims = jwtConsumer.processToClaims(token);
-        return Optional.ofNullable((String) jwtClaims.getClaimValue("sub"));
+        final String email = (String) jwtClaims.getClaimValue("sub");
+        return userService.findByEmail(email);
     }
 
+    public boolean isUserInRole(@NotNull final User user, @NotNull final Role role) {
+        return user.getRole().getLevel() >= role.getLevel();
+    }
 }

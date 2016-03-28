@@ -35,6 +35,8 @@ import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
+import static ch.sportchef.business.authentication.entity.Role.ADMIN;
+import static ch.sportchef.business.authentication.entity.Role.USER;
 import static ch.sportchef.hamcrest.matcher.PatternMatcher.matchesPattern;
 import static java.lang.Boolean.FALSE;
 import static org.hamcrest.CoreMatchers.is;
@@ -175,12 +177,40 @@ public class AuthenticationServiceTest {
         // arrange
 
         // act
-        final Optional<String> email = authenticationService.validate(token);
+        final Optional<User> userOptional = authenticationService.validate(token);
 
         // assert
-        assertThat(email, notNullValue());
-        assertThat(email.isPresent(), is(true));
-        assertThat(email.get(), is(TEST_USER_EMAIL));
+        assertThat(userOptional, notNullValue());
+        assertThat(userOptional.isPresent(), is(true));
+        assertThat(userOptional.get().getEmail(), is(TEST_USER_EMAIL));
+    }
+
+    @Test
+    public void isUserInRole() {
+        // arrange
+        final User user = User.builder().role(USER).build();
+
+        // act
+        final boolean isUserInRoleUser = authenticationService.isUserInRole(user, USER);
+        final boolean isUserInRoleAdmin = authenticationService.isUserInRole(user, ADMIN);
+
+        // assert
+        assertThat(isUserInRoleUser, is(true));
+        assertThat(isUserInRoleAdmin, is(false));
+    }
+
+    @Test
+    public void isUserInAdmin() {
+        // arrange
+        final User admin = User.builder().role(ADMIN).build();
+
+        // act
+        final boolean isUserInRoleUser = authenticationService.isUserInRole(admin, USER);
+        final boolean isUserInRoleAdmin = authenticationService.isUserInRole(admin, ADMIN);
+
+        // assert
+        assertThat(isUserInRoleUser, is(true));
+        assertThat(isUserInRoleAdmin, is(true));
     }
 
 }
