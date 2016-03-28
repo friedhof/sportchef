@@ -23,7 +23,7 @@
     <template>
         <iron-ajax auto url="/sportchef/api/events" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
         <template is="dom-repeat" items="[[ajaxResponse]]">
-            <sportchef-event eventid="{{item.eventId}}"></sportchef-event>
+            <sportchef-event event="{{item}}"></sportchef-event>
         </template>
     </template>
 
