@@ -21,6 +21,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html" />
 <link rel="import" href="../../bower_components/iron-form/iron-form.html" />
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html" />
+<link rel="import" href="../../bower_components/vaadin-date-picker/vaadin-date-picker.html" />
 
 <dom-module id="admin-eventform">
     <template>
@@ -40,7 +41,7 @@
                 <form is="iron-form" id="eventForm" method="post" content-type="application/json" action="/sportchef/api/events">
                     <paper-input name="title" label="title" data-i18n="admin-eventform.title" data-i18n-attribute="label"></paper-input>
                     <paper-input name="location" label="location" data-i18n="admin-eventform.location" data-i18n-attribute="label"></paper-input>
-                    <paper-input name="date" label="date" data-i18n="admin-eventform.date" data-i18n-attribute="label"></paper-input>
+                    <vaadin-date-picker name="date" label="date"></vaadin-date-picker>
                     <paper-input name="time" label="time" data-i18n="admin-eventform.time" data-i18n-attribute="label"></paper-input>
                     <paper-button raised onclick="submitForm()" data-i18n="admin-eventform.create">Create</paper-button>
                 </form>
