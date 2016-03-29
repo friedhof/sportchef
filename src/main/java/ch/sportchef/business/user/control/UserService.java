@@ -23,6 +23,8 @@ import pl.setblack.airomem.core.SimpleController;
 
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,4 +58,9 @@ public class UserService {
         controller.execute((mgr) -> mgr.delete(userId));
     }
 
+    public Optional<User> getAuthenticatedUser(@NotNull SecurityContext securityContext) {
+        final Principal principal = securityContext.getUserPrincipal();
+        final String email = principal.getName();
+        return findByEmail(email);
+    }
 }

@@ -26,8 +26,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import pl.setblack.airomem.core.SimpleController;
 import pl.setblack.airomem.core.VoidCommand;
 
+import javax.ws.rs.core.SecurityContext;
 import java.io.Serializable;
+import java.security.Principal;
+import java.util.Optional;
 
+import static ch.sportchef.business.authentication.entity.Role.USER;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
@@ -149,5 +155,29 @@ public class UserServiceTest {
 
         // assert
         verify(simpleControllerMock, times(1)).execute(any(VoidCommand.class));
+    }
+
+    @Test
+    public void getAuthenticatedUser() {
+        // arrange
+        final String email = "foo@bar";
+        final User testUser = User.builder().email(email).role(USER).build();
+        final Principal principalMock = mock(Principal.class);
+        when(principalMock.getName()).thenReturn(email);
+        final SecurityContext securityContextMock = mock(SecurityContext.class);
+        when(securityContextMock.getUserPrincipal()).thenReturn(principalMock);
+        final UserRepository userRepositoryMock = mock(UserRepository.class);
+        when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(testUser));
+        final SimpleController<Serializable> simpleControllerMock = mock(SimpleController.class);
+        when(simpleControllerMock.readOnly()).thenReturn(userRepositoryMock);
+        mockStatic(PersistenceManager.class);
+        when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
+        final UserService userService = new UserService();
+
+        // act
+        final Optional<User> authenticatedUser = userService.getAuthenticatedUser(securityContextMock);
+
+        // assert
+        assertThat(authenticatedUser.get(), is(testUser));
     }
 }
