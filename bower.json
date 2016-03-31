@@ -25,6 +25,6 @@
     "gold-email-input": "PolymerElements/gold-email-input#^1.0.7",
     "file-upload": "~1.6.4",
     "jquery": "~2.2.2",
-    "vaadin-date-picker": "^1.0.0-alpha5"
+    "vaadin-date-picker": "^1.0.0-beta1"
   }
 }
