@@ -48,6 +48,9 @@
         <url>https://github.com/McPringle/sportchef</url>
     </scm>
     <dependencies>
+        <!-- ****************** -->
+        <!-- * provided scope * -->
+        <!-- ****************** -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
@@ -60,6 +63,9 @@
             <version>1.16.8</version>
             <scope>provided</scope>
         </dependency>
+        <!-- ***************** -->
+        <!-- * compile scope * -->
+        <!-- ***************** -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
@@ -110,6 +116,9 @@
             <artifactId>annotations</artifactId>
             <version>12.0</version>
         </dependency>
+        <!-- ************** -->
+        <!-- * test scope * -->
+        <!-- ************** -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -186,6 +195,9 @@
     <build>
         <finalName>sportchef</finalName>
         <plugins>
+            <!-- **************** -->
+            <!-- * plugin scope * -->
+            <!-- **************** -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
