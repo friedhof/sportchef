@@ -21,6 +21,7 @@ import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.event.entity.Event;
 import pl.setblack.airomem.core.SimpleController;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -31,6 +32,11 @@ public class EventService {
 
     private final SimpleController<EventRepository> controller =
             PersistenceManager.createSimpleController(Event.class, EventRepository::new);
+
+    @PreDestroy
+    private void takeSnapshot() {
+        controller.close();
+    }
 
     public Event create(@NotNull final Event event) {
         return controller.executeAndQuery((mgr) -> mgr.create(event));
