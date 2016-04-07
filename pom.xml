@@ -285,6 +285,11 @@
                     <pushImage>false</pushImage>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+            </plugin>
         </plugins>
     </build>
     <properties>
