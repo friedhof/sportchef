@@ -21,6 +21,7 @@ import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.user.entity.User;
 import pl.setblack.airomem.core.SimpleController;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.SecurityContext;
@@ -33,6 +34,11 @@ public class UserService {
 
     private SimpleController<UserRepository> controller =
             PersistenceManager.createSimpleController(User.class, UserRepository::new);
+
+    @PreDestroy
+    private void takeSnapshot() {
+        controller.close();
+    }
 
     public User create(@NotNull final User user) {
         return controller.executeAndQuery((mgr) -> mgr.create(user));
