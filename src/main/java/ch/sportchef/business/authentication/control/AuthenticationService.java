@@ -24,6 +24,7 @@ import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import lombok.SneakyThrows;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
@@ -64,11 +65,12 @@ public class AuthenticationService {
     private RsaJsonWebKey rsaJsonWebKey;
 
     @PostConstruct
+    @SneakyThrows
     private void init() {
         challengeCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
-        Politician.beatAroundTheBush(() -> rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048));
+        rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
     }
 
     public boolean requestChallenge(@NotNull final String email) {
