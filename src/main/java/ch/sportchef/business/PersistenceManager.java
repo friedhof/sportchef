@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business;
 
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NonNls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Supplier;
 
-public enum PersistenceManager {
-    ;
+@UtilityClass
+public class PersistenceManager {
 
     private static final String SPORTCHEF_DIRECTORY_NAME = ".sportchef"; //NON-NLS
     private static final String PREVAYLER_DIRECTORY_NAME = "prevayler"; //NON-NLS

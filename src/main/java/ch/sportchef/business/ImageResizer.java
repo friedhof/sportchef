@@ -17,11 +17,13 @@
  */
 package ch.sportchef.business;
 
+import lombok.experimental.UtilityClass;
+
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-public enum ImageResizer {
-    ;
+@UtilityClass
+public class ImageResizer {
 
     public static BufferedImage resizeAndCrop(final BufferedImage inputImage,
                                               final int outputWidth, final int outputHeight) {

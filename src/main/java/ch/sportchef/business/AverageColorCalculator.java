@@ -17,12 +17,14 @@
  */
 package ch.sportchef.business;
 
+import lombok.experimental.UtilityClass;
+
 import javax.validation.constraints.NotNull;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
-public enum AverageColorCalculator {
-    ;
+@UtilityClass
+public class AverageColorCalculator {
 
     private static final int THRESHOLD_COLOR = 600;
 
