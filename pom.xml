@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.20</version>
+            <version>1.7.21</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -266,7 +266,7 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.4.3</version>
+                <version>0.4.5</version>
                 <configuration>
                     <imageName>mcpringle/${project.artifactId}</imageName>
                     <baseImage>jboss/wildfly</baseImage>
@@ -287,7 +287,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.5.1</version>
             </plugin>
         </plugins>
     </build>
