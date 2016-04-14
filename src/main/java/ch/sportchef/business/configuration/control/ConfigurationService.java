@@ -18,6 +18,8 @@
 package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 import lombok.ToString;
 
 import javax.inject.Inject;
@@ -25,6 +27,8 @@ import javax.inject.Singleton;
 
 @Singleton
 @ToString
+@Timed(name = "Timed: ConfigurationService")
+@Metered(name = "Metered: ConfigurationService")
 public class ConfigurationService {
 
     @Inject

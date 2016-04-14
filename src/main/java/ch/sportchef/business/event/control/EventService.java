@@ -19,6 +19,8 @@ package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.event.entity.Event;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 import pl.setblack.airomem.core.SimpleController;
 
 import javax.annotation.PreDestroy;
@@ -28,6 +30,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Singleton
+@Timed(name = "Timed: EventService")
+@Metered(name = "Metered: EventService")
 public class EventService {
 
     private final SimpleController<EventRepository> controller =

@@ -22,6 +22,8 @@ import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.SneakyThrows;
@@ -48,6 +50,8 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
+@Timed(name = "Timed: AuthenticationService")
+@Metered(name = "Metered: AuthenticationService")
 public class AuthenticationService {
 
     private static final String CHALLENGE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
