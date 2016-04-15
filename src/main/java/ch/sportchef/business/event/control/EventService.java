@@ -19,11 +19,15 @@ package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.event.entity.Event;
+import ch.sportchef.metrics.healthcheck.EventServiceHealthCheck;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import pl.setblack.airomem.core.SimpleController;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -36,6 +40,15 @@ public class EventService {
 
     private final SimpleController<EventRepository> controller =
             PersistenceManager.createSimpleController(Event.class, EventRepository::new);
+
+    @Inject
+    private HealthCheckRegistry healthCheckRegistry;
+
+    @PostConstruct
+    private void registerHealthCheck() {
+        final EventServiceHealthCheck eventServiceHealthCheck = new EventServiceHealthCheck(this);
+        healthCheckRegistry.register(EventService.class.getName(), eventServiceHealthCheck);
+    }
 
     @PreDestroy
     private void takeSnapshot() {

@@ -22,8 +22,10 @@ import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
+import ch.sportchef.metrics.healthcheck.AuthenticationServiceHealthCheck;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.SneakyThrows;
@@ -64,6 +66,9 @@ public class AuthenticationService {
     @Inject
     private ConfigurationService configurationService;
 
+    @Inject
+    private HealthCheckRegistry healthCheckRegistry;
+
     private Cache<String, String> challengeCache;
 
     private RsaJsonWebKey rsaJsonWebKey;
@@ -75,6 +80,10 @@ public class AuthenticationService {
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
         rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
+
+        final User user = userService.findByUserId(1L).orElse(null);
+        final AuthenticationServiceHealthCheck authenticationServiceHealthCheck = new AuthenticationServiceHealthCheck(this, user);
+        healthCheckRegistry.register(AuthenticationService.class.getName(), authenticationServiceHealthCheck);
     }
 
     public boolean requestChallenge(@NotNull final String email) {

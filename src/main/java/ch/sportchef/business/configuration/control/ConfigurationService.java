@@ -18,10 +18,13 @@
 package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
+import ch.sportchef.metrics.healthcheck.ConfigurationServiceHealthCheck;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import lombok.ToString;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -33,6 +36,15 @@ public class ConfigurationService {
 
     @Inject
     private ConfigurationRepository configurationRepository;
+
+    @Inject
+    private HealthCheckRegistry healthCheckRegistry;
+
+    @PostConstruct
+    private void registerHealthCheck() {
+        final ConfigurationServiceHealthCheck configurationServiceHealthCheck = new ConfigurationServiceHealthCheck(this);
+        healthCheckRegistry.register(ConfigurationService.class.getName(), configurationServiceHealthCheck);
+    }
 
     @SuppressWarnings("MethodReturnOfConcreteClass")
     public Configuration getConfiguration() {
