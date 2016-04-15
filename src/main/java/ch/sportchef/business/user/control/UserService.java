@@ -19,9 +19,15 @@ package ch.sportchef.business.user.control;
 
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.user.entity.User;
+import ch.sportchef.metrics.healthcheck.UserServiceHealthCheck;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import pl.setblack.airomem.core.SimpleController;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.SecurityContext;
@@ -30,10 +36,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Singleton
+@Timed(name = "Timed: EventService")
+@Metered(name = "Metered: EventService")
 public class UserService {
 
     private SimpleController<UserRepository> controller =
             PersistenceManager.createSimpleController(User.class, UserRepository::new);
+
+    @Inject
+    private HealthCheckRegistry healthCheckRegistry;
+
+    @PostConstruct
+    private void registerHealthCheck() {
+        final UserServiceHealthCheck userServiceHealthCheck = new UserServiceHealthCheck(this);
+        healthCheckRegistry.register(UserService.class.getName(), userServiceHealthCheck);
+    }
 
     @PreDestroy
     private void takeSnapshot() {
