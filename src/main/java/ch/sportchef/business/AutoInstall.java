@@ -17,9 +17,14 @@
  */
 package ch.sportchef.business;
 
+import ch.sportchef.business.authentication.entity.Role;
+import ch.sportchef.business.configuration.control.ConfigurationService;
+import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
+import ch.sportchef.business.user.control.UserService;
+import ch.sportchef.business.user.entity.User;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -28,10 +33,17 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 @Startup
 public class AutoInstall {
+
+    @Inject
+    private ConfigurationService configurationService;
+
+    @Inject
+    private UserService userService;
 
     @Inject
     private EventService eventService;
@@ -41,7 +53,27 @@ public class AutoInstall {
 
     @PostConstruct
     private void setup() {
+        createAdminUser();
         createFirstEvent();
+    }
+
+    private void createAdminUser() {
+        final Configuration configuration = configurationService.getConfiguration();
+        final String adminEmail = configuration.getAdminEmail();
+        final Optional<User> adminUser = userService.findByEmail(adminEmail);
+        if (!adminUser.isPresent()) {
+            final String firstname = configuration.getAdminFirstname();
+            final String lastname = configuration.getAdminLastname();
+            final String phone = configuration.getAdminPhone();
+            final User admin = User.builder()
+                    .firstName(firstname)
+                    .lastName(lastname)
+                    .email(adminEmail)
+                    .phone(phone)
+                    .role(Role.ADMIN)
+                    .build();
+            userService.create(admin);
+        }
     }
 
     private void createFirstEvent() {
