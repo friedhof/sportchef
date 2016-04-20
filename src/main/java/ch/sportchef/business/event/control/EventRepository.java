@@ -39,7 +39,6 @@ class EventRepository implements Serializable {
 
     private final AtomicLong eventSeq = new AtomicLong(0);
 
-
     Event create(@NotNull final Event event) {
         final Long eventId = eventSeq.incrementAndGet();
         final long version = event.hashCode();
