@@ -27,6 +27,10 @@ import java.util.Properties;
 public class Configuration {
 
     private static final String ADMIN_PASSWORD_KEY = "admin.password";
+    private static final String ADMIN_FIRSTNAME_KEY = "admin.firstname";
+    private static final String ADMIN_LASTNAME_KEY = "admin.lastname";
+    private static final String ADMIN_EMAIL_KEY = "admin.email";
+    private static final String ADMIN_PHONE_KEY = "admin.phone";
 
     private final Properties properties = new Properties();
 
@@ -36,6 +40,22 @@ public class Configuration {
 
     public String getAdminPassword() {
         return properties.getProperty(ADMIN_PASSWORD_KEY);
+    }
+
+    public String getAdminFirstname() {
+        return properties.getProperty(ADMIN_FIRSTNAME_KEY);
+    }
+
+    public String getAdminLastname() {
+        return properties.getProperty(ADMIN_LASTNAME_KEY);
+    }
+
+    public String getAdminEmail() {
+        return properties.getProperty(ADMIN_EMAIL_KEY);
+    }
+
+    public String getAdminPhone() {
+        return properties.getProperty(ADMIN_PHONE_KEY);
     }
 
     public String getSMTPServer() {

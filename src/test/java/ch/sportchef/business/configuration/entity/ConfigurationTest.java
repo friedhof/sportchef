@@ -54,6 +54,26 @@ public class ConfigurationTest {
     }
 
     @Test
+    public void getAdminFirstname() {
+        assertThat(configuration.getAdminFirstname(), is("test.admin.firstname"));
+    }
+
+    @Test
+    public void getAdminLastname() {
+        assertThat(configuration.getAdminLastname(), is("test.admin.lastname"));
+    }
+
+    @Test
+    public void getAdminEmail() {
+        assertThat(configuration.getAdminEmail(), is("test.admin.email"));
+    }
+
+    @Test
+    public void getAdminPhone() {
+        assertThat(configuration.getAdminPhone(), is("test.admin.phone"));
+    }
+
+    @Test
     public void getSMTPServer() {
         assertThat(configuration.getSMTPServer(), is("test.smtp.server"));
     }
