@@ -94,16 +94,8 @@ If you are a contributor and you are missing on this list, please add your entry
 | ------- | --------------------- | ---------------- |
 |    v1.0 | End of January 2016   | released         |
 |    v1.1 | End of February 2016  | released         |
-|    v1.2 | End of March 2016     | work in progress |
-|    v2.0 | End of April 2016     |                  |
-|    v2.1 | End of May 2016       |                  |
-|    v2.2 | End of June 2016      |                  |
-|    v3.0 | End of July 2016      |                  |
-|    v3.1 | End of August 2016    |                  |
-|    v3.2 | End of September 2016 |                  |
-|    v4.0 | End of October 2016   |                  |
-|    v4.1 | End of November 2016  |                  |
-|    v4.2 | End of December 2016  |                  |
+|    v1.2 | End of May 2016       | work in progress |
+|    v1.3 | 2016/Q3               | planning         |
 
 ## Overview of issues
 
