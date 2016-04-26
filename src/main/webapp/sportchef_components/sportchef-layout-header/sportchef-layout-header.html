@@ -76,6 +76,12 @@
                     document.getElementById('dialog-login').open();
                 });
 
+                $('#btn-logout').click(function() {
+                    sessionStorage.removeItem("token");
+                    $('#btn-login').show();
+                    $('#btn-logout').hide();
+                });
+
                 $('#nav-imprint').click(function() {
                     document.getElementById('dialog-imprint').open();
                 });
