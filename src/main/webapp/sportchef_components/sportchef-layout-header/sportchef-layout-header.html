@@ -85,6 +85,15 @@
                 $('#nav-imprint').click(function() {
                     document.getElementById('dialog-imprint').open();
                 });
+
+                var token = sessionStorage.getItem("token");
+                if (token !== null && typeof token !== 'undefined') {
+                    $('#btn-login').hide();
+                    $('#btn-logout').show();
+                } else {
+                    $('#btn-login').show();
+                    $('#btn-logout').hide();
+                }
             }
         });
     </script>
