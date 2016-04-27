@@ -237,7 +237,7 @@ and (max-width: 1100px) {
         float:   right;
     }
 
-    .button-login {
+    .button-login, .button-logout {
         display: block;
         margin:  12px auto;
         float:   none;

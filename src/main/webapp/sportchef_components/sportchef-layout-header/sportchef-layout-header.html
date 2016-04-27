@@ -42,8 +42,9 @@
                         </li>
                         <li><a href="#" id="nav-imprint">Imprint</a></li>
                     </ul>
-                    <paper-button id="btn-login" class="button button-login"
-                                  data-i18n="sportchef-layout-header.button.login">Login
+                    <paper-button id="btn-login" class="button button-login hidden">Login
+                    </paper-button>
+                    <paper-button id="btn-logout" class="button button-logout hidden">Logout
                     </paper-button>
                 </div>
             </nav>
@@ -75,9 +76,24 @@
                     document.getElementById('dialog-login').open();
                 });
 
+                $('#btn-logout').click(function() {
+                    sessionStorage.removeItem("token");
+                    $('#btn-login').show();
+                    $('#btn-logout').hide();
+                });
+
                 $('#nav-imprint').click(function() {
                     document.getElementById('dialog-imprint').open();
                 });
+
+                var token = sessionStorage.getItem("token");
+                if (token !== null && typeof token !== 'undefined') {
+                    $('#btn-login').hide();
+                    $('#btn-logout').show();
+                } else {
+                    $('#btn-login').show();
+                    $('#btn-logout').hide();
+                }
             }
         });
     </script>
