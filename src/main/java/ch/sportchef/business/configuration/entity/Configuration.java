@@ -26,6 +26,8 @@ import java.util.Properties;
 @ToString
 public class Configuration {
 
+    private static final String TOKEN_SIGNING_KEY = "token.signing.key";
+
     private static final String ADMIN_PASSWORD_KEY = "admin.password";
     private static final String ADMIN_FIRSTNAME_KEY = "admin.firstname";
     private static final String ADMIN_LASTNAME_KEY = "admin.lastname";
@@ -36,6 +38,10 @@ public class Configuration {
 
     public Configuration(@NotNull final Map<Object, Object> properties) {
         properties.forEach(this.properties::put);
+    }
+
+    public String getTokenSigningKey() {
+        return properties.getProperty(TOKEN_SIGNING_KEY);
     }
 
     public String getAdminPassword() {

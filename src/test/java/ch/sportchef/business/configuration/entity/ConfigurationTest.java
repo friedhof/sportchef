@@ -49,6 +49,11 @@ public class ConfigurationTest {
     }
 
     @Test
+    public void getTokenSigningKey() {
+        assertThat(configuration.getTokenSigningKey(), is("This is a test!"));
+    }
+
+    @Test
     public void getAdminPassword() {
         assertThat(configuration.getAdminPassword(), is("test.admin.password"));
     }

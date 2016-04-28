@@ -28,25 +28,21 @@ import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.SneakyThrows;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
-import org.jose4j.jwk.RsaJsonWebKey;
-import org.jose4j.jwk.RsaJwkGenerator;
-import org.jose4j.jws.AlgorithmIdentifiers;
-import org.jose4j.jws.JsonWebSignature;
-import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.consumer.InvalidJwtException;
-import org.jose4j.jwt.consumer.JwtConsumer;
-import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import pl.setblack.badass.Politician;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +54,7 @@ public class AuthenticationService {
 
     private static final String CHALLENGE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int CHALLENGE_LENGTH = 10;
-    private static final float TOKEN_EXPIRATION_TIME_IN_MINUTES = 60 * 8;
+    private static final long TOKEN_EXPIRATION_TIME_IN_MILLISECONDS = 8 * 60 * 60 * 1000; // 8 hours
 
     @Inject
     private UserService userService;
@@ -71,27 +67,24 @@ public class AuthenticationService {
 
     private Cache<String, String> challengeCache;
 
-    private RsaJsonWebKey rsaJsonWebKey;
-
     @PostConstruct
     @SneakyThrows
     private void init() {
         challengeCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
-        rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
 
         final AuthenticationServiceHealthCheck authenticationServiceHealthCheck = new AuthenticationServiceHealthCheck(this);
         healthCheckRegistry.register(AuthenticationService.class.getName(), authenticationServiceHealthCheck);
     }
 
+    @SneakyThrows
     public boolean requestChallenge(@NotNull final String email) {
         final Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()) {
             final String challenge = generateChallenge();
             challengeCache.put(email, challenge);
-            Politician.beatAroundTheBush(() ->
-                    sendChallenge(email, challenge));
+            sendChallenge(email, challenge);
             return true;
         }
         return false;
@@ -141,28 +134,32 @@ public class AuthenticationService {
     }
 
     private String generateToken(@NotNull final String email) {
-        final JwtClaims claims = new JwtClaims();
-        claims.setSubject(email);
-        claims.setIssuedAtToNow();
-        claims.setExpirationTimeMinutesInTheFuture(TOKEN_EXPIRATION_TIME_IN_MINUTES);
+        final Date now = new Date();
+        final Date exp = new Date(now.getTime() + TOKEN_EXPIRATION_TIME_IN_MILLISECONDS);
 
-        final JsonWebSignature jws = new JsonWebSignature();
-        jws.setPayload(claims.toJson());
-        jws.setKey(rsaJsonWebKey.getPrivateKey());
-        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA512);
+        final Claims claims = Jwts.claims();
+        claims.setIssuedAt(now);
+        claims.setExpiration(exp);
+        claims.put("email", email);
 
-        return Politician.beatAroundTheBush(() -> jws.getCompactSerialization());
+        final Configuration configuration = configurationService.getConfiguration();
+        final String tokenSigningKey = configuration.getTokenSigningKey();
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS512, tokenSigningKey)
+                .compact();
     }
 
-    Optional<User> validate(@NotNull String token) throws InvalidJwtException {
-        final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                .setRequireSubject()
-                .setRequireIssuedAt()
-                .setRequireExpirationTime()
-                .setVerificationKey(rsaJsonWebKey.getKey())
-                .build();
-        final JwtClaims jwtClaims = jwtConsumer.processToClaims(token);
-        final String email = (String) jwtClaims.getClaimValue("sub");
+    Optional<User> validate(@NotNull String token) {
+        final Configuration configuration = configurationService.getConfiguration();
+        final String tokenSigningKey = configuration.getTokenSigningKey();
+
+        final Jws<Claims> result = Jwts.parser()
+                .setSigningKey(tokenSigningKey)
+                .parseClaimsJws(token.replace("Bearer ", ""));
+        final Claims claims = result.getBody();
+        final String email = claims.get("email", String.class);
         return userService.findByEmail(email);
     }
 
