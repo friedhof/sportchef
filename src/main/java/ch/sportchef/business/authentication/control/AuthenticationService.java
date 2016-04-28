@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.authentication.control;
 
+import ch.sportchef.business.authentication.entity.Challenge;
 import ch.sportchef.business.authentication.entity.Role;
 import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
@@ -53,8 +54,11 @@ import java.util.concurrent.TimeUnit;
 public class AuthenticationService {
 
     private static final String CHALLENGE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final int CHALLENGE_LENGTH = 10;
+    private static final int MINIMAL_CHALLENGE_LENGTH = 5;
+    private static final int MAXIMAL_CHALLENGE_LENGTH = 10;
+    private static final int TRESHOLD_FOR_COMPLEXITY_INCREASE = 20;
     private static final long TOKEN_EXPIRATION_TIME_IN_MILLISECONDS = 8 * 60 * 60 * 1000; // 8 hours
+    private static final int MAXIMAL_WRONG_CHALENGE_TRIES = 10;
 
     @Inject
     private UserService userService;
@@ -65,7 +69,7 @@ public class AuthenticationService {
     @Inject
     private HealthCheckRegistry healthCheckRegistry;
 
-    private Cache<String, String> challengeCache;
+    private Cache<String, Challenge> challengeCache;
 
     @PostConstruct
     @SneakyThrows
@@ -82,28 +86,28 @@ public class AuthenticationService {
     public boolean requestChallenge(@NotNull final String email) {
         final Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()) {
-            final String challenge = generateChallenge();
+            final Challenge challenge = generateChallenge();
             challengeCache.put(email, challenge);
-            sendChallenge(email, challenge);
+            sendChallenge(email, challenge.getChallenge());
             return true;
         }
         return false;
     }
 
-    private String generateChallenge() {
+    private Challenge generateChallenge() {
         final StringBuilder challenge = new StringBuilder();
         final Random random = new Random();
-        final int bound = CHALLENGE_CHARACTERS.length();
-        int challengeCount = 0;
-        while (challengeCount < CHALLENGE_LENGTH) {
-            if (challengeCount > 0 && challengeCount % 5 == 0) {
-                challenge.append('-');
-            }
-            final int index = random.nextInt(bound);
-            challenge.append(CHALLENGE_CHARACTERS.charAt(index));
-            challengeCount++;
+        while (challenge.length() < currentlyRequiredChallengeLength()) {
+            final char randomChar = CHALLENGE_CHARACTERS.charAt(random.nextInt(CHALLENGE_CHARACTERS.length()));
+            challenge.append(randomChar);
         }
-        return challenge.toString();
+        return new Challenge(challenge.toString());
+    }
+
+    private int currentlyRequiredChallengeLength() {
+        final int complexityIncrease = (int) (challengeCache.size() / TRESHOLD_FOR_COMPLEXITY_INCREASE);
+        final int calculatedComplexity = MINIMAL_CHALLENGE_LENGTH + complexityIncrease;
+        return Math.min(MAXIMAL_CHALLENGE_LENGTH, calculatedComplexity);
     }
 
     private void sendChallenge(@NotNull final String email, @NotNull final String challenge) throws EmailException {
@@ -122,15 +126,17 @@ public class AuthenticationService {
 
     public Optional<String> validateChallenge(@NotNull final String email,
                                               @NotNull final String challenge) {
-        Optional<String> token = Optional.empty();
-
-        final String cachedChallenge = challengeCache.getIfPresent(email);
-        if (challenge.equals(cachedChallenge)) {
-            challengeCache.invalidate(email);
-            token = Optional.of(generateToken(email));
+        final Challenge cachedChallenge = challengeCache.getIfPresent(email);
+        if (cachedChallenge != null) {
+            if (challenge.equals(cachedChallenge.getChallenge()) && cachedChallenge.getTries() < MAXIMAL_WRONG_CHALENGE_TRIES) {
+                challengeCache.invalidate(email);
+                return Optional.of(generateToken(email));
+            } else {
+                cachedChallenge.increaseTries();
+            }
         }
 
-        return token;
+        return Optional.empty();
     }
 
     private String generateToken(@NotNull final String email) {

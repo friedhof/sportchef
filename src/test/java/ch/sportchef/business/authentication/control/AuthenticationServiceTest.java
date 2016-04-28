@@ -21,15 +21,13 @@ import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
+import com.dumbster.smtp.MailMessage;
 import com.dumbster.smtp.ServerOptions;
 import com.dumbster.smtp.SmtpServer;
 import com.dumbster.smtp.SmtpServerFactory;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.*;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
@@ -48,11 +46,10 @@ import static java.lang.Boolean.FALSE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.*;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class AuthenticationServiceTest {
 
     private static final String MALFORMED_TOKEN = "eyJhbGciOiJIUzUxMiJ9_eyJpYXQiOjE0NjE3ODc4NDEsImV4cCI6MTQ2MTc4ODQ0MSwiZW1haWwiOiJqb2huLmRvZUBzcG9ydGNoZWYuY2gifQ_8MJW7kRJYrc105JmorJgOA3Wn6z2Z5Ab0uteZsleKyJBLAibhDr35S0PH9trTwxYeocpIHVhQ-lCak_IVNdwSg";
@@ -75,6 +72,22 @@ public class AuthenticationServiceTest {
 
     @Inject
     private ConfigurationService configurationServiceMock;
+
+    private SmtpServer smtpServer;
+
+    @Before
+    public void setup() {
+        when(userServiceMock.findByEmail(anyString()))
+                .thenAnswer(x -> Optional.of(createTestUser()));
+        when(configurationServiceMock.getConfiguration())
+                .thenAnswer(x -> createConfigurationMock());
+        smtpServer = createSmtpServerMock();
+    }
+
+    @After
+    public void tearDown() {
+        smtpServer.stop();
+    }
 
     private User createTestUser() {
         return User.builder()
@@ -128,10 +141,6 @@ public class AuthenticationServiceTest {
     @Test(expected = MalformedJwtException.class)
     public void validateMalformedToken() {
         // arrange
-        final Configuration configurationMock = createConfigurationMock();
-        when(configurationServiceMock.getConfiguration())
-                .thenReturn(configurationMock);
-
         // act
         authenticationService.validate(MALFORMED_TOKEN);
 
@@ -141,10 +150,6 @@ public class AuthenticationServiceTest {
     @Test(expected = SignatureException.class)
     public void validateSignatureToken() {
         // arrange
-        final Configuration configurationMock = createConfigurationMock();
-        when(configurationServiceMock.getConfiguration())
-                .thenReturn(configurationMock);
-
         // act
         authenticationService.validate(SIGNATURE_TOKEN);
 
@@ -154,14 +159,11 @@ public class AuthenticationServiceTest {
     @Test(expected = ExpiredJwtException.class)
     public void validateExpiredToken() {
         // arrange
-        final Configuration configurationMock = createConfigurationMock();
-        when(configurationServiceMock.getConfiguration())
-                .thenReturn(configurationMock);
         final Date now = new Date();
         final Date exp = new Date(now.getTime() - 1000);
         final Claims claims = Jwts.claims();
         claims.setExpiration(exp);
-        final String tokenSigningKey = configurationMock.getTokenSigningKey();
+        final String tokenSigningKey = configurationServiceMock.getConfiguration().getTokenSigningKey();
         final String token = Jwts.builder()
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, tokenSigningKey)
@@ -181,31 +183,72 @@ public class AuthenticationServiceTest {
         validateToken(validateChallenge(requestChallenge()));
 
         // assert
+        assertThat(smtpServer.getEmailCount(), is(1));
+        verify(userServiceMock, times(2)).findByEmail(TEST_USER_EMAIL);
+    }
+
+    @Test
+    public void typoWhileLoginDoesNotLogin() {
+        // arrange
+        final String correctChallenge = requestChallenge();
+
+        // act
+        final Optional<String> token = authenticationService.validateChallenge(TEST_USER_EMAIL, "wrongChallenge");
+
+        // assert
+        assertThat(token.isPresent(), is(false));
+    }
+
+    @Test
+    public void loginWithoutChallengeRequestedDoesNotLogin() {
+        // arrange
+
+        // act
+        final Optional<String> token = authenticationService.validateChallenge(TEST_USER_EMAIL, "anyChallenge");
+
+        // assert
+        assertThat(token.isPresent(), is(false));
+    }
+
+    @Test
+    public void make1TypoWhileLoggingInStillWorks() {
+        // arrange
+        final String correctChallenge = requestChallenge();
+
+        // act
+        authenticationService.validateChallenge(TEST_USER_EMAIL, "wrongChallenge");
+        final Optional<String> token = authenticationService.validateChallenge(TEST_USER_EMAIL, correctChallenge);
+
+        // assert
+        assertThat(token.get(), matchesPattern(".{20}\\..{90}\\..{86}"));
+    }
+
+    @Test
+    public void make10TyposWhileLoggingInDisablesTheChallenge() {
+        // arrange
+        final String correctChallenge = requestChallenge();
+
+        // act
+        for (int i = 0; i < 10; i++) {
+            authenticationService.validateChallenge(TEST_USER_EMAIL, "wrongChallenge");
+        }
+        final Optional<String> token = authenticationService.validateChallenge(TEST_USER_EMAIL, correctChallenge);
+
+        // assert
+        assertThat(token.isPresent(), is(false));
     }
 
     private String requestChallenge() {
-        // arrange
-        final Optional<User> userOptional = Optional.of(createTestUser());
-        when(userServiceMock.findByEmail(TEST_USER_EMAIL))
-                .thenReturn(userOptional);
-        final Configuration configurationMock = createConfigurationMock();
-        when(configurationServiceMock.getConfiguration())
-                .thenReturn(configurationMock);
-        final SmtpServer smtpServer = createSmtpServerMock();
-
         // act
         final boolean ok = authenticationService.requestChallenge(TEST_USER_EMAIL);
 
         // assert
-        smtpServer.stop();
-        assertThat(smtpServer.getEmailCount(), is(1));
-        assertThat(smtpServer.getMessage(0).getFirstHeaderValue("To"), is(TEST_USER_EMAIL));
         assertThat(ok, is(true));
-        verify(userServiceMock, times(1)).findByEmail(TEST_USER_EMAIL);
+        final MailMessage newestMessage = smtpServer.getMessage(smtpServer.getMessages().length - 1);
+        assertThat(newestMessage.getFirstHeaderValue("To"), is(TEST_USER_EMAIL));
 
-        final String body = smtpServer.getMessage(0).getBody();
-        final String challenge = body.substring(body.indexOf("=") + 2);
-        return challenge;
+        final String body = newestMessage.getBody();
+        return body.substring(body.indexOf("=") + 2);
     }
 
     private String validateChallenge(@NotNull final String challenge) {
@@ -215,8 +258,6 @@ public class AuthenticationServiceTest {
         final Optional<String> token = authenticationService.validateChallenge(TEST_USER_EMAIL, challenge);
 
         // assert
-        assertThat(token, notNullValue());
-        assertThat(token.isPresent(), is(true));
         assertThat(token.get(), matchesPattern(".{20}\\..{90}\\..{86}"));
 
         return token.get();
@@ -260,6 +301,31 @@ public class AuthenticationServiceTest {
         // assert
         assertThat(isUserInRoleUser, is(true));
         assertThat(isUserInRoleAdmin, is(true));
+    }
+
+    @Test
+    public void shortChallengeIfNoActivityOngoing() {
+        // arrange
+
+        // act
+        final String challenge = requestChallenge();
+
+        // assert
+        assertThat(challenge.length(), equalTo(5)); //(26+26+10)^5=916132832
+    }
+
+    @Test
+    public void longChallengeIfActivityOngoing() {
+        // arrange
+        for (int i = 0; i < 100; i++) {
+            final boolean ok = authenticationService.requestChallenge(i + TEST_USER_EMAIL);
+        }
+
+        // act
+        final String challenge = requestChallenge();
+
+        // assert
+        assertThat(challenge.length(), equalTo(10)); //(26+26+10)^10=8.39E17
     }
 
 }
