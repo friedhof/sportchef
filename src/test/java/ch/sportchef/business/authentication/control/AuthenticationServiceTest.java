@@ -24,7 +24,12 @@ import ch.sportchef.business.user.entity.User;
 import com.dumbster.smtp.ServerOptions;
 import com.dumbster.smtp.SmtpServer;
 import com.dumbster.smtp.SmtpServerFactory;
-import org.jose4j.jwt.consumer.InvalidJwtException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
@@ -33,6 +38,7 @@ import org.needle4j.junit.NeedleRule;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.Optional;
 
 import static ch.sportchef.business.authentication.entity.Role.ADMIN;
@@ -48,6 +54,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class AuthenticationServiceTest {
+
+    private static final String MALFORMED_TOKEN = "eyJhbGciOiJIUzUxMiJ9_eyJpYXQiOjE0NjE3ODc4NDEsImV4cCI6MTQ2MTc4ODQ0MSwiZW1haWwiOiJqb2huLmRvZUBzcG9ydGNoZWYuY2gifQ_8MJW7kRJYrc105JmorJgOA3Wn6z2Z5Ab0uteZsleKyJBLAibhDr35S0PH9trTwxYeocpIHVhQ-lCak_IVNdwSg";
+    private static final String SIGNATURE_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE0NjE3ODc4NDEsImV4cCI6MTQ2MTc4ODQ0MSwiZW1haWwiOiJqb2huLmRvZUBzcG9ydGNoZWYuY2gifQ.8MJW7kRJYrc105JmorJgOA3Wn6z2Z5Ab0uteZsleKyJBLAibhDr35S0PH9trTwxYeocpIHVhQ-lCak_IVNdwSg";
 
     private static final Long TEST_USER_ID = 1L;
     private static final String TEST_USER_FIRSTNAME = "John";
@@ -79,6 +88,8 @@ public class AuthenticationServiceTest {
 
     private Configuration createConfigurationMock() {
         final Configuration configurationMock = mock(Configuration.class);
+        when(configurationMock.getTokenSigningKey())
+                .thenReturn("This is a Mock!");
         when(configurationMock.getSMTPServer())
                 .thenReturn("localhost");
         when(configurationMock.getSMTPPort())
@@ -114,18 +125,56 @@ public class AuthenticationServiceTest {
         verify(userServiceMock, times(1)).findByEmail(TEST_USER_EMAIL);
     }
 
-    @Test(expected = InvalidJwtException.class)
-    public void validateTokenNotOk() throws InvalidJwtException {
+    @Test(expected = MalformedJwtException.class)
+    public void validateMalformedToken() {
         // arrange
+        final Configuration configurationMock = createConfigurationMock();
+        when(configurationServiceMock.getConfiguration())
+                .thenReturn(configurationMock);
 
         // act
-        authenticationService.validate("invalid_token");
+        authenticationService.validate(MALFORMED_TOKEN);
+
+        // assert
+    }
+
+    @Test(expected = SignatureException.class)
+    public void validateSignatureToken() {
+        // arrange
+        final Configuration configurationMock = createConfigurationMock();
+        when(configurationServiceMock.getConfiguration())
+                .thenReturn(configurationMock);
+
+        // act
+        authenticationService.validate(SIGNATURE_TOKEN);
+
+        // assert
+    }
+
+    @Test(expected = ExpiredJwtException.class)
+    public void validateExpiredToken() {
+        // arrange
+        final Configuration configurationMock = createConfigurationMock();
+        when(configurationServiceMock.getConfiguration())
+                .thenReturn(configurationMock);
+        final Date now = new Date();
+        final Date exp = new Date(now.getTime() - 1000);
+        final Claims claims = Jwts.claims();
+        claims.setExpiration(exp);
+        final String tokenSigningKey = configurationMock.getTokenSigningKey();
+        final String token = Jwts.builder()
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS512, tokenSigningKey)
+                .compact();
+
+        // act
+        authenticationService.validate(token);
 
         // assert
     }
 
     @Test
-    public void requestAndValidateChallengeAndToken() throws InvalidJwtException {
+    public void requestAndValidateChallengeAndToken() {
         // arrange
 
         // act
@@ -168,12 +217,12 @@ public class AuthenticationServiceTest {
         // assert
         assertThat(token, notNullValue());
         assertThat(token.isPresent(), is(true));
-        assertThat(token.get(), matchesPattern(".{20}\\..{87}\\..{342}"));
+        assertThat(token.get(), matchesPattern(".{20}\\..{90}\\..{86}"));
 
         return token.get();
     }
 
-    private void validateToken(@NotNull final String token) throws InvalidJwtException {
+    private void validateToken(@NotNull final String token) {
         // arrange
 
         // act

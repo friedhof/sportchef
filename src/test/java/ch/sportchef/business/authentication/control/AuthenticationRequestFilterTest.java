@@ -18,7 +18,6 @@
 package ch.sportchef.business.authentication.control;
 
 import ch.sportchef.business.user.entity.User;
-import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
@@ -49,7 +48,7 @@ public class AuthenticationRequestFilterTest {
     private AuthenticationService authenticationService;
 
     @Test
-    public void filterAuthenticationSuccessful() throws IOException, InvalidJwtException {
+    public void filterAuthenticationSuccessful() throws IOException {
         // arrange
         final ContainerRequestContext requestContextMock = mock(ContainerRequestContext.class);
         when(requestContextMock.getHeaderString("Authorization")).thenReturn("Bearer valid_token");
@@ -65,7 +64,7 @@ public class AuthenticationRequestFilterTest {
     }
 
     @Test
-    public void filterInvalidTokenData() throws IOException, InvalidJwtException {
+    public void filterInvalidTokenData() throws IOException {
         // arrange
         final ContainerRequestContext requestContextMock = mock(ContainerRequestContext.class);
         when(requestContextMock.getHeaderString("Authorization")).thenReturn("Bearer invalid_token_data");
@@ -81,7 +80,7 @@ public class AuthenticationRequestFilterTest {
     }
 
     @Test
-    public void filterInvalidAuthenticationHeader() throws IOException, InvalidJwtException {
+    public void filterInvalidAuthenticationHeader() throws IOException {
         // arrange
         final ContainerRequestContext requestContextMock = mock(ContainerRequestContext.class);
         when(requestContextMock.getHeaderString("Authorization")).thenReturn("invalid_authentication_header");
