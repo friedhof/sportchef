@@ -82,13 +82,13 @@ public class AuthenticationService {
         healthCheckRegistry.register(AuthenticationService.class.getName(), authenticationServiceHealthCheck);
     }
 
+    @SneakyThrows
     public boolean requestChallenge(@NotNull final String email) {
         final Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()) {
             final String challenge = generateChallenge();
             challengeCache.put(email, challenge);
-            Politician.beatAroundTheBush(() ->
-                    sendChallenge(email, challenge));
+            sendChallenge(email, challenge);
             return true;
         }
         return false;
