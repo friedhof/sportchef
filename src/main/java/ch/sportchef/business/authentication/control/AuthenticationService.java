@@ -71,15 +71,12 @@ public class AuthenticationService {
 
     private Cache<String, String> challengeCache;
 
-    private RsaJsonWebKey rsaJsonWebKey;
-
     @PostConstruct
     @SneakyThrows
     private void init() {
         challengeCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
-        rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
 
         final AuthenticationServiceHealthCheck authenticationServiceHealthCheck = new AuthenticationServiceHealthCheck(this);
         healthCheckRegistry.register(AuthenticationService.class.getName(), authenticationServiceHealthCheck);
@@ -150,6 +147,8 @@ public class AuthenticationService {
         jws.setPayload(claims.toJson());
         jws.setKey(rsaJsonWebKey.getPrivateKey());
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA512);
+        final Configuration configuration = configurationService.getConfiguration();
+        final String tokenSigningKey = configuration.getTokenSigningKey();
 
         return Politician.beatAroundTheBush(() -> jws.getCompactSerialization());
     }
@@ -163,6 +162,8 @@ public class AuthenticationService {
                 .build();
         final JwtClaims jwtClaims = jwtConsumer.processToClaims(token);
         final String email = (String) jwtClaims.getClaimValue("sub");
+        final Configuration configuration = configurationService.getConfiguration();
+        final String tokenSigningKey = configuration.getTokenSigningKey();
         return userService.findByEmail(email);
     }
 
