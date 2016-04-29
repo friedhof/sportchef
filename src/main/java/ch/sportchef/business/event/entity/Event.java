@@ -22,16 +22,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Version;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Entity
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
@@ -39,8 +34,6 @@ public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue
     private Long eventId;
 
     @Size(min = 1)
@@ -54,7 +47,6 @@ public class Event implements Serializable {
 
     private String cssBackgroundColor;
 
-    @Version
     private Long version;
 
 }

@@ -23,15 +23,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-@Entity
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
@@ -39,8 +34,6 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue
     private Long userId;
 
     @Size(min = 1)
@@ -58,6 +51,5 @@ public class User implements Serializable {
     @NotNull
     private Role role;
 
-    @Version
     private Long version;
 }
