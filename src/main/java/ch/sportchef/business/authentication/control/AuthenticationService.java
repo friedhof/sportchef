@@ -36,7 +36,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.SneakyThrows;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.jetbrains.annotations.NonNls;
 
@@ -85,7 +84,6 @@ public class AuthenticationService {
         healthCheckRegistry.register(AuthenticationService.class.getName(), healthCheck);
     }
 
-    @SneakyThrows
     public boolean requestChallenge(@NotNull final String email) {
         final Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()) {
@@ -115,7 +113,8 @@ public class AuthenticationService {
         return Math.min(MAXIMAL_CHALLENGE_LENGTH, calculatedComplexity);
     }
 
-    private void sendChallenge(@NotNull final String email, @NotNull final Challenge challenge) throws EmailException {
+    @SneakyThrows
+    private void sendChallenge(@NotNull final String email, @NotNull final Challenge challenge) {
         final Configuration configuration = configurationService.getConfiguration();
         final Email mail = new SimpleEmail();
         mail.setHostName(configuration.getSMTPServer());
