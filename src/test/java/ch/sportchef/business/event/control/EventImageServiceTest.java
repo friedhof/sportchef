@@ -54,6 +54,15 @@ public class EventImageServiceTest {
     private static String tempUserHome;
     private static File imageUploadPath;
 
+    @Rule
+    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
+
+    @ObjectUnderTest(postConstruct = true)
+    private EventImageService eventImageService;
+
+    @Inject
+    private EventService eventServiceMock;
+
     @BeforeClass
     public static void setUp() throws IOException {
         realUserHome = System.getProperty("user.home");
@@ -69,15 +78,6 @@ public class EventImageServiceTest {
     public static void tearDown() {
         System.setProperty("user.home", realUserHome);
     }
-
-    @Rule
-    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
-
-    @ObjectUnderTest(postConstruct = true)
-    private EventImageService eventImageService;
-
-    @Inject
-    private EventService eventServiceMock;
 
     private byte[] readTestImage() throws URISyntaxException, IOException {
         final Thread currentThread = Thread.currentThread();
