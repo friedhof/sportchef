@@ -163,7 +163,7 @@ public class AuthenticationService {
 
         final Jws<Claims> result = Jwts.parser()
                 .setSigningKey(tokenSigningKey)
-                .parseClaimsJws(token.replace("Bearer ", ""));
+                .parseClaimsJws(token);
         final Claims claims = result.getBody();
         final String email = claims.get("email", String.class);
         return userService.findByEmail(email);
