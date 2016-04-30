@@ -35,7 +35,7 @@ public class ConfigurationServiceHealthCheck extends HealthCheck {
     protected Result check() throws Exception {
         try {
             final Configuration configuration = configurationService.getConfiguration();
-            return configuration != null ? Result.healthy() : Result.unhealthy("can't access configuration");
+            return configuration != null ? Result.healthy() : Result.unhealthy("Can't access configuration!");
         } catch (final Throwable error) {
             return Result.unhealthy(error.getMessage());
         }
