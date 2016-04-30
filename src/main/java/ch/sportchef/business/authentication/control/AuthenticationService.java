@@ -88,7 +88,7 @@ public class AuthenticationService {
         if (user.isPresent()) {
             final Challenge challenge = generateChallenge();
             challengeCache.put(email, challenge);
-            sendChallenge(email, challenge.getChallenge());
+            sendChallenge(email, challenge);
             return true;
         }
         return false;
@@ -110,7 +110,7 @@ public class AuthenticationService {
         return Math.min(MAXIMAL_CHALLENGE_LENGTH, calculatedComplexity);
     }
 
-    private void sendChallenge(@NotNull final String email, @NotNull final String challenge) throws EmailException {
+    private void sendChallenge(@NotNull final String email, @NotNull final Challenge challenge) throws EmailException {
         final Configuration configuration = configurationService.getConfiguration();
         final Email mail = new SimpleEmail();
         mail.setHostName(configuration.getSMTPServer());
@@ -119,7 +119,7 @@ public class AuthenticationService {
         mail.setSSLOnConnect(configuration.getSMTPSSL());
         mail.setFrom(configuration.getSMTPFrom());
         mail.setSubject("Your challenge to login to SportChef");
-        mail.setMsg(String.format("Challenge = %s", challenge));
+        mail.setMsg(String.format("Challenge = %s", challenge.getChallenge()));
         mail.addTo(email);
         mail.send();
     }
