@@ -28,11 +28,11 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class PatternMatcher extends TypeSafeMatcher<String> {
 
+    private final String pattern;
+
     public static PatternMatcher matchesPattern(@NotNull final String pattern) {
         return new PatternMatcher(pattern);
     }
-
-    private final String pattern;
 
     @Override
     protected boolean matchesSafely(@NotNull final  String item) {
