@@ -1,8 +1,10 @@
 package ch.sportchef.business.authentication.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
 public class Challenge {
 
     private final String challenge;
