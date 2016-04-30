@@ -36,7 +36,7 @@ public class AuthenticationServiceHealthCheck extends HealthCheck {
         try {
             final Optional<String> token = authenticationService.validateChallenge("foo@bar", "foobar");
             return token.isPresent() ? Result.healthy() :
-                    Result.unhealthy(String.format("Problems in AuthenticationService: Can't validate challenge!"));
+                    Result.unhealthy("Problems in AuthenticationService: Can't validate challenge!");
         } catch (final Throwable error) {
             return Result.unhealthy(error.getMessage());
         }
