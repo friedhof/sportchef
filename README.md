@@ -82,6 +82,7 @@ A huge thank you to all the contributors! All contributors are listed below (sor
 
 - [CoalaJoe](https://github.com/CoalaJoe)
 - [Interactiondesigner](https://github.com/Interactiondesigner)
+- [Itchy](https://github.com/1tchy)
 - [jarekratajski](https://github.com/jarekratajski)
 - [McPringle](https://github.com/McPringle)
 - [PReimers](https://github.com/PReimers)
