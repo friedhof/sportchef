@@ -25,7 +25,13 @@ import com.dumbster.smtp.MailMessage;
 import com.dumbster.smtp.ServerOptions;
 import com.dumbster.smtp.SmtpServer;
 import com.dumbster.smtp.SmtpServerFactory;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import org.apache.commons.mail.EmailException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -47,7 +53,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public class AuthenticationServiceTest {
@@ -236,6 +246,14 @@ public class AuthenticationServiceTest {
 
         // assert
         assertThat(token.isPresent(), is(false));
+    }
+
+    @Test(expected = EmailException.class)
+    public void requestChallengeWithException() {
+        // arrange
+
+        // act
+        authenticationService.requestChallenge("@test");
     }
 
     private String requestChallenge() {
