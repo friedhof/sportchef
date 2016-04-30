@@ -1,6 +1,6 @@
 /*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015, 2016 Marcus Fihlon
+ * Copyright (C) 2016 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,38 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.business.event.entity;
+package ch.sportchef.business.authentication.entity;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalTime;
+@RequiredArgsConstructor
+@Getter
+@ToString
+public class Challenge {
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(toBuilder = true)
-public class Event implements Serializable {
+    private final String challenge;
+    private int tries = 0;
 
-    private static final long serialVersionUID = 1L;
-
-    private Long eventId;
-
-    @Size(min = 1)
-    private String title;
-
-    private String location;
-
-    private LocalDate date;
-
-    private LocalTime time;
-
-    private String cssBackgroundColor;
-
-    private Long version;
-
+    public void increaseTries() {
+        tries++;
+    }
 }

@@ -17,6 +17,7 @@
  */
 package ch.sportchef.business.authentication.control;
 
+import ch.sportchef.business.authentication.entity.Challenge;
 import ch.sportchef.business.authentication.entity.Role;
 import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
@@ -37,11 +38,13 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
+import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
@@ -52,9 +55,13 @@ import java.util.concurrent.TimeUnit;
 @Metered(name = "Metered: AuthenticationService")
 public class AuthenticationService {
 
+    @NonNls
     private static final String CHALLENGE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final int CHALLENGE_LENGTH = 10;
-    private static final long TOKEN_EXPIRATION_TIME_IN_MILLISECONDS = 8 * 60 * 60 * 1000; // 8 hours
+    private static final int MINIMAL_CHALLENGE_LENGTH = 5;
+    private static final int MAXIMAL_CHALLENGE_LENGTH = 10;
+    private static final int TRESHOLD_FOR_COMPLEXITY_INCREASE = 20;
+    private static final long TOKEN_EXPIRATION_TIME_IN_MS = 8 * 60 * 60 * 1000; // 8 hours
+    private static final int MAXIMAL_WRONG_CHALENGE_TRIES = 10;
 
     @Inject
     private UserService userService;
@@ -62,10 +69,10 @@ public class AuthenticationService {
     @Inject
     private ConfigurationService configurationService;
 
+    private Cache<String, Challenge> challengeCache;
+
     @Inject
     private HealthCheckRegistry healthCheckRegistry;
-
-    private Cache<String, String> challengeCache;
 
     @PostConstruct
     @SneakyThrows
@@ -74,15 +81,15 @@ public class AuthenticationService {
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
 
-        final AuthenticationServiceHealthCheck authenticationServiceHealthCheck = new AuthenticationServiceHealthCheck(this);
-        healthCheckRegistry.register(AuthenticationService.class.getName(), authenticationServiceHealthCheck);
+        final AuthenticationServiceHealthCheck healthCheck = new AuthenticationServiceHealthCheck(this);
+        healthCheckRegistry.register(AuthenticationService.class.getName(), healthCheck);
     }
 
     @SneakyThrows
     public boolean requestChallenge(@NotNull final String email) {
         final Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()) {
-            final String challenge = generateChallenge();
+            final Challenge challenge = generateChallenge();
             challengeCache.put(email, challenge);
             sendChallenge(email, challenge);
             return true;
@@ -90,23 +97,25 @@ public class AuthenticationService {
         return false;
     }
 
-    private String generateChallenge() {
-        final StringBuilder challenge = new StringBuilder();
-        final Random random = new Random();
-        final int bound = CHALLENGE_CHARACTERS.length();
-        int challengeCount = 0;
-        while (challengeCount < CHALLENGE_LENGTH) {
-            if (challengeCount > 0 && challengeCount % 5 == 0) {
-                challenge.append('-');
-            }
-            final int index = random.nextInt(bound);
-            challenge.append(CHALLENGE_CHARACTERS.charAt(index));
-            challengeCount++;
+    private Challenge generateChallenge() {
+        final int requiredLength = currentlyRequiredChallengeLength();
+        final StringBuilder challengeBuilder = new StringBuilder(requiredLength);
+        final Random random = new SecureRandom();
+        while (challengeBuilder.length() < requiredLength) {
+            final char randomChar = CHALLENGE_CHARACTERS.charAt(random.nextInt(CHALLENGE_CHARACTERS.length()));
+            challengeBuilder.append(randomChar);
         }
-        return challenge.toString();
+        return new Challenge(challengeBuilder.toString());
     }
 
-    private void sendChallenge(@NotNull final String email, @NotNull final String challenge) throws EmailException {
+    private int currentlyRequiredChallengeLength() {
+        @SuppressWarnings("NumericCastThatLosesPrecision")
+        final int complexityIncrease = (int) (challengeCache.size() / TRESHOLD_FOR_COMPLEXITY_INCREASE);
+        final int calculatedComplexity = MINIMAL_CHALLENGE_LENGTH + complexityIncrease;
+        return Math.min(MAXIMAL_CHALLENGE_LENGTH, calculatedComplexity);
+    }
+
+    private void sendChallenge(@NotNull final String email, @NotNull final Challenge challenge) throws EmailException {
         final Configuration configuration = configurationService.getConfiguration();
         final Email mail = new SimpleEmail();
         mail.setHostName(configuration.getSMTPServer());
@@ -115,32 +124,34 @@ public class AuthenticationService {
         mail.setSSLOnConnect(configuration.getSMTPSSL());
         mail.setFrom(configuration.getSMTPFrom());
         mail.setSubject("Your challenge to login to SportChef");
-        mail.setMsg(String.format("Challenge = %s", challenge));
+        mail.setMsg(String.format("Challenge = %s", challenge.getChallenge()));
         mail.addTo(email);
         mail.send();
     }
 
     public Optional<String> validateChallenge(@NotNull final String email,
-                                              @NotNull final String challenge) {
-        Optional<String> token = Optional.empty();
-
-        final String cachedChallenge = challengeCache.getIfPresent(email);
-        if (challenge.equals(cachedChallenge)) {
-            challengeCache.invalidate(email);
-            token = Optional.of(generateToken(email));
+                                              @NotNull final String challengeValue) {
+        final Challenge cachedChallenge = challengeCache.getIfPresent(email);
+        if (cachedChallenge != null) {
+            if (challengeValue.equals(cachedChallenge.getChallenge()) && cachedChallenge.getTries() < MAXIMAL_WRONG_CHALENGE_TRIES) {
+                challengeCache.invalidate(email);
+                return Optional.of(generateToken(email));
+            } else {
+                cachedChallenge.increaseTries();
+            }
         }
 
-        return token;
+        return Optional.empty();
     }
 
     private String generateToken(@NotNull final String email) {
         final Date now = new Date();
-        final Date exp = new Date(now.getTime() + TOKEN_EXPIRATION_TIME_IN_MILLISECONDS);
+        final Date exp = new Date(now.getTime() + TOKEN_EXPIRATION_TIME_IN_MS);
 
         final Claims claims = Jwts.claims();
         claims.setIssuedAt(now);
         claims.setExpiration(exp);
-        claims.put("email", email);
+        claims.put("email", email); //NON-NLS
 
         final Configuration configuration = configurationService.getConfiguration();
         final String tokenSigningKey = configuration.getTokenSigningKey();
@@ -151,15 +162,15 @@ public class AuthenticationService {
                 .compact();
     }
 
-    Optional<User> validate(@NotNull String token) {
+    Optional<User> validate(@NotNull final String token) {
         final Configuration configuration = configurationService.getConfiguration();
         final String tokenSigningKey = configuration.getTokenSigningKey();
 
         final Jws<Claims> result = Jwts.parser()
                 .setSigningKey(tokenSigningKey)
-                .parseClaimsJws(token.replace("Bearer ", ""));
+                .parseClaimsJws(token);
         final Claims claims = result.getBody();
-        final String email = claims.get("email", String.class);
+        final String email = claims.get("email", String.class); //NON-NLS
         return userService.findByEmail(email);
     }
 
