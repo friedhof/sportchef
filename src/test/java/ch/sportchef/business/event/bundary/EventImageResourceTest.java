@@ -25,12 +25,12 @@ import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.junit.NeedleBuilders;
 import org.needle4j.junit.NeedleRule;
-import org.needle4j.mock.EasyMockProvider;
 
 import javax.inject.Inject;
 import javax.servlet.ReadListener;
@@ -203,8 +203,8 @@ public class EventImageResourceTest {
         }
 
         @Override
-        public void setReadListener(ReadListener readListener) {
-
+        public void setReadListener(@Nullable final ReadListener readListener) {
+            throw new UnsupportedOperationException("This mock does not implement this method!");
         }
 
         @Override
