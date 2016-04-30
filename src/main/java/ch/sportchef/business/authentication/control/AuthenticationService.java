@@ -38,11 +38,13 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
+import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
@@ -53,11 +55,12 @@ import java.util.concurrent.TimeUnit;
 @Metered(name = "Metered: AuthenticationService")
 public class AuthenticationService {
 
+    @NonNls
     private static final String CHALLENGE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int MINIMAL_CHALLENGE_LENGTH = 5;
     private static final int MAXIMAL_CHALLENGE_LENGTH = 10;
     private static final int TRESHOLD_FOR_COMPLEXITY_INCREASE = 20;
-    private static final long TOKEN_EXPIRATION_TIME_IN_MILLISECONDS = 8 * 60 * 60 * 1000; // 8 hours
+    private static final long TOKEN_EXPIRATION_TIME_IN_MS = 8 * 60 * 60 * 1000; // 8 hours
     private static final int MAXIMAL_WRONG_CHALENGE_TRIES = 10;
 
     @Inject
@@ -66,10 +69,10 @@ public class AuthenticationService {
     @Inject
     private ConfigurationService configurationService;
 
+    private Cache<String, Challenge> challengeCache;
+
     @Inject
     private HealthCheckRegistry healthCheckRegistry;
-
-    private Cache<String, Challenge> challengeCache;
 
     @PostConstruct
     @SneakyThrows
@@ -78,8 +81,8 @@ public class AuthenticationService {
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
 
-        final AuthenticationServiceHealthCheck authenticationServiceHealthCheck = new AuthenticationServiceHealthCheck(this);
-        healthCheckRegistry.register(AuthenticationService.class.getName(), authenticationServiceHealthCheck);
+        final AuthenticationServiceHealthCheck healthCheck = new AuthenticationServiceHealthCheck(this);
+        healthCheckRegistry.register(AuthenticationService.class.getName(), healthCheck);
     }
 
     @SneakyThrows
@@ -95,16 +98,18 @@ public class AuthenticationService {
     }
 
     private Challenge generateChallenge() {
-        final StringBuilder challenge = new StringBuilder();
-        final Random random = new Random();
-        while (challenge.length() < currentlyRequiredChallengeLength()) {
+        final int requiredLength = currentlyRequiredChallengeLength();
+        final StringBuilder challengeBuilder = new StringBuilder(requiredLength);
+        final Random random = new SecureRandom();
+        while (challengeBuilder.length() < requiredLength) {
             final char randomChar = CHALLENGE_CHARACTERS.charAt(random.nextInt(CHALLENGE_CHARACTERS.length()));
-            challenge.append(randomChar);
+            challengeBuilder.append(randomChar);
         }
-        return new Challenge(challenge.toString());
+        return new Challenge(challengeBuilder.toString());
     }
 
     private int currentlyRequiredChallengeLength() {
+        @SuppressWarnings("NumericCastThatLosesPrecision")
         final int complexityIncrease = (int) (challengeCache.size() / TRESHOLD_FOR_COMPLEXITY_INCREASE);
         final int calculatedComplexity = MINIMAL_CHALLENGE_LENGTH + complexityIncrease;
         return Math.min(MAXIMAL_CHALLENGE_LENGTH, calculatedComplexity);
@@ -125,10 +130,10 @@ public class AuthenticationService {
     }
 
     public Optional<String> validateChallenge(@NotNull final String email,
-                                              @NotNull final String challenge) {
+                                              @NotNull final String challengeValue) {
         final Challenge cachedChallenge = challengeCache.getIfPresent(email);
         if (cachedChallenge != null) {
-            if (challenge.equals(cachedChallenge.getChallenge()) && cachedChallenge.getTries() < MAXIMAL_WRONG_CHALENGE_TRIES) {
+            if (challengeValue.equals(cachedChallenge.getChallenge()) && cachedChallenge.getTries() < MAXIMAL_WRONG_CHALENGE_TRIES) {
                 challengeCache.invalidate(email);
                 return Optional.of(generateToken(email));
             } else {
@@ -141,12 +146,12 @@ public class AuthenticationService {
 
     private String generateToken(@NotNull final String email) {
         final Date now = new Date();
-        final Date exp = new Date(now.getTime() + TOKEN_EXPIRATION_TIME_IN_MILLISECONDS);
+        final Date exp = new Date(now.getTime() + TOKEN_EXPIRATION_TIME_IN_MS);
 
         final Claims claims = Jwts.claims();
         claims.setIssuedAt(now);
         claims.setExpiration(exp);
-        claims.put("email", email);
+        claims.put("email", email); //NON-NLS
 
         final Configuration configuration = configurationService.getConfiguration();
         final String tokenSigningKey = configuration.getTokenSigningKey();
@@ -157,7 +162,7 @@ public class AuthenticationService {
                 .compact();
     }
 
-    Optional<User> validate(@NotNull String token) {
+    Optional<User> validate(@NotNull final String token) {
         final Configuration configuration = configurationService.getConfiguration();
         final String tokenSigningKey = configuration.getTokenSigningKey();
 
@@ -165,7 +170,7 @@ public class AuthenticationService {
                 .setSigningKey(tokenSigningKey)
                 .parseClaimsJws(token);
         final Claims claims = result.getBody();
-        final String email = claims.get("email", String.class);
+        final String email = claims.get("email", String.class); //NON-NLS
         return userService.findByEmail(email);
     }
 
