@@ -18,6 +18,8 @@
 package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
+import ch.sportchef.metrics.healthcheck.ConfigurationServiceHealthCheck;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import org.junit.Rule;
 import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
@@ -29,7 +31,11 @@ import javax.inject.Inject;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ConfigurationServiceTest {
@@ -37,11 +43,26 @@ public class ConfigurationServiceTest {
     @Rule
     public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
 
-    @ObjectUnderTest
+    @ObjectUnderTest(postConstruct = true)
     private ConfigurationService configurationService;
 
     @Inject
     private ConfigurationRepository configurationRepositoryMock;
+
+    @Inject
+    private HealthCheckRegistry healthCheckRegistryMock;
+
+    @Test
+    public void postConstruct() {
+        // arrange
+
+        // act
+
+        // assert
+        verify(healthCheckRegistryMock, times(1)).register(
+                eq(ConfigurationService.class.getName()),
+                any(ConfigurationServiceHealthCheck.class));
+    }
 
     @Test
     public void getConfiguration() {
