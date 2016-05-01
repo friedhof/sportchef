@@ -36,7 +36,7 @@ public class EventServiceHealthCheck extends HealthCheck {
     protected Result check() throws Exception {
         try {
             final List<Event> events = eventService.findAll();
-            return events != null ? Result.healthy() : Result.unhealthy("can't access events");
+            return events != null ? Result.healthy() : Result.unhealthy("Can't access events!");
         } catch (final Throwable error) {
             return Result.unhealthy(error.getMessage());
         }
