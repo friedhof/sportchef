@@ -36,7 +36,7 @@ public class UserServiceHealthCheck extends HealthCheck {
     protected Result check() throws Exception {
         try {
             final List<User> users = userService.findAll();
-            return users != null ? Result.healthy() : Result.unhealthy("can't access users");
+            return users != null ? Result.healthy() : Result.unhealthy("Can't access users!");
         } catch (final Throwable error) {
             return Result.unhealthy(error.getMessage());
         }
