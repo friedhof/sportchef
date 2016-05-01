@@ -18,20 +18,39 @@
 package ch.sportchef.metrics.contextlistener;
 
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.servlets.MetricsServlet;
+import org.junit.Rule;
+import org.junit.Test;
+import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleBuilders;
+import org.needle4j.junit.NeedleRule;
 
 import javax.inject.Inject;
-import javax.servlet.annotation.WebListener;
 
-@WebListener
-public class MetricsServletContextListener extends MetricsServlet.ContextListener {
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+public class MetricsServletContextListenerTest {
+
+    @Rule
+    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
+
+    @ObjectUnderTest
+    private MetricsServletContextListener contextListener;
 
     @Inject
-    private MetricRegistry metricRegistry;
+    private MetricRegistry metricRegistryMock;
 
-    @Override
-    protected MetricRegistry getMetricRegistry() {
-        return metricRegistry;
+    @Test
+    public void getMetricRegistry() {
+        // arrange
+
+        // act
+        final MetricRegistry metricRegistry = contextListener.getMetricRegistry();
+
+        // assert
+        assertThat(metricRegistry, notNullValue());
+        assertThat(metricRegistry, is(metricRegistryMock));
     }
 
 }

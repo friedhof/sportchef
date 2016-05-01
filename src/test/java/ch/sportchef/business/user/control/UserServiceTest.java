@@ -19,13 +19,20 @@ package ch.sportchef.business.user.control;
 
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.user.entity.User;
+import ch.sportchef.metrics.healthcheck.UserServiceHealthCheck;
+import com.codahale.metrics.health.HealthCheckRegistry;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleBuilders;
+import org.needle4j.junit.NeedleRule;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import pl.setblack.airomem.core.SimpleController;
 import pl.setblack.airomem.core.VoidCommand;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.SecurityContext;
 import java.io.Serializable;
 import java.security.Principal;
@@ -36,6 +43,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,6 +53,27 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(PersistenceManager.class)
 public class UserServiceTest {
+
+    @Rule
+    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
+
+    @ObjectUnderTest(postConstruct = true)
+    private UserService userService; // used only for postConstruct test
+
+    @Inject
+    private HealthCheckRegistry healthCheckRegistryMock;
+
+    @Test
+    public void postConstruct() {
+        // arrange
+
+        // act
+
+        // assert
+        verify(healthCheckRegistryMock, times(1)).register(
+                eq(UserService.class.getName()),
+                any(UserServiceHealthCheck.class));
+    }
 
     @Test
     public void create() {

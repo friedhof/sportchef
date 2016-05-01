@@ -19,19 +19,27 @@ package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.event.entity.Event;
+import ch.sportchef.metrics.healthcheck.EventServiceHealthCheck;
+import com.codahale.metrics.health.HealthCheckRegistry;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleBuilders;
+import org.needle4j.junit.NeedleRule;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import pl.setblack.airomem.core.SimpleController;
 import pl.setblack.airomem.core.VoidCommand;
 
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,6 +54,27 @@ public class EventServiceTest {
     private static final String EVENT_LOCATION = "Test Event Location";
     private static final LocalDate EVENT_DATE = LocalDate.now();
     private static final LocalTime EVENT_TIME = LocalTime.now();
+
+    @Rule
+    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
+
+    @ObjectUnderTest(postConstruct = true)
+    private EventService eventService; // used only for postConstruct test
+
+    @Inject
+    private HealthCheckRegistry healthCheckRegistryMock;
+
+    @Test
+    public void postConstruct() {
+        // arrange
+
+        // act
+
+        // assert
+        verify(healthCheckRegistryMock, times(1)).register(
+                eq(EventService.class.getName()),
+                any(EventServiceHealthCheck.class));
+    }
 
     @Test
     public void create() {

@@ -15,23 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.metrics.contextlistener;
+package ch.sportchef.metrics;
 
-import com.codahale.metrics.health.HealthCheckRegistry;
-import com.codahale.metrics.servlets.HealthCheckServlet;
+import io.astefanutti.metrics.cdi.MetricsConfiguration;
+import org.junit.Test;
 
-import javax.inject.Inject;
-import javax.servlet.annotation.WebListener;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@WebListener
-public class HealthCheckServletContextListener extends HealthCheckServlet.ContextListener {
+public class MetricsCdiConfigurationTest {
 
-    @Inject
-    private HealthCheckRegistry healthCheckRegistry;
+    @Test
+    public void configure() {
+        // arrange
+        final MetricsConfiguration metricsConfigurationMock = mock(MetricsConfiguration.class);
+        final MetricsCdiConfiguration metricsCdiConfiguration = new MetricsCdiConfiguration();
 
-    @Override
-    protected HealthCheckRegistry getHealthCheckRegistry() {
-        return healthCheckRegistry;
+        // act
+        metricsCdiConfiguration.configure(metricsConfigurationMock);
+
+        // assert
+        verify(metricsConfigurationMock, times(1)).useAbsoluteName(true);
     }
 
 }
