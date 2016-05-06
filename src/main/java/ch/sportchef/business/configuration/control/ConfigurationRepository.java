@@ -18,8 +18,8 @@
 package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
+import lombok.SneakyThrows;
 import lombok.ToString;
-import pl.setblack.badass.Politician;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,29 +46,27 @@ class ConfigurationRepository {
         configuration = new Configuration(properties);
     }
 
+    @SneakyThrows
     private static Map<Object, Object> loadDefaultConfiguration() {
-        return Politician.beatAroundTheBush(() -> {
-            final Properties properties = new Properties();
-            try (final InputStream stream =
-                         Thread.currentThread().getContextClassLoader()
-                                 .getResourceAsStream(DEFAULT_CONFIGURATION_FILE)) {
-                properties.load(stream);
-            }
+        final Properties properties = new Properties();
+        try (final InputStream stream =
+                     Thread.currentThread().getContextClassLoader()
+                             .getResourceAsStream(DEFAULT_CONFIGURATION_FILE)) {
+            properties.load(stream);
+        }
 
-            return properties;
-        });
+        return properties;
     }
 
+    @SneakyThrows
     private static Map<Object, Object> loadCustomConfiguration() {
-        return Politician.beatAroundTheBush(() -> {
-            final Properties properties = new Properties();
-            final File file = Paths.get(System.getProperty("user.home"), ".sportchef", CUSTOM_CONFIGURATION_FILE).toFile();
-            try (final InputStream stream = new FileInputStream(file)) {
-                properties.load(stream);
-            }
+        final Properties properties = new Properties();
+        final File file = Paths.get(System.getProperty("user.home"), ".sportchef", CUSTOM_CONFIGURATION_FILE).toFile();
+        try (final InputStream stream = new FileInputStream(file)) {
+            properties.load(stream);
+        }
 
-            return properties;
-        });
+        return properties;
     }
 
     @SuppressWarnings("MethodReturnOfConcreteClass")
