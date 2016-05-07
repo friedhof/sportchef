@@ -19,13 +19,11 @@ package ch.sportchef.business.user.control;
 
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.user.entity.User;
-import ch.sportchef.metrics.healthcheck.UserServiceHealthCheck;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import pl.setblack.airomem.core.SimpleController;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -40,17 +38,11 @@ import java.util.Optional;
 @Metered(name = "Metered: EventService")
 public class UserService {
 
-    private SimpleController<UserRepository> controller =
+    private final SimpleController<UserRepository> controller =
             PersistenceManager.createSimpleController(User.class, UserRepository::new);
 
     @Inject
     private HealthCheckRegistry healthCheckRegistry;
-
-    @PostConstruct
-    private void registerHealthCheck() {
-        final UserServiceHealthCheck userServiceHealthCheck = new UserServiceHealthCheck(this);
-        healthCheckRegistry.register(UserService.class.getName(), userServiceHealthCheck);
-    }
 
     @PreDestroy
     private void takeSnapshot() {
@@ -58,11 +50,11 @@ public class UserService {
     }
 
     public User create(@NotNull final User user) {
-        return controller.executeAndQuery((mgr) -> mgr.create(user));
+        return controller.executeAndQuery(mgr -> mgr.create(user));
     }
 
     public User update(@NotNull final User user) {
-        return controller.executeAndQuery((mgr) -> mgr.update(user));
+        return controller.executeAndQuery(mgr -> mgr.update(user));
     }
 
     public Optional<User> findByUserId(@NotNull final Long userId) {
@@ -78,10 +70,10 @@ public class UserService {
     }
 
     public void delete(final Long userId) {
-        controller.execute((mgr) -> mgr.delete(userId));
+        controller.execute(mgr -> mgr.delete(userId));
     }
 
-    public Optional<User> getAuthenticatedUser(@NotNull SecurityContext securityContext) {
+    public Optional<User> getAuthenticatedUser(@NotNull final SecurityContext securityContext) {
         final Principal principal = securityContext.getUserPrincipal();
         final String email = principal.getName();
         return findByEmail(email);

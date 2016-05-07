@@ -15,18 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.business.user.bundary;
+package ch.sportchef.business.user.boundary;
 
-import ch.sportchef.business.user.boundary.UserResource;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.needle4j.junit.NeedleBuilders;
-import org.needle4j.junit.NeedleRule;
 
-import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -40,30 +34,12 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class UserResourceTest {
-
-    @Rule
-    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
-
-    private UserResource userResource;
-
-    @Inject
-    private UserService userServiceMock;
-
-    @Inject
-    private UriInfo uriInfoMock;
-
-    @Inject
-    private UriBuilder uriBuilderMock;
-
-    @Before
-    public void setup() {
-        userResource = new UserResource(1L, userServiceMock);
-    }
 
     private User createTestUser() {
         return User.builder()
@@ -79,8 +55,9 @@ public class UserResourceTest {
     public void findWithSuccess() {
         // arrange
         final User testUser = createTestUser();
-        when(userServiceMock.findByUserId(1L))
-                .thenReturn(Optional.of(testUser));
+        final UserService userServiceMock = mock(UserService.class);
+        when(userServiceMock.findByUserId(1L)).thenReturn(Optional.of(testUser));
+        final UserResource userResource =  new UserResource(1L, userServiceMock);
 
         // act
         final User user = userResource.find();
@@ -93,8 +70,9 @@ public class UserResourceTest {
     @Test(expected=NotFoundException.class)
     public void findWithNotFound() {
         // arrange
-        when(userServiceMock.findByUserId(1L))
-                .thenReturn(Optional.empty());
+        final UserService userServiceMock = mock(UserService.class);
+        when(userServiceMock.findByUserId(1L)).thenReturn(Optional.empty());
+        final UserResource userResource =  new UserResource(1L, userServiceMock);
 
         // act
         userResource.find();
@@ -104,17 +82,16 @@ public class UserResourceTest {
     public void updateWithSuccess() throws URISyntaxException {
         // arrange
         final User testUser = createTestUser();
+        final UriInfo uriInfoMock = mock(UriInfo.class);
+        final UriBuilder uriBuilderMock = mock(UriBuilder.class);
+        final UserService userServiceMock = mock(UserService.class);
+        when(userServiceMock.findByUserId(testUser.getUserId())).thenReturn(Optional.of(testUser));
+        when(userServiceMock.update(anyObject())).thenReturn(testUser);
+        when(uriInfoMock.getAbsolutePathBuilder()).thenReturn(uriBuilderMock);
         final String location = "http://localhost:8080/sportchef/api/users/1";
         final URI uri = new URI(location);
-
-        when(userServiceMock.findByUserId(testUser.getUserId()))
-                .thenReturn(Optional.of(testUser));
-        when(userServiceMock.update(anyObject()))
-                .thenReturn(testUser);
-        when(uriInfoMock.getAbsolutePathBuilder())
-                .thenReturn(uriBuilderMock);
-        when(uriBuilderMock.build())
-                .thenReturn(uri);
+        when(uriBuilderMock.build()).thenReturn(uri);
+        final UserResource userResource =  new UserResource(1L, userServiceMock);
 
         // act
         final Response response = userResource.update(testUser, uriInfoMock);
@@ -134,21 +111,21 @@ public class UserResourceTest {
     public void updateWithNotFound() {
         // arrange
         final User testUser = createTestUser();
-
-        when(userServiceMock.findByUserId(testUser.getUserId()))
-                .thenReturn(Optional.empty());
+        final UserService userServiceMock = mock(UserService.class);
+        when(userServiceMock.findByUserId(1L)).thenReturn(Optional.empty());
+        final UserResource userResource =  new UserResource(1L, userServiceMock);
 
         // act
-        userResource.update(testUser, uriInfoMock);
+        userResource.update(testUser, null);
     }
 
     @Test
     public void deleteWithSuccess() {
         // arrange
         final User testUser = createTestUser();
-
-        when(userServiceMock.findByUserId(testUser.getUserId()))
-                .thenReturn(Optional.of(testUser));
+        final UserService userServiceMock = mock(UserService.class);
+        when(userServiceMock.findByUserId(testUser.getUserId())).thenReturn(Optional.of(testUser));
+        final UserResource userResource =  new UserResource(1L, userServiceMock);
 
         // act
         final Response response = userResource.delete();
@@ -161,8 +138,9 @@ public class UserResourceTest {
     @Test(expected=NotFoundException.class)
     public void deleteWithNotFound() {
         // arrange
-        when(userServiceMock.findByUserId(anyObject()))
-                .thenReturn(Optional.empty());
+        final UserService userServiceMock = mock(UserService.class);
+        when(userServiceMock.findByUserId(anyObject())).thenReturn(Optional.empty());
+        final UserResource userResource =  new UserResource(1L, userServiceMock);
 
         // act
         userResource.delete();
