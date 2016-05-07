@@ -15,20 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.business.event.bundary;
+package ch.sportchef.business.event.boundary;
 
-import ch.sportchef.business.event.boundary.EventImageResource;
-import ch.sportchef.business.event.boundary.EventResource;
 import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.needle4j.junit.NeedleBuilders;
-import org.needle4j.junit.NeedleRule;
 
-import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -47,31 +41,21 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class EventResourceTest {
 
-    @Rule
-    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
-
     private EventResource eventResource;
-
-    @Inject
     private EventService eventServiceMock;
-
-    @Inject
     private EventImageService eventImageServiceMock;
-
-    @Inject
-    private UriInfo uriInfoMock;
-
-    @Inject
-    private UriBuilder uriBuilderMock;
 
     @Before
     public void setup() {
+        eventServiceMock = mock(EventService.class);
+        eventImageServiceMock = mock(EventImageService.class);
         eventResource = new EventResource(1L, eventServiceMock, eventImageServiceMock);
     }
 
@@ -116,17 +100,14 @@ public class EventResourceTest {
                 .date(LocalDate.of(2099, Month.DECEMBER, 31))
                 .time(LocalTime.of(22, 0))
                 .build();
+        when(eventServiceMock.findByEventId(testEvent.getEventId())).thenReturn(Optional.of(testEvent));
+        when(eventServiceMock.update(anyObject())).thenReturn(testEvent);
+        final UriInfo uriInfoMock = mock(UriInfo.class);
+        final UriBuilder uriBuilderMock = mock(UriBuilder.class);
+        when(uriInfoMock.getAbsolutePathBuilder()).thenReturn(uriBuilderMock);
         final String location = "http://localhost:8080/sportchef/api/events/1";
         final URI uri = new URI(location);
-
-        when(eventServiceMock.findByEventId(testEvent.getEventId()))
-                .thenReturn(Optional.of(testEvent));
-        when(eventServiceMock.update(anyObject()))
-                .thenReturn(testEvent);
-        when(uriInfoMock.getAbsolutePathBuilder())
-                .thenReturn(uriBuilderMock);
-        when(uriBuilderMock.build())
-                .thenReturn(uri);
+        when(uriBuilderMock.build()).thenReturn(uri);
 
         // act
         final Response response = eventResource.update(testEvent, uriInfoMock);
@@ -152,13 +133,11 @@ public class EventResourceTest {
                 .date(LocalDate.of(2099, Month.DECEMBER, 31))
                 .time(LocalTime.of(22, 0))
                 .build();
-
-        when(eventServiceMock.findByEventId(testEvent.getEventId()))
-                .thenReturn(Optional.empty());
+        final UriInfo uriInfoMock = mock(UriInfo.class);
+        when(eventServiceMock.findByEventId(testEvent.getEventId())).thenReturn(Optional.empty());
 
         // act
         eventResource.update(testEvent, uriInfoMock);
-        verify(eventServiceMock, times(1)).findByEventId(testEvent.getEventId());
     }
 
     @Test
@@ -171,11 +150,8 @@ public class EventResourceTest {
                 .date(LocalDate.of(2099, Month.DECEMBER, 31))
                 .time(LocalTime.of(22, 0))
                 .build();
-
-        when(eventServiceMock.findByEventId(testEvent.getEventId()))
-                .thenReturn(Optional.of(testEvent));
-        doThrow(new NotFoundException())
-                .when(eventImageServiceMock).deleteImage(testEvent.getEventId());
+        when(eventServiceMock.findByEventId(testEvent.getEventId())).thenReturn(Optional.of(testEvent));
+        doThrow(new NotFoundException()).when(eventImageServiceMock).deleteImage(testEvent.getEventId());
 
         // act
         final Response response = eventResource.delete();
@@ -196,9 +172,7 @@ public class EventResourceTest {
                 .date(LocalDate.of(2099, Month.DECEMBER, 31))
                 .time(LocalTime.of(22, 0))
                 .build();
-
-        when(eventServiceMock.findByEventId(testEvent.getEventId()))
-                .thenReturn(Optional.of(testEvent));
+        when(eventServiceMock.findByEventId(testEvent.getEventId())).thenReturn(Optional.of(testEvent));
 
         // act
         final Response response = eventResource.delete();
@@ -211,8 +185,7 @@ public class EventResourceTest {
     @Test(expected=NotFoundException.class)
     public void deleteWithNotFound() {
         // arrange
-        when(eventServiceMock.findByEventId(anyObject()))
-                .thenReturn(Optional.empty());
+        when(eventServiceMock.findByEventId(anyObject())).thenReturn(Optional.empty());
 
         // act
         eventResource.delete();
@@ -228,9 +201,7 @@ public class EventResourceTest {
                 .date(LocalDate.of(2099, Month.DECEMBER, 31))
                 .time(LocalTime.of(22, 0))
                 .build();
-
-        when(eventServiceMock.findByEventId(testEvent.getEventId()))
-                .thenReturn(Optional.of(testEvent));
+        when(eventServiceMock.findByEventId(testEvent.getEventId())).thenReturn(Optional.of(testEvent));
 
         // act
         final EventImageResource eventImageResource = eventResource.image();

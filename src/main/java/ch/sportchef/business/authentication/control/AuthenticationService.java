@@ -36,6 +36,7 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.security.SecureRandom;
@@ -61,7 +62,9 @@ public class AuthenticationService {
 
     private Cache<String, Challenge> challengeCache;
 
-    public AuthenticationService(UserService userService, ConfigurationService configurationService) {
+    @Inject
+    public AuthenticationService(@NotNull final UserService userService,
+                                 @NotNull final ConfigurationService configurationService) {
         this.userService = userService;
         this.configurationService = configurationService;
         challengeCache = CacheBuilder.newBuilder()
