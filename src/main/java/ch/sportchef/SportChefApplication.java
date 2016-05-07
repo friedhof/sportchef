@@ -17,6 +17,7 @@
  */
 package ch.sportchef;
 
+import ch.sportchef.business.admin.boundary.AdminResource;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -53,6 +54,7 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
     private void registerResources(@NotNull final Environment environment,
                                    @NotNull final Injector injector) {
         final JerseyEnvironment jersey = environment.jersey();
+        jersey.register(injector.getInstance(AdminResource.class));
     }
 
 }
