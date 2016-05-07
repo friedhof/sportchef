@@ -17,11 +17,11 @@
  */
 package ch.sportchef.business.authentication.control;
 
-import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -35,14 +35,16 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationRequestFilter implements ContainerRequestFilter {
 
-    @Inject
     private AuthenticationService authenticationService;
 
     @Inject
-    private UserService userService;
+    public AuthenticationRequestFilter(@NotNull final AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
+    // TODO should work with token header, too
     @Override
-    public void filter(final ContainerRequestContext requestContext) throws IOException {
+    public void filter(@NotNull final ContainerRequestContext requestContext) throws IOException {
         final String authHeaderVal = requestContext.getHeaderString("Authorization");
         if (authHeaderVal.startsWith("Bearer")) {
             final String token = authHeaderVal.split(" ")[1];

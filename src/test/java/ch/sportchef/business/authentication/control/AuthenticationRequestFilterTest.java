@@ -18,13 +18,8 @@
 package ch.sportchef.business.authentication.control;
 
 import ch.sportchef.business.user.entity.User;
-import org.junit.Rule;
 import org.junit.Test;
-import org.needle4j.annotation.ObjectUnderTest;
-import org.needle4j.junit.NeedleBuilders;
-import org.needle4j.junit.NeedleRule;
 
-import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.SecurityContext;
 import java.io.IOException;
@@ -38,22 +33,15 @@ import static org.mockito.Mockito.when;
 
 public class AuthenticationRequestFilterTest {
 
-    @Rule
-    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
-
-    @ObjectUnderTest
-    private AuthenticationRequestFilter authenticationRequestFilter;
-
-    @Inject
-    private AuthenticationService authenticationService;
-
     @Test
     public void filterAuthenticationSuccessful() throws IOException {
         // arrange
         final ContainerRequestContext requestContextMock = mock(ContainerRequestContext.class);
         when(requestContextMock.getHeaderString("Authorization")).thenReturn("Bearer valid_token");
         when(requestContextMock.getSecurityContext()).thenReturn(mock(SecurityContext.class));
-        when(authenticationService.validate("valid_token")).thenReturn(Optional.of(User.builder().build()));
+        final AuthenticationService authenticationServiceMock = mock(AuthenticationService.class);
+        when(authenticationServiceMock.validate("valid_token")).thenReturn(Optional.of(User.builder().build()));
+        final AuthenticationRequestFilter authenticationRequestFilter = new AuthenticationRequestFilter(authenticationServiceMock);
 
         // act
         authenticationRequestFilter.filter(requestContextMock);
@@ -69,7 +57,9 @@ public class AuthenticationRequestFilterTest {
         final ContainerRequestContext requestContextMock = mock(ContainerRequestContext.class);
         when(requestContextMock.getHeaderString("Authorization")).thenReturn("Bearer invalid_token_data");
         when(requestContextMock.getSecurityContext()).thenReturn(mock(SecurityContext.class));
-        when(authenticationService.validate("invalid_token_data")).thenReturn(Optional.empty());
+        final AuthenticationService authenticationServiceMock = mock(AuthenticationService.class);
+        when(authenticationServiceMock.validate("invalid_token_data")).thenReturn(Optional.empty());
+        final AuthenticationRequestFilter authenticationRequestFilter = new AuthenticationRequestFilter(authenticationServiceMock);
 
         // act
         authenticationRequestFilter.filter(requestContextMock);
@@ -84,6 +74,8 @@ public class AuthenticationRequestFilterTest {
         // arrange
         final ContainerRequestContext requestContextMock = mock(ContainerRequestContext.class);
         when(requestContextMock.getHeaderString("Authorization")).thenReturn("invalid_authentication_header");
+        final AuthenticationService authenticationServiceMock = mock(AuthenticationService.class);
+        final AuthenticationRequestFilter authenticationRequestFilter = new AuthenticationRequestFilter(authenticationServiceMock);
 
         // act
         authenticationRequestFilter.filter(requestContextMock);

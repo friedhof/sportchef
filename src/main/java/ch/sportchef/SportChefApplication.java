@@ -18,6 +18,7 @@
 package ch.sportchef;
 
 import ch.sportchef.business.admin.boundary.AdminResource;
+import ch.sportchef.business.authentication.boundary.AuthenticationResource;
 import ch.sportchef.business.user.boundary.UsersResource;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -56,6 +57,7 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
                                    @NotNull final Injector injector) {
         final JerseyEnvironment jersey = environment.jersey();
         jersey.register(injector.getInstance(AdminResource.class));
+        jersey.register(injector.getInstance(AuthenticationResource.class));
         jersey.register(injector.getInstance(UsersResource.class));
     }
 
