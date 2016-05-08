@@ -19,5 +19,6 @@ package ch.sportchef;
 
 import io.dropwizard.Configuration;
 
-public class SportChefConfiguration extends Configuration {
+@SuppressWarnings("ClassNamePrefixedWithPackageName")
+class SportChefConfiguration extends Configuration {
 }

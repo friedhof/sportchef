@@ -42,6 +42,7 @@ import lombok.SneakyThrows;
 
 import javax.validation.constraints.NotNull;
 
+@SuppressWarnings("ClassNamePrefixedWithPackageName")
 public class SportChefApplication extends Application<SportChefConfiguration> {
 
     @SneakyThrows
@@ -59,7 +60,7 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         install(injector);
     }
 
-    private void registerModules(@NotNull final ObjectMapper objectMapper) {
+    private static void registerModules(@NotNull final ObjectMapper objectMapper) {
         objectMapper.registerModule(new Jdk8Module());
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.registerModule(new GuavaModule());
@@ -67,8 +68,8 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         objectMapper.setSerializationInclusion(Include.NON_ABSENT);
     }
 
-    private Injector createInjector(@NotNull final SportChefConfiguration configuration,
-                                    @NotNull final Environment environment) {
+    private static Injector createInjector(@NotNull final SportChefConfiguration configuration,
+                                           @NotNull final Environment environment) {
         return Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
@@ -79,8 +80,8 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         });
     }
 
-    private void registerResources(@NotNull final Environment environment,
-                                   @NotNull final Injector injector) {
+    private static void registerResources(@NotNull final Environment environment,
+                                          @NotNull final Injector injector) {
         final JerseyEnvironment jersey = environment.jersey();
         jersey.register(injector.getInstance(AdminResource.class));
         jersey.register(injector.getInstance(AuthenticationResource.class));
@@ -88,7 +89,7 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         jersey.register(injector.getInstance(UsersResource.class));
     }
 
-    private void registerExceptionMapper(@NotNull final Environment environment) {
+    private static void registerExceptionMapper(@NotNull final Environment environment) {
         final JerseyEnvironment jersey = environment.jersey();
         jersey.register(new WebApplicationExceptionMapper());
         jersey.register(new RuntimeExceptionMapper());
