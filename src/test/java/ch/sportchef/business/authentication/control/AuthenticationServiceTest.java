@@ -21,6 +21,7 @@ import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import com.dumbster.smtp.MailMessage;
 import com.dumbster.smtp.ServerOptions;
 import com.dumbster.smtp.SmtpServer;
@@ -68,6 +69,7 @@ public class AuthenticationServiceTest {
 
     private UserService userServiceMock;
     private ConfigurationService configurationServiceMock;
+    private HealthCheckRegistry healthCheckRegistryMock;
     private SmtpServer smtpServer;
 
     @Before
@@ -84,6 +86,7 @@ public class AuthenticationServiceTest {
         when(userServiceMock.findByEmail(anyString())).thenAnswer(x -> Optional.of(testUser));
         configurationServiceMock = mock(ConfigurationService.class);
         when(configurationServiceMock.getConfiguration()).thenAnswer(x -> createConfigurationMock());
+        healthCheckRegistryMock = mock(HealthCheckRegistry.class);
 
         final ServerOptions smtpServerOptions = new ServerOptions();
         smtpServerOptions.port = 4444;
@@ -111,7 +114,7 @@ public class AuthenticationServiceTest {
     public void requestChallengeNotOk() {
         // arrange
         when(userServiceMock.findByEmail(TEST_USER_EMAIL)).thenReturn(Optional.empty());
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         final boolean ok = authenticationService.requestChallenge(TEST_USER_EMAIL);
@@ -124,7 +127,7 @@ public class AuthenticationServiceTest {
     @Test(expected = MalformedJwtException.class)
     public void validateMalformedToken() {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         authenticationService.validate(MALFORMED_TOKEN);
@@ -135,7 +138,7 @@ public class AuthenticationServiceTest {
     @Test(expected = SignatureException.class)
     public void validateSignatureToken() {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         authenticationService.validate(SIGNATURE_TOKEN);
@@ -155,7 +158,7 @@ public class AuthenticationServiceTest {
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, tokenSigningKey)
                 .compact();
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         authenticationService.validate(token);
@@ -166,7 +169,7 @@ public class AuthenticationServiceTest {
     @Test
     public void requestAndValidateChallengeAndToken() {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         validateToken(validateChallenge(authenticationService, requestChallenge(authenticationService)));
@@ -179,7 +182,7 @@ public class AuthenticationServiceTest {
     @Test
     public void typoWhileLoginDoesNotLogin() {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
         requestChallenge(authenticationService);
 
         // act
@@ -192,7 +195,7 @@ public class AuthenticationServiceTest {
     @Test
     public void loginWithoutChallengeRequestedDoesNotLogin() {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         final Optional<String> token = authenticationService.validateChallenge(TEST_USER_EMAIL, "anyChallenge");
@@ -204,7 +207,7 @@ public class AuthenticationServiceTest {
     @Test
     public void make1TypoWhileLoggingInStillWorks() {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
         final String correctChallenge = requestChallenge(authenticationService);
 
         // act
@@ -218,7 +221,7 @@ public class AuthenticationServiceTest {
     @Test
     public void make10TyposWhileLoggingInDisablesTheChallenge() {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
         final String correctChallenge = requestChallenge(authenticationService);
 
         // act
@@ -234,7 +237,7 @@ public class AuthenticationServiceTest {
     @Test(expected = EmailException.class)
     public void requestChallengeWithException() {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         authenticationService.requestChallenge("@test");
@@ -270,7 +273,7 @@ public class AuthenticationServiceTest {
 
     private void validateToken(@NotNull final String token) {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         final Optional<User> userOptional = authenticationService.validate(token);
@@ -285,7 +288,7 @@ public class AuthenticationServiceTest {
     public void isUserInRole() {
         // arrange
         final User user = User.builder().role(USER).build();
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         final boolean isUserInRoleUser = authenticationService.isUserInRole(user, USER);
@@ -300,7 +303,7 @@ public class AuthenticationServiceTest {
     public void isUserInAdmin() {
         // arrange
         final User admin = User.builder().role(ADMIN).build();
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         final boolean isUserInRoleUser = authenticationService.isUserInRole(admin, USER);
@@ -314,7 +317,7 @@ public class AuthenticationServiceTest {
     @Test
     public void shortChallengeIfNoActivityOngoing() {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
         // act
         final String challenge = requestChallenge(authenticationService);
@@ -326,7 +329,7 @@ public class AuthenticationServiceTest {
     @Test
     public void longChallengeIfActivityOngoing() {
         // arrange
-        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock);
+        final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
         for (int i = 0; i < 100; i++) {
             authenticationService.requestChallenge(i + TEST_USER_EMAIL);
         }

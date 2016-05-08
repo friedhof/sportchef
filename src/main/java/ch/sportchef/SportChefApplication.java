@@ -21,6 +21,8 @@ import ch.sportchef.business.admin.boundary.AdminResource;
 import ch.sportchef.business.authentication.boundary.AuthenticationResource;
 import ch.sportchef.business.event.boundary.EventsResource;
 import ch.sportchef.business.user.boundary.UsersResource;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -45,7 +47,7 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
     public void run(@NotNull final SportChefConfiguration configuration,
                     @NotNull final Environment environment) {
         registerModules(environment.getObjectMapper());
-        final Injector injector = createInjector(configuration);
+        final Injector injector = createInjector(configuration, environment);
         registerResources(environment, injector);
     }
 
@@ -54,11 +56,14 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
-    private Injector createInjector(@NotNull final SportChefConfiguration configuration) {
+    private Injector createInjector(@NotNull final SportChefConfiguration configuration,
+                                    @NotNull final Environment environment) {
         return Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
                 bind(SportChefConfiguration.class).toInstance(configuration);
+                bind(HealthCheckRegistry.class).toInstance(environment.healthChecks());
+                bind(MetricRegistry.class).toInstance(environment.metrics());
             }
         });
     }

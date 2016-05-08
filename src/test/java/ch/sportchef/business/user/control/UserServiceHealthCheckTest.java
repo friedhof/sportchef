@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.metrics.healthcheck;
+package ch.sportchef.business.user.control;
 
-import ch.sportchef.business.event.control.EventService;
 import com.codahale.metrics.health.HealthCheck;
 import org.junit.Test;
 
@@ -28,14 +27,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class EventServiceHealthCheckTest {
+public class UserServiceHealthCheckTest {
 
     @Test
     public void checkHealthy() throws Exception {
         // arrange
-        final EventService eventServiceMock = mock(EventService.class);
-        when(eventServiceMock.findAll()).thenReturn(new ArrayList<>(0));
-        final EventServiceHealthCheck healthCheck = new EventServiceHealthCheck(eventServiceMock);
+        final UserService userServiceMock = mock(UserService.class);
+        when(userServiceMock.findAll()).thenReturn(new ArrayList<>(0));
+        final UserServiceHealthCheck healthCheck = new UserServiceHealthCheck(userServiceMock);
 
         // act
         final HealthCheck.Result result = healthCheck.check();
@@ -47,23 +46,23 @@ public class EventServiceHealthCheckTest {
     @Test
     public void checkUnhealthy() throws Exception {
         // arrange
-        final EventService eventServiceMock = mock(EventService.class);
-        when(eventServiceMock.findAll()).thenReturn(null);
-        final EventServiceHealthCheck healthCheck = new EventServiceHealthCheck(eventServiceMock);
+        final UserService userServiceMock = mock(UserService.class);
+        when(userServiceMock.findAll()).thenReturn(null);
+        final UserServiceHealthCheck healthCheck = new UserServiceHealthCheck(userServiceMock);
 
         // act
         final HealthCheck.Result result = healthCheck.check();
 
         // assert
-        assertThat(result, is(HealthCheck.Result.unhealthy("Can't access events!")));
+        assertThat(result, is(HealthCheck.Result.unhealthy("Can't access users!")));
     }
 
     @Test
     public void checkException() throws Exception {
         // arrange
-        final EventService eventServiceMock = mock(EventService.class);
-        when(eventServiceMock.findAll()).thenThrow(new RuntimeException("Test Message"));
-        final EventServiceHealthCheck healthCheck = new EventServiceHealthCheck(eventServiceMock);
+        final UserService userServiceMock = mock(UserService.class);
+        when(userServiceMock.findAll()).thenThrow(new RuntimeException("Test Message"));
+        final UserServiceHealthCheck healthCheck = new UserServiceHealthCheck(userServiceMock);
 
         // act
         final HealthCheck.Result result = healthCheck.check();

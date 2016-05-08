@@ -25,6 +25,7 @@ import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.jsonwebtoken.Claims;
@@ -64,12 +65,14 @@ public class AuthenticationService {
 
     @Inject
     public AuthenticationService(@NotNull final UserService userService,
-                                 @NotNull final ConfigurationService configurationService) {
+                                 @NotNull final ConfigurationService configurationService,
+                                 @NotNull final HealthCheckRegistry healthCheckRegistry) {
         this.userService = userService;
         this.configurationService = configurationService;
         challengeCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
+        healthCheckRegistry.register("AuthenticationService", new AuthenticationServiceHealthCheck(this));
     }
 
     public boolean requestChallenge(@NotNull final String email) {

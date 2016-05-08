@@ -42,7 +42,9 @@ public class UserService {
             PersistenceManager.createSimpleController(User.class, UserRepository::new);
 
     @Inject
-    private HealthCheckRegistry healthCheckRegistry;
+    public UserService(@NotNull final HealthCheckRegistry healthCheckRegistry) {
+        healthCheckRegistry.register("UserService", new UserServiceHealthCheck(this));
+    }
 
     @PreDestroy
     private void takeSnapshot() {

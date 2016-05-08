@@ -18,6 +18,7 @@
 package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -34,7 +35,8 @@ public class ConfigurationServiceTest {
         final Configuration configurationMock = mock(Configuration.class);
         final ConfigurationRepository configurationRepositoryMock = mock(ConfigurationRepository.class);
         when(configurationRepositoryMock.getConfiguration()).thenReturn(configurationMock);
-        final ConfigurationService configurationService = new ConfigurationService(configurationRepositoryMock);
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final ConfigurationService configurationService = new ConfigurationService(configurationRepositoryMock, healthCheckRegistryMock);
 
         // act
         final Configuration configuration = configurationService.getConfiguration();
@@ -47,7 +49,8 @@ public class ConfigurationServiceTest {
     public void toStringTest() {
         // arrange
         final ConfigurationRepository configurationRepositoryMock = mock(ConfigurationRepository.class);
-        final ConfigurationService configurationService = new ConfigurationService(configurationRepositoryMock);
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final ConfigurationService configurationService = new ConfigurationService(configurationRepositoryMock, healthCheckRegistryMock);
 
         // act
         final String toString = configurationService.toString();

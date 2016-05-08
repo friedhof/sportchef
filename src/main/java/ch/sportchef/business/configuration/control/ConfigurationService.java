@@ -20,6 +20,7 @@ package ch.sportchef.business.configuration.control;
 import ch.sportchef.business.configuration.entity.Configuration;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import lombok.ToString;
 
 import javax.inject.Inject;
@@ -35,8 +36,10 @@ public class ConfigurationService {
     private ConfigurationRepository configurationRepository;
 
     @Inject
-    public ConfigurationService(@NotNull final ConfigurationRepository configurationRepository) {
+    public ConfigurationService(@NotNull final ConfigurationRepository configurationRepository,
+                                @NotNull final HealthCheckRegistry healthCheckRegistry) {
         this.configurationRepository = configurationRepository;
+        healthCheckRegistry.register("ConfigurationService", new ConfigurationServiceHealthCheck(this));
     }
 
     public Configuration getConfiguration() {

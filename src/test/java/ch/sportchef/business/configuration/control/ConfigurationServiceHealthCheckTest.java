@@ -15,27 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.metrics.healthcheck;
+package ch.sportchef.business.configuration.control;
 
-import ch.sportchef.business.user.control.UserService;
+import ch.sportchef.business.configuration.entity.Configuration;
 import com.codahale.metrics.health.HealthCheck;
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class UserServiceHealthCheckTest {
+public class ConfigurationServiceHealthCheckTest {
 
     @Test
     public void checkHealthy() throws Exception {
         // arrange
-        final UserService userServiceMock = mock(UserService.class);
-        when(userServiceMock.findAll()).thenReturn(new ArrayList<>(0));
-        final UserServiceHealthCheck healthCheck = new UserServiceHealthCheck(userServiceMock);
+        final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
+        when(configurationServiceMock.getConfiguration()).thenReturn(mock(Configuration.class));
+        final ConfigurationServiceHealthCheck healthCheck = new ConfigurationServiceHealthCheck(configurationServiceMock);
 
         // act
         final HealthCheck.Result result = healthCheck.check();
@@ -47,23 +45,23 @@ public class UserServiceHealthCheckTest {
     @Test
     public void checkUnhealthy() throws Exception {
         // arrange
-        final UserService userServiceMock = mock(UserService.class);
-        when(userServiceMock.findAll()).thenReturn(null);
-        final UserServiceHealthCheck healthCheck = new UserServiceHealthCheck(userServiceMock);
+        final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
+        when(configurationServiceMock.getConfiguration()).thenReturn(null);
+        final ConfigurationServiceHealthCheck healthCheck = new ConfigurationServiceHealthCheck(configurationServiceMock);
 
         // act
         final HealthCheck.Result result = healthCheck.check();
 
         // assert
-        assertThat(result, is(HealthCheck.Result.unhealthy("Can't access users!")));
+        assertThat(result, is(HealthCheck.Result.unhealthy("Can't access configuration!")));
     }
 
     @Test
     public void checkException() throws Exception {
         // arrange
-        final UserService userServiceMock = mock(UserService.class);
-        when(userServiceMock.findAll()).thenThrow(new RuntimeException("Test Message"));
-        final UserServiceHealthCheck healthCheck = new UserServiceHealthCheck(userServiceMock);
+        final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
+        when(configurationServiceMock.getConfiguration()).thenThrow(new RuntimeException("Test Message"));
+        final ConfigurationServiceHealthCheck healthCheck = new ConfigurationServiceHealthCheck(configurationServiceMock);
 
         // act
         final HealthCheck.Result result = healthCheck.check();

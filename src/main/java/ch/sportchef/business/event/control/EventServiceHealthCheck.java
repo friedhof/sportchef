@@ -15,27 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.metrics.healthcheck;
+package ch.sportchef.business.event.control;
 
-import ch.sportchef.business.configuration.control.ConfigurationService;
-import ch.sportchef.business.configuration.entity.Configuration;
+import ch.sportchef.business.event.entity.Event;
 import com.codahale.metrics.health.HealthCheck;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
-public class ConfigurationServiceHealthCheck extends HealthCheck {
+public class EventServiceHealthCheck extends HealthCheck {
 
-    private final ConfigurationService configurationService;
+    private final EventService eventService;
 
-    public ConfigurationServiceHealthCheck(@NotNull final ConfigurationService configurationService) {
-        this.configurationService = configurationService;
+    public EventServiceHealthCheck(@NotNull final EventService eventService) {
+        this.eventService = eventService;
     }
 
     @Override
     protected Result check() throws Exception {
         try {
-            final Configuration configuration = configurationService.getConfiguration();
-            return configuration != null ? Result.healthy() : Result.unhealthy("Can't access configuration!");
+            final List<Event> events = eventService.findAll();
+            return events != null ? Result.healthy() : Result.unhealthy("Can't access events!");
         } catch (final Throwable error) {
             return Result.unhealthy(error.getMessage());
         }

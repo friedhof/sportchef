@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.metrics.healthcheck;
+package ch.sportchef.business.authentication.control;
 
-import ch.sportchef.business.authentication.control.AuthenticationService;
 import com.codahale.metrics.health.HealthCheck;
 import org.junit.Test;
 

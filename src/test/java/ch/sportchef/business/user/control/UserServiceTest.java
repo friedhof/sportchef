@@ -19,6 +19,7 @@ package ch.sportchef.business.user.control;
 
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.user.entity.User;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -52,7 +53,8 @@ public class UserServiceTest {
         final SimpleController<Serializable> simpleControllerMock = mock(SimpleController.class);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(healthCheckRegistryMock);
         final User userToCreate = User.builder()
                 .firstName("John")
                 .lastName("Doe")
@@ -73,7 +75,8 @@ public class UserServiceTest {
         final SimpleController<Serializable> simpleControllerMock = mock(SimpleController.class);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(healthCheckRegistryMock);
         final User userToUpdate = User.builder()
                 .firstName("John")
                 .lastName("Doe")
@@ -96,7 +99,8 @@ public class UserServiceTest {
         when(simpleControllerMock.readOnly()).thenReturn(userRepositoryMock);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(healthCheckRegistryMock);
 
         // act
         userService.findByUserId(1L);
@@ -114,7 +118,8 @@ public class UserServiceTest {
         when(simpleControllerMock.readOnly()).thenReturn(userRepositoryMock);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(healthCheckRegistryMock);
 
         // act
         userService.findByEmail("john.doe@sportchef.ch");
@@ -132,7 +137,8 @@ public class UserServiceTest {
         when(simpleControllerMock.readOnly()).thenReturn(userRepositoryMock);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(healthCheckRegistryMock);
 
         // act
         userService.findAll();
@@ -148,7 +154,8 @@ public class UserServiceTest {
         final SimpleController<Serializable> simpleControllerMock = mock(SimpleController.class);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(healthCheckRegistryMock);
 
         // act
         userService.delete(1L);
@@ -172,7 +179,8 @@ public class UserServiceTest {
         when(simpleControllerMock.readOnly()).thenReturn(userRepositoryMock);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(healthCheckRegistryMock);
 
         // act
         final Optional<User> authenticatedUser = userService.getAuthenticatedUser(securityContextMock);
