@@ -17,14 +17,16 @@
  */
 package ch.sportchef.business.user.control;
 
+import ch.sportchef.AbstractLifecycleListener;
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.user.entity.User;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
+import org.eclipse.jetty.util.component.LifeCycle;
 import pl.setblack.airomem.core.SimpleController;
 
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
@@ -38,17 +40,19 @@ import java.util.Optional;
 @Metered(name = "Metered: EventService")
 public class UserService {
 
-    private final SimpleController<UserRepository> controller =
-            PersistenceManager.createSimpleController(User.class, UserRepository::new);
+    private final SimpleController<UserRepository> controller;
 
     @Inject
-    public UserService(@NotNull final HealthCheckRegistry healthCheckRegistry) {
+    public UserService(@NotNull final LifecycleEnvironment lifecycleEnvironment,
+                       @NotNull final HealthCheckRegistry healthCheckRegistry) {
+        controller = PersistenceManager.createSimpleController(User.class, UserRepository::new);
+        lifecycleEnvironment.addLifeCycleListener(new AbstractLifecycleListener() {
+            @Override
+            public void lifeCycleStopping(@NotNull final LifeCycle event) {
+                controller.close();
+            }
+        });
         healthCheckRegistry.register("UserService", new UserServiceHealthCheck(this));
-    }
-
-    @PreDestroy
-    private void takeSnapshot() {
-        controller.close();
     }
 
     public User create(@NotNull final User user) {

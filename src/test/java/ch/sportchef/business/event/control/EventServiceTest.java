@@ -20,6 +20,7 @@ package ch.sportchef.business.event.control;
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.event.entity.Event;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -54,8 +55,9 @@ public class EventServiceTest {
         final SimpleController<Serializable> simpleControllerMock = mock(SimpleController.class);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
         final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
-        final EventService eventService = new EventService(healthCheckRegistryMock);
+        final EventService eventService = new EventService(lifecycleEnvironment, healthCheckRegistryMock);
         final Event eventToCreate = Event.builder()
                 .title(EVENT_TITLE)
                 .location(EVENT_LOCATION)
@@ -76,8 +78,9 @@ public class EventServiceTest {
         final SimpleController<Serializable> simpleControllerMock = mock(SimpleController.class);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
         final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
-        final EventService eventService = new EventService(healthCheckRegistryMock);
+        final EventService eventService = new EventService(lifecycleEnvironment, healthCheckRegistryMock);
         final Event eventToUpdate = Event.builder()
                 .title(EVENT_TITLE)
                 .location(EVENT_LOCATION)
@@ -100,8 +103,9 @@ public class EventServiceTest {
         when(simpleControllerMock.readOnly()).thenReturn(eventRepositoryMock);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
         final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
-        final EventService eventService = new EventService(healthCheckRegistryMock);
+        final EventService eventService = new EventService(lifecycleEnvironment, healthCheckRegistryMock);
 
         // act
         eventService.findByEventId(1L);
@@ -119,8 +123,9 @@ public class EventServiceTest {
         when(simpleControllerMock.readOnly()).thenReturn(eventRepositoryMock);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
         final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
-        final EventService eventService = new EventService(healthCheckRegistryMock);
+        final EventService eventService = new EventService(lifecycleEnvironment, healthCheckRegistryMock);
 
         // act
         eventService.findAll();
@@ -136,8 +141,9 @@ public class EventServiceTest {
         final SimpleController<Serializable> simpleControllerMock = mock(SimpleController.class);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
         final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
-        final EventService eventService = new EventService(healthCheckRegistryMock);
+        final EventService eventService = new EventService(lifecycleEnvironment, healthCheckRegistryMock);
 
         // act
         eventService.delete(1L);

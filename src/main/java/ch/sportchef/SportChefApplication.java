@@ -37,6 +37,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.dropwizard.Application;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
+import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import io.dropwizard.setup.Environment;
 import lombok.SneakyThrows;
 
@@ -75,6 +76,7 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
             protected void configure() {
                 bind(SportChefConfiguration.class).toInstance(configuration);
                 bind(HealthCheckRegistry.class).toInstance(environment.healthChecks());
+                bind(LifecycleEnvironment.class).toInstance(environment.lifecycle());
                 bind(MetricRegistry.class).toInstance(environment.metrics());
             }
         });
