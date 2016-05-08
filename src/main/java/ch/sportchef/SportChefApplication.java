@@ -17,6 +17,8 @@
  */
 package ch.sportchef;
 
+import ch.sportchef.business.RuntimeExceptionMapper;
+import ch.sportchef.business.WebApplicationExceptionMapper;
 import ch.sportchef.business.admin.boundary.AdminResource;
 import ch.sportchef.business.authentication.boundary.AuthenticationResource;
 import ch.sportchef.business.event.boundary.EventsResource;
@@ -49,6 +51,7 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         registerModules(environment.getObjectMapper());
         final Injector injector = createInjector(configuration, environment);
         registerResources(environment, injector);
+        registerExceptionMapper(environment);
     }
 
     private void registerModules(@NotNull final ObjectMapper objectMapper) {
@@ -75,6 +78,12 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         jersey.register(injector.getInstance(AuthenticationResource.class));
         jersey.register(injector.getInstance(EventsResource.class));
         jersey.register(injector.getInstance(UsersResource.class));
+    }
+
+    private void registerExceptionMapper(@NotNull final Environment environment) {
+        final JerseyEnvironment jersey = environment.jersey();
+        jersey.register(new WebApplicationExceptionMapper());
+        jersey.register(new RuntimeExceptionMapper());
     }
 
 }
