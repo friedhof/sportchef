@@ -25,7 +25,9 @@ import ch.sportchef.business.event.boundary.EventsResource;
 import ch.sportchef.business.user.boundary.UsersResource;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -59,6 +61,8 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         objectMapper.registerModule(new Jdk8Module());
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.registerModule(new GuavaModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.setSerializationInclusion(Include.NON_ABSENT);
     }
 
     private Injector createInjector(@NotNull final SportChefConfiguration configuration,
