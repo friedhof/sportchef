@@ -27,6 +27,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ConcurrentModificationException;
 import java.util.Optional;
 
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
@@ -113,6 +114,19 @@ public class UserResourceTest {
         final User testUser = createTestUser();
         final UserService userServiceMock = mock(UserService.class);
         when(userServiceMock.findByUserId(1L)).thenReturn(Optional.empty());
+        final UserResource userResource =  new UserResource(1L, userServiceMock);
+
+        // act
+        userResource.update(testUser, null);
+    }
+
+    @Test(expected=ConcurrentModificationException.class)
+    public void updateWithConflict() {
+        // arrange
+        final User testUser = createTestUser();
+        final UserService userServiceMock = mock(UserService.class);
+        when(userServiceMock.findByUserId(1L)).thenReturn(Optional.of(testUser));
+        when(userServiceMock.update(anyObject())).thenThrow(new ConcurrentModificationException());
         final UserResource userResource =  new UserResource(1L, userServiceMock);
 
         // act

@@ -32,6 +32,7 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.ConcurrentModificationException;
 import java.util.Optional;
 
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
@@ -138,6 +139,23 @@ public class EventResourceTest {
 
         // act
         eventResource.update(testEvent, uriInfoMock);
+    }
+
+    @Test(expected=ConcurrentModificationException.class)
+    public void updateWithConflict() {
+        // arrange
+        final Event testEvent = Event.builder()
+                .eventId(1L)
+                .title("Testevent")
+                .location("Testlocation")
+                .date(LocalDate.of(2099, Month.DECEMBER, 31))
+                .time(LocalTime.of(22, 0))
+                .build();
+        when(eventServiceMock.findByEventId(testEvent.getEventId())).thenReturn(Optional.of(testEvent));
+        when(eventServiceMock.update(anyObject())).thenThrow(new ConcurrentModificationException());
+
+        // act
+        eventResource.update(testEvent, null);
     }
 
     @Test
