@@ -21,6 +21,9 @@ import ch.sportchef.business.admin.boundary.AdminResource;
 import ch.sportchef.business.authentication.boundary.AuthenticationResource;
 import ch.sportchef.business.event.boundary.EventsResource;
 import ch.sportchef.business.user.boundary.UsersResource;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -41,8 +44,14 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
     @Override
     public void run(@NotNull final SportChefConfiguration configuration,
                     @NotNull final Environment environment) {
+        registerModules(environment.getObjectMapper());
         final Injector injector = createInjector(configuration);
         registerResources(environment, injector);
+    }
+
+    private void registerModules(@NotNull final ObjectMapper objectMapper) {
+        objectMapper.registerModule(new Jdk8Module());
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     private Injector createInjector(@NotNull final SportChefConfiguration configuration) {
