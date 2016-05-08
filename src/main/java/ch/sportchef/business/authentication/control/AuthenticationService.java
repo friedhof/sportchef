@@ -23,7 +23,6 @@ import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import ch.sportchef.metrics.healthcheck.AuthenticationServiceHealthCheck;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
@@ -37,9 +36,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
-import org.jetbrains.annotations.NonNls;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
@@ -54,7 +51,6 @@ import java.util.concurrent.TimeUnit;
 @Metered(name = "Metered: AuthenticationService")
 public class AuthenticationService {
 
-    @NonNls
     private static final String CHALLENGE_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int MINIMAL_CHALLENGE_LENGTH = 5;
     private static final int MAXIMAL_CHALLENGE_LENGTH = 10;
@@ -62,26 +58,21 @@ public class AuthenticationService {
     private static final long TOKEN_EXPIRATION_TIME_IN_MS = 8 * 60 * 60 * 1000; // 8 hours
     private static final int MAXIMAL_WRONG_CHALENGE_TRIES = 10;
 
-    @Inject
     private UserService userService;
-
-    @Inject
     private ConfigurationService configurationService;
 
     private Cache<String, Challenge> challengeCache;
 
     @Inject
-    private HealthCheckRegistry healthCheckRegistry;
-
-    @PostConstruct
-    @SneakyThrows
-    private void init() {
+    public AuthenticationService(@NotNull final UserService userService,
+                                 @NotNull final ConfigurationService configurationService,
+                                 @NotNull final HealthCheckRegistry healthCheckRegistry) {
+        this.userService = userService;
+        this.configurationService = configurationService;
         challengeCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
-
-        final AuthenticationServiceHealthCheck healthCheck = new AuthenticationServiceHealthCheck(this);
-        healthCheckRegistry.register(AuthenticationService.class.getName(), healthCheck);
+        healthCheckRegistry.register("AuthenticationService", new AuthenticationServiceHealthCheck(this));
     }
 
     public boolean requestChallenge(@NotNull final String email) {

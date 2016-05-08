@@ -15,28 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.metrics.healthcheck;
+package ch.sportchef.business.configuration.control;
 
-import ch.sportchef.business.authentication.control.AuthenticationService;
+import ch.sportchef.business.configuration.entity.Configuration;
 import com.codahale.metrics.health.HealthCheck;
 
 import javax.validation.constraints.NotNull;
-import java.util.Optional;
 
-public class AuthenticationServiceHealthCheck extends HealthCheck {
+class ConfigurationServiceHealthCheck extends HealthCheck {
 
-    private final AuthenticationService authenticationService;
+    private final ConfigurationService configurationService;
 
-    public AuthenticationServiceHealthCheck(@NotNull final AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
+    ConfigurationServiceHealthCheck(@NotNull final ConfigurationService configurationService) {
+        this.configurationService = configurationService;
     }
 
     @Override
-    protected Result check() throws Exception {
+    protected Result check() {
         try {
-            final Optional<String> token = authenticationService.validateChallenge("foo@bar", "foobar");
-            return token.isPresent() ? Result.healthy() :
-                    Result.unhealthy("Problems in AuthenticationService: Can't validate challenge!");
+            final Configuration configuration = configurationService.getConfiguration();
+            return configuration != null ? Result.healthy() : Result.unhealthy("Can't access configuration!");
         } catch (final Throwable error) {
             return Result.unhealthy(error.getMessage());
         }

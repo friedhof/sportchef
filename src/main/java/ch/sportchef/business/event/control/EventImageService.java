@@ -23,7 +23,6 @@ import ch.sportchef.business.event.entity.Event;
 import org.apache.commons.io.IOUtils;
 import pl.setblack.badass.Politician;
 
-import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,13 +44,13 @@ public class EventImageService {
     private static final int IMAGE_HEIGHT = 200;
     private static final int IMAGE_WIDTH = 350;
 
+    private EventService eventService;
     private File imageUploadPath;
 
     @Inject
-    private EventService eventService;
+    public EventImageService(@NotNull final EventService eventService) {
+        this.eventService = eventService;
 
-    @PostConstruct
-    private void init() {
         // build path to image upload folder
         final String imageUploadFolder = String.format("%s%s.sportchef%simages%sevents", //NON-NLS
                 System.getProperty("user.home"), File.separator, File.separator, File.separator);

@@ -15,23 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.metrics.contextlistener;
+package ch.sportchef;
 
-import com.codahale.metrics.health.HealthCheckRegistry;
-import com.codahale.metrics.servlets.HealthCheckServlet;
+import io.dropwizard.Configuration;
 
-import javax.inject.Inject;
-import javax.servlet.annotation.WebListener;
-
-@WebListener
-public class HealthCheckServletContextListener extends HealthCheckServlet.ContextListener {
-
-    @Inject
-    private HealthCheckRegistry healthCheckRegistry;
-
-    @Override
-    protected HealthCheckRegistry getHealthCheckRegistry() {
-        return healthCheckRegistry;
-    }
-
+@SuppressWarnings("ClassNamePrefixedWithPackageName")
+class SportChefConfiguration extends Configuration {
 }

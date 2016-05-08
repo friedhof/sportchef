@@ -20,14 +20,9 @@ package ch.sportchef.business.event.control;
 import ch.sportchef.business.event.entity.Event;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.needle4j.annotation.ObjectUnderTest;
-import org.needle4j.junit.NeedleBuilders;
-import org.needle4j.junit.NeedleRule;
 
 import javax.imageio.ImageIO;
-import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.NotFoundException;
 import java.awt.image.BufferedImage;
@@ -44,6 +39,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class EventImageServiceTest {
@@ -53,15 +49,6 @@ public class EventImageServiceTest {
     private static String realUserHome;
     private static String tempUserHome;
     private static File imageUploadPath;
-
-    @Rule
-    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
-
-    @ObjectUnderTest(postConstruct = true)
-    private EventImageService eventImageService;
-
-    @Inject
-    private EventService eventServiceMock;
 
     @BeforeClass
     public static void setUp() throws IOException {
@@ -108,6 +95,8 @@ public class EventImageServiceTest {
         // arrange
         final Long eventId = 1L;
         final byte[] bytes = prepareAndReturnTestImage(eventId);
+        final EventService eventServiceMock = mock(EventService.class);
+        final EventImageService eventImageService = new EventImageService(eventServiceMock);
 
         // act
         final byte[] image = eventImageService.getImage(eventId);
@@ -120,6 +109,8 @@ public class EventImageServiceTest {
     public void getImageNotFound() throws IOException {
         // arrange
         final Long eventId = 2L;
+        final EventService eventServiceMock = mock(EventService.class);
+        final EventImageService eventImageService = new EventImageService(eventServiceMock);
 
         // act
         eventImageService.getImage(eventId);
@@ -131,7 +122,9 @@ public class EventImageServiceTest {
         final Long eventId = 3L;
         final byte[] bytes = readTestImage();
         final Event event = Event.builder().eventId(eventId).build();
+        final EventService eventServiceMock = mock(EventService.class);
         when(eventServiceMock.findByEventId(eventId)).thenReturn(Optional.of(event));
+        final EventImageService eventImageService = new EventImageService(eventServiceMock);
 
         // act
         eventImageService.uploadImage(eventId, bytes);
@@ -146,7 +139,9 @@ public class EventImageServiceTest {
         // arrange
         final Long eventId = 4L;
         final Event event = Event.builder().eventId(eventId).build();
+        final EventService eventServiceMock = mock(EventService.class);
         when(eventServiceMock.findByEventId(eventId)).thenReturn(Optional.of(event));
+        final EventImageService eventImageService = new EventImageService(eventServiceMock);
 
         // act
         eventImageService.chooseRandomDefaultImage(eventId);
@@ -161,6 +156,8 @@ public class EventImageServiceTest {
         // arrange
         final Long eventId = 5L;
         prepareAndReturnTestImage(eventId);
+        final EventService eventServiceMock = mock(EventService.class);
+        final EventImageService eventImageService = new EventImageService(eventServiceMock);
 
         // act
         eventImageService.deleteImage(eventId);
@@ -174,6 +171,8 @@ public class EventImageServiceTest {
     public void deleteImageNotFound() {
         // arrange
         final Long eventId = 6L;
+        final EventService eventServiceMock = mock(EventService.class);
+        final EventImageService eventImageService = new EventImageService(eventServiceMock);
 
         // act
         eventImageService.deleteImage(eventId);

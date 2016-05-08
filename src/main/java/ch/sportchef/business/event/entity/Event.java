@@ -17,6 +17,9 @@
  */
 package ch.sportchef.business.event.entity;
 
+import ch.sportchef.business.event.entity.Event.EventBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +33,7 @@ import java.time.LocalTime;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
+@JsonDeserialize(builder = EventBuilder.class)
 public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,5 +52,9 @@ public class Event implements Serializable {
     private String cssBackgroundColor;
 
     private Long version;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static final class EventBuilder {
+    }
 
 }

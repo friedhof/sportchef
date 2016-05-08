@@ -15,24 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.business;
+package ch.sportchef.business.event.control;
 
-import org.junit.Test;
+import ch.sportchef.business.event.entity.Event;
+import com.codahale.metrics.health.HealthCheck;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
-public class JAXRSConfigurationTest {
+class EventServiceHealthCheck extends HealthCheck {
 
-    @Test
-    public void testInstantiation() {
-        // arrange
+    private final EventService eventService;
 
-        // act
-        final JAXRSConfiguration jaxrsConfiguration = new JAXRSConfiguration();
+    EventServiceHealthCheck(@NotNull final EventService eventService) {
+        this.eventService = eventService;
+    }
 
-        // assert
-        assertThat(jaxrsConfiguration, notNullValue());
+    @Override
+    protected Result check() {
+        try {
+            final List<Event> events = eventService.findAll();
+            return events != null ? Result.healthy() : Result.unhealthy("Can't access events!");
+        } catch (final Throwable error) {
+            return Result.unhealthy(error.getMessage());
+        }
     }
 
 }

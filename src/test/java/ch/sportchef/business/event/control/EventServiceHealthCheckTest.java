@@ -15,26 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.metrics.healthcheck;
+package ch.sportchef.business.event.control;
 
-import ch.sportchef.business.configuration.control.ConfigurationService;
-import ch.sportchef.business.configuration.entity.Configuration;
 import com.codahale.metrics.health.HealthCheck;
 import org.junit.Test;
+
+import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ConfigurationServiceHealthCheckTest {
+public class EventServiceHealthCheckTest {
 
     @Test
     public void checkHealthy() throws Exception {
         // arrange
-        final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
-        when(configurationServiceMock.getConfiguration()).thenReturn(mock(Configuration.class));
-        final ConfigurationServiceHealthCheck healthCheck = new ConfigurationServiceHealthCheck(configurationServiceMock);
+        final EventService eventServiceMock = mock(EventService.class);
+        when(eventServiceMock.findAll()).thenReturn(new ArrayList<>(0));
+        final EventServiceHealthCheck healthCheck = new EventServiceHealthCheck(eventServiceMock);
 
         // act
         final HealthCheck.Result result = healthCheck.check();
@@ -46,23 +46,23 @@ public class ConfigurationServiceHealthCheckTest {
     @Test
     public void checkUnhealthy() throws Exception {
         // arrange
-        final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
-        when(configurationServiceMock.getConfiguration()).thenReturn(null);
-        final ConfigurationServiceHealthCheck healthCheck = new ConfigurationServiceHealthCheck(configurationServiceMock);
+        final EventService eventServiceMock = mock(EventService.class);
+        when(eventServiceMock.findAll()).thenReturn(null);
+        final EventServiceHealthCheck healthCheck = new EventServiceHealthCheck(eventServiceMock);
 
         // act
         final HealthCheck.Result result = healthCheck.check();
 
         // assert
-        assertThat(result, is(HealthCheck.Result.unhealthy("Can't access configuration!")));
+        assertThat(result, is(HealthCheck.Result.unhealthy("Can't access events!")));
     }
 
     @Test
     public void checkException() throws Exception {
         // arrange
-        final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
-        when(configurationServiceMock.getConfiguration()).thenThrow(new RuntimeException("Test Message"));
-        final ConfigurationServiceHealthCheck healthCheck = new ConfigurationServiceHealthCheck(configurationServiceMock);
+        final EventService eventServiceMock = mock(EventService.class);
+        when(eventServiceMock.findAll()).thenThrow(new RuntimeException("Test Message"));
+        final EventServiceHealthCheck healthCheck = new EventServiceHealthCheck(eventServiceMock);
 
         // act
         final HealthCheck.Result result = healthCheck.check();

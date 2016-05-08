@@ -20,11 +20,11 @@ package ch.sportchef.business.event.control;
 import ch.sportchef.business.event.entity.Event;
 import org.junit.Test;
 
-import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +64,7 @@ public class EventRepositoryTest {
         assertThat(updatedEvent.getVersion(), is(not(equalTo(eventToUpdate.getVersion()))));
     }
 
-    @Test(expected = OptimisticLockException.class)
+    @Test(expected = ConcurrentModificationException.class)
     public void updateWithConflict() {
         // arrange
         final EventRepository eventRepository = new EventRepository();

@@ -15,19 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.business.event.bundary;
+package ch.sportchef.business.event.boundary;
 
-import ch.sportchef.business.event.boundary.EventResource;
-import ch.sportchef.business.event.boundary.EventsResource;
+import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
-import org.junit.Rule;
 import org.junit.Test;
-import org.needle4j.annotation.ObjectUnderTest;
-import org.needle4j.junit.NeedleBuilders;
-import org.needle4j.junit.NeedleRule;
 
-import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -45,26 +39,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class EventsResourceTest {
-
-    @Rule
-    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
-
-    @ObjectUnderTest
-    private EventsResource eventsResource;
-
-    @Inject
-    private EventService eventServiceMock;
-
-    @Inject
-    private UriInfo uriInfoMock;
-
-    @Inject
-    private UriBuilder uriBuilderMock;
 
     @Test
     public void saveWithSuccess() throws URISyntaxException {
@@ -79,17 +59,17 @@ public class EventsResourceTest {
         final Event savedEvent = eventToCreate.toBuilder()
                 .eventId(1L)
                 .build();
+        final EventService eventServiceMock = mock(EventService.class);
+        final EventImageService eventImageServiceMock = mock(EventImageService.class);
+        when(eventServiceMock.create(eventToCreate)).thenReturn(savedEvent);
+        final UriInfo uriInfoMock = mock(UriInfo.class);
+        final UriBuilder uriBuilderMock = mock(UriBuilder.class);
+        when(uriInfoMock.getAbsolutePathBuilder()).thenReturn(uriBuilderMock);
+        when(uriBuilderMock.path(anyString())).thenReturn(uriBuilderMock);
         final String location = "http://localhost:8080/sportchef/api/events/1";
         final URI uri = new URI(location);
-
-        when(eventServiceMock.create(eventToCreate))
-                .thenReturn(savedEvent);
-        when(uriInfoMock.getAbsolutePathBuilder())
-                .thenReturn(uriBuilderMock);
-        when(uriBuilderMock.path(anyString()))
-                .thenReturn(uriBuilderMock);
-        when(uriBuilderMock.build())
-                .thenReturn(uri);
+        when(uriBuilderMock.build()).thenReturn(uri);
+        final EventsResource eventsResource = new EventsResource(eventServiceMock, eventImageServiceMock);
 
         // act
         final Response response = eventsResource.save(eventToCreate, uriInfoMock);
@@ -119,8 +99,10 @@ public class EventsResourceTest {
         final List<Event> events = new ArrayList<>();
         events.add(event1);
         events.add(event2);
-        when(eventServiceMock.findAll())
-                .thenReturn(events);
+        final EventService eventServiceMock = mock(EventService.class);
+        when(eventServiceMock.findAll()).thenReturn(events);
+        final EventImageService eventImageServiceMock = mock(EventImageService.class);
+        final EventsResource eventsResource = new EventsResource(eventServiceMock, eventImageServiceMock);
 
         // act
         final Response response = eventsResource.findAll();
@@ -139,6 +121,9 @@ public class EventsResourceTest {
     public void find() {
         // arrange
         final long eventId = 1L;
+        final EventService eventServiceMock = mock(EventService.class);
+        final EventImageService eventImageServiceMock = mock(EventImageService.class);
+        final EventsResource eventsResource = new EventsResource(eventServiceMock, eventImageServiceMock);
 
         // act
         final EventResource eventResource = eventsResource.find(eventId);

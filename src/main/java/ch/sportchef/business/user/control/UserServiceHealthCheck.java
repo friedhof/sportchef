@@ -15,12 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.metrics.servlet;
+package ch.sportchef.business.user.control;
 
-import com.codahale.metrics.servlets.ThreadDumpServlet;
+import ch.sportchef.business.user.entity.User;
+import com.codahale.metrics.health.HealthCheck;
 
-import javax.servlet.annotation.WebServlet;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
-@WebServlet(name = "ThreadDumpServlet" , urlPatterns = { "/metrics/threads" })
-public class SportChefThreadDumpServlet extends ThreadDumpServlet {
+class UserServiceHealthCheck extends HealthCheck {
+
+    private final UserService userService;
+
+    UserServiceHealthCheck(@NotNull final UserService userService) {
+        this.userService = userService;
+    }
+
+    @Override
+    protected Result check() {
+        try {
+            final List<User> users = userService.findAll();
+            return users != null ? Result.healthy() : Result.unhealthy("Can't access users!");
+        } catch (final Throwable error) {
+            return Result.unhealthy(error.getMessage());
+        }
+    }
+
 }

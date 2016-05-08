@@ -19,13 +19,8 @@ package ch.sportchef.business.admin.boundary;
 
 import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
-import org.junit.Rule;
 import org.junit.Test;
-import org.needle4j.annotation.ObjectUnderTest;
-import org.needle4j.junit.NeedleBuilders;
-import org.needle4j.junit.NeedleRule;
 
-import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,20 +30,12 @@ import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class AdminResourceTest {
-
-    @Rule
-    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
-
-    @ObjectUnderTest
-    private AdminResource adminResource;
-
-    @Inject
-    private ConfigurationService configurationServiceMock;
 
     @Test
     public void getAdminPageOK() throws IOException {
@@ -56,8 +43,10 @@ public class AdminResourceTest {
         final Map<Object, Object> properties = new HashMap<>();
         properties.put("admin.password", "correct_password");
         final Configuration configuration = new Configuration(properties);
+        final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
         when(configurationServiceMock.getConfiguration())
                 .thenReturn(configuration);
+        final AdminResource adminResource = new AdminResource(configurationServiceMock);
 
         // act
         final Response response = adminResource.getAdminPage("correct_password");
@@ -73,8 +62,10 @@ public class AdminResourceTest {
         final Map<Object, Object> properties = new HashMap<>();
         properties.put("admin.password", "correct_password");
         final Configuration configuration = new Configuration(properties);
+        final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
         when(configurationServiceMock.getConfiguration())
                 .thenReturn(configuration);
+        final AdminResource adminResource = new AdminResource(configurationServiceMock);
 
         // act
         final Response response = adminResource.getAdminPage("wrong_password");

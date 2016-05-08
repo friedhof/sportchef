@@ -15,20 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.business.user.bundary;
+package ch.sportchef.business.user.boundary;
 
 import ch.sportchef.business.exception.ExpectationFailedException;
-import ch.sportchef.business.user.boundary.UserResource;
-import ch.sportchef.business.user.boundary.UsersResource;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import org.junit.Rule;
 import org.junit.Test;
-import org.needle4j.annotation.ObjectUnderTest;
-import org.needle4j.junit.NeedleBuilders;
-import org.needle4j.junit.NeedleRule;
 
-import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -45,26 +38,12 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class UsersResourceTest {
-
-    @Rule
-    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
-
-    @ObjectUnderTest
-    private UsersResource usersResource;
-
-    @Inject
-    private UserService userServiceMock;
-
-    @Inject
-    private UriInfo uriInfoMock;
-
-    @Inject
-    private UriBuilder uriBuilderMock;
 
     private User createJohnDoe(@NotNull final Long userId) {
         return User.builder()
@@ -92,16 +71,16 @@ public class UsersResourceTest {
         final User userToCreate = createJohnDoe(0L);
         final User savedUser = createJohnDoe(1L);
         final String location = "http://localhost:8080/sportchef/api/users/1";
+        final UriInfo uriInfoMock = mock(UriInfo.class);
+        final UriBuilder uriBuilderMock = mock(UriBuilder.class);
+        final UserService userServiceMock = mock(UserService.class);
+        when(uriInfoMock.getAbsolutePathBuilder()).thenReturn(uriBuilderMock);
+        when(uriBuilderMock.path(anyString())).thenReturn(uriBuilderMock);
         final URI uri = new URI(location);
+        when(uriBuilderMock.build()).thenReturn(uri);
 
-        when(userServiceMock.create(userToCreate))
-                .thenReturn(savedUser);
-        when(uriInfoMock.getAbsolutePathBuilder())
-                .thenReturn(uriBuilderMock);
-        when(uriBuilderMock.path(anyString()))
-                .thenReturn(uriBuilderMock);
-        when(uriBuilderMock.build())
-                .thenReturn(uri);
+        when(userServiceMock.create(userToCreate)).thenReturn(savedUser);
+        final UsersResource usersResource = new UsersResource(userServiceMock);
 
         // act
         final Response response = usersResource.save(userToCreate, uriInfoMock);
@@ -119,8 +98,10 @@ public class UsersResourceTest {
     public void saveWithExpectationFailed() {
         // arrange
         final User userToCreate = createJohnDoe(0L);
+        final UserService userServiceMock = mock(UserService.class);
         doThrow(new ExpectationFailedException("Email address has to be unique"))
                 .when(userServiceMock).create(userToCreate);
+        final UsersResource usersResource = new UsersResource(userServiceMock);
 
         // act
         usersResource.save(userToCreate, null);
@@ -134,8 +115,10 @@ public class UsersResourceTest {
         final List<User> users = new ArrayList<>();
         users.add(user1);
         users.add(user2);
+        final UserService userServiceMock = mock(UserService.class);
         when(userServiceMock.findAll())
                 .thenReturn(users);
+        final UsersResource usersResource = new UsersResource(userServiceMock);
 
         // act
         final Response response = usersResource.findAll();
@@ -154,6 +137,8 @@ public class UsersResourceTest {
     public void find() {
         // arrange
         final long userId = 1L;
+        final UserService userServiceMock = mock(UserService.class);
+        final UsersResource usersResource = new UsersResource(userServiceMock);
 
         // act
         final UserResource userResource = usersResource.find(userId);

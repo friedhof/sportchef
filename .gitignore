@@ -12,3 +12,4 @@ src/main/resources/rebel.xml
 src/main/webapp/bower_components
 src/main/webapp/imprint.md
 nb-configuration.xml
+.DS_Store

@@ -15,31 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.sportchef.metrics.healthcheck;
+package ch.sportchef;
 
-import ch.sportchef.business.event.control.EventService;
-import ch.sportchef.business.event.entity.Event;
-import com.codahale.metrics.health.HealthCheck;
+import org.eclipse.jetty.util.component.LifeCycle;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
-public class EventServiceHealthCheck extends HealthCheck {
+public class AbstractLifecycleListener implements LifeCycle.Listener {
 
-    private final EventService eventService;
-
-    public EventServiceHealthCheck(@NotNull final EventService eventService) {
-        this.eventService = eventService;
+    @Override
+    public void lifeCycleStarting(@NotNull final LifeCycle event) {
     }
 
     @Override
-    protected Result check() throws Exception {
-        try {
-            final List<Event> events = eventService.findAll();
-            return events != null ? Result.healthy() : Result.unhealthy("Can't access events!");
-        } catch (final Throwable error) {
-            return Result.unhealthy(error.getMessage());
-        }
+    public void lifeCycleStarted(@NotNull final LifeCycle event) {
+    }
+
+    @Override
+    public void lifeCycleFailure(@NotNull final LifeCycle event, @NotNull final Throwable cause) {
+    }
+
+    @Override
+    public void lifeCycleStopping(@NotNull final LifeCycle event) {
+    }
+
+    @Override
+    public void lifeCycleStopped(@NotNull final LifeCycle event) {
     }
 
 }

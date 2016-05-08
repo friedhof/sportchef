@@ -17,11 +17,9 @@
  */
 package ch.sportchef.business.authentication.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
 
 @Value
-@AllArgsConstructor
 public class AuthenticationData {
 
     private String email;

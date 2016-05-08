@@ -4,8 +4,8 @@ import ch.sportchef.business.exception.ExpectationFailedException;
 import ch.sportchef.business.user.entity.User;
 import org.junit.Test;
 
-import javax.persistence.OptimisticLockException;
 import javax.validation.constraints.NotNull;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +59,7 @@ public class UserRepositoryTest {
         assertThat(updatedUser.getVersion(), is(not(equalTo(userToUpdate.getVersion()))));
     }
 
-    @Test(expected = OptimisticLockException.class)
+    @Test(expected = ConcurrentModificationException.class)
     public void updateWithConflict() {
         // arrange
         final UserRepository userRepository = new UserRepository();

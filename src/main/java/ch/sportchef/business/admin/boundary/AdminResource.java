@@ -20,11 +20,13 @@ package ch.sportchef.business.admin.boundary;
 import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,19 +36,22 @@ import java.io.InputStreamReader;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 
-@Stateless
 @Path("admin")
-//@Produces({MediaType.TEXT_HTML})
+@Produces(MediaType.TEXT_HTML)
 public class AdminResource {
 
-    @Inject
     private ConfigurationService configurationService;
+
+    @Inject
+    public AdminResource(@NotNull final ConfigurationService configurationService) {
+        this.configurationService = configurationService;
+    }
 
     @GET
     public Response getAdminPage(@QueryParam("access-code") final String accessCode) throws IOException {
         final Configuration configuration = configurationService.getConfiguration();
         final String password = configuration.getAdminPassword();
-        if (password == null || password.trim().isEmpty() || !password.trim().equals(accessCode.trim())) {
+        if (accessCode == null | password == null || password.trim().isEmpty() || !password.trim().equals(accessCode.trim())) {
             return Response.status(FORBIDDEN).build();
         }
 
