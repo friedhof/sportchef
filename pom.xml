@@ -65,6 +65,11 @@
             <artifactId>dropwizard-core</artifactId>
             <version>0.9.2</version>
         </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-assets</artifactId>
+            <version>0.9.2</version>
+        </dependency>
         <dependency> <!-- Looks like a dependency version mess with jackson/joda module combination -->
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
