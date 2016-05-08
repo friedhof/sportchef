@@ -18,6 +18,9 @@
 package ch.sportchef.business.user.entity;
 
 import ch.sportchef.business.authentication.entity.Role;
+import ch.sportchef.business.user.entity.User.UserBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +33,7 @@ import java.io.Serializable;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
+@JsonDeserialize(builder = UserBuilder.class)
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,4 +56,9 @@ public class User implements Serializable {
     private Role role;
 
     private Long version;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static final class UserBuilder {
+    }
+
 }
