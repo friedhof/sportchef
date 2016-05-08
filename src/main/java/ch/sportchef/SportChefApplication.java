@@ -26,6 +26,7 @@ import ch.sportchef.business.user.boundary.UsersResource;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.AbstractModule;
@@ -57,6 +58,7 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
     private void registerModules(@NotNull final ObjectMapper objectMapper) {
         objectMapper.registerModule(new Jdk8Module());
         objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.registerModule(new GuavaModule());
     }
 
     private Injector createInjector(@NotNull final SportChefConfiguration configuration,
