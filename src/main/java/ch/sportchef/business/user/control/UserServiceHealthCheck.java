@@ -23,16 +23,16 @@ import com.codahale.metrics.health.HealthCheck;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public class UserServiceHealthCheck extends HealthCheck {
+class UserServiceHealthCheck extends HealthCheck {
 
     private final UserService userService;
 
-    public UserServiceHealthCheck(@NotNull final UserService userService) {
+    UserServiceHealthCheck(@NotNull final UserService userService) {
         this.userService = userService;
     }
 
     @Override
-    protected Result check() throws Exception {
+    protected Result check() {
         try {
             final List<User> users = userService.findAll();
             return users != null ? Result.healthy() : Result.unhealthy("Can't access users!");

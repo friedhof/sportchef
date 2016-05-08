@@ -22,16 +22,16 @@ import com.codahale.metrics.health.HealthCheck;
 
 import javax.validation.constraints.NotNull;
 
-public class ConfigurationServiceHealthCheck extends HealthCheck {
+class ConfigurationServiceHealthCheck extends HealthCheck {
 
     private final ConfigurationService configurationService;
 
-    public ConfigurationServiceHealthCheck(@NotNull final ConfigurationService configurationService) {
+    ConfigurationServiceHealthCheck(@NotNull final ConfigurationService configurationService) {
         this.configurationService = configurationService;
     }
 
     @Override
-    protected Result check() throws Exception {
+    protected Result check() {
         try {
             final Configuration configuration = configurationService.getConfiguration();
             return configuration != null ? Result.healthy() : Result.unhealthy("Can't access configuration!");
