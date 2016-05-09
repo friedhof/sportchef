@@ -38,12 +38,21 @@ import com.google.inject.Injector;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
+import io.dropwizard.jetty.setup.ServletEnvironment;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import lombok.SneakyThrows;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration.Dynamic;
 import javax.validation.constraints.NotNull;
+import java.util.EnumSet;
+
+import static org.eclipse.jetty.servlets.CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER;
+import static org.eclipse.jetty.servlets.CrossOriginFilter.ALLOWED_METHODS_PARAM;
+import static org.eclipse.jetty.servlets.CrossOriginFilter.ALLOWED_ORIGINS_PARAM;
 
 @SuppressWarnings("ClassNamePrefixedWithPackageName")
 public class SportChefApplication extends Application<SportChefConfiguration> {
@@ -60,6 +69,7 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         final Injector injector = createInjector(configuration, environment);
         registerResources(environment, injector);
         registerExceptionMapper(environment);
+        registerServletFilters(environment.servlets());
         install(injector);
     }
 
@@ -102,6 +112,16 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         final JerseyEnvironment jersey = environment.jersey();
         jersey.register(new WebApplicationExceptionMapper());
         jersey.register(new RuntimeExceptionMapper());
+    }
+
+    private static void registerServletFilters(@NotNull final ServletEnvironment servletEnvironment) {
+        final Dynamic filter = servletEnvironment.addFilter("CORS", CrossOriginFilter.class);
+        filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+        filter.setInitParameter(ALLOWED_METHODS_PARAM, "GET,PUT,POST,DELETE,OPTIONS");
+        filter.setInitParameter(ALLOWED_ORIGINS_PARAM, "*");
+        filter.setInitParameter(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
+        filter.setInitParameter("allowedHeaders", "Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin");
+        filter.setInitParameter("allowCredentials", "true");
     }
 
     private static void install(@NotNull final Injector injector) {
