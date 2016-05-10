@@ -57,7 +57,7 @@
         function requestChallenge() {
             $.ajax({
                 method: "GET",
-                url: "/sportchef/api/authentication?email=" + $("#email").val(),
+                url: "/api/authentication?email=" + $("#email").val(),
                 cache: false,
                 success: function(data, textStatus, jqXHR ) {
                     $("#challengeRequestMessage")
@@ -82,7 +82,7 @@
                     "challenge": $("#challenge").val()
                 }),
                 contentType: "application/json",
-                url: "/sportchef/api/authentication",
+                url: "/api/authentication",
                 cache: false,
                 success: function(data, textStatus, jqXHR ) {
                     $("#authenticateMessage")

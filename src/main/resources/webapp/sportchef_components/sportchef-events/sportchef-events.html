@@ -21,7 +21,7 @@
 
 <dom-module id="sportchef-events">
     <template>
-        <iron-ajax auto url="/sportchef/api/events" handle-as="json" last-response="{{ajaxResponse}}" headers="{{generateHeaders()}}"></iron-ajax>
+        <iron-ajax auto url="/api/events" handle-as="json" last-response="{{ajaxResponse}}" headers="{{generateHeaders()}}"></iron-ajax>
         <template is="dom-repeat" items="[[ajaxResponse]]">
             <sportchef-event event="{{item}}"></sportchef-event>
         </template>
