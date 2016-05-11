@@ -36,8 +36,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
+import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import lombok.SneakyThrows;
 
@@ -49,6 +51,11 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
     @SneakyThrows
     public static void main(@NotNull final String... args) {
         new SportChefApplication().run(args);
+    }
+
+    @Override
+    public void initialize(@NotNull final  Bootstrap<SportChefConfiguration> bootstrap) {
+        bootstrap.addBundle(new AssetsBundle("/webapp", "/", "index.html"));
     }
 
     @Override
