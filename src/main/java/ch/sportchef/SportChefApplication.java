@@ -55,7 +55,8 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
 
     @Override
     public void initialize(@NotNull final  Bootstrap<SportChefConfiguration> bootstrap) {
-        bootstrap.addBundle(new AssetsBundle("/webapp", "/", "index.html"));
+        bootstrap.addBundle(new AssetsBundle("/webapp", "/", "index.html", "webapp"));
+        bootstrap.addBundle(new AssetsBundle("/apidocs", "/apidocs", "index.html", "apidocs"));
     }
 
     @Override
