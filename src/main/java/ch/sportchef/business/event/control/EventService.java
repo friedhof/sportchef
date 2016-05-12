@@ -17,16 +17,16 @@
  */
 package ch.sportchef.business.event.control;
 
+import ch.sportchef.AbstractLifecycleListener;
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.event.entity.Event;
-import ch.sportchef.metrics.healthcheck.EventServiceHealthCheck;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
+import org.eclipse.jetty.util.component.LifeCycle;
 import pl.setblack.airomem.core.SimpleController;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
@@ -38,29 +38,27 @@ import java.util.Optional;
 @Metered(name = "Metered: EventService")
 public class EventService {
 
-    private final SimpleController<EventRepository> controller =
-            PersistenceManager.createSimpleController(Event.class, EventRepository::new);
+    private final SimpleController<EventRepository> controller;
 
     @Inject
-    private HealthCheckRegistry healthCheckRegistry;
-
-    @PostConstruct
-    private void registerHealthCheck() {
-        final EventServiceHealthCheck eventServiceHealthCheck = new EventServiceHealthCheck(this);
-        healthCheckRegistry.register(EventService.class.getName(), eventServiceHealthCheck);
-    }
-
-    @PreDestroy
-    private void takeSnapshot() {
-        controller.close();
+    public EventService(@NotNull final LifecycleEnvironment lifecycleEnvironment,
+                        @NotNull final HealthCheckRegistry healthCheckRegistry) {
+        controller = PersistenceManager.createSimpleController(Event.class, EventRepository::new);
+        lifecycleEnvironment.addLifeCycleListener(new AbstractLifecycleListener() {
+            @Override
+            public void lifeCycleStopping(@NotNull final LifeCycle event) {
+                controller.close();
+            }
+        });
+        healthCheckRegistry.register("EventService", new EventServiceHealthCheck(this));
     }
 
     public Event create(@NotNull final Event event) {
-        return controller.executeAndQuery((mgr) -> mgr.create(event));
+        return controller.executeAndQuery(mgr -> mgr.create(event));
     }
 
     public Event update(@NotNull final Event event) {
-        return controller.executeAndQuery((mgr) -> mgr.update(event));
+        return controller.executeAndQuery(mgr -> mgr.update(event));
     }
 
     public Optional<Event> findByEventId(@NotNull final Long eventId) {
@@ -72,6 +70,6 @@ public class EventService {
     }
 
     public void delete(@NotNull final Long eventId) {
-        controller.execute((mgr) -> mgr.delete(eventId));
+        controller.execute(mgr -> mgr.delete(eventId));
     }
 }

@@ -35,11 +35,15 @@ import javax.ws.rs.core.Response.Status;
 import java.util.Optional;
 
 @Path("authentication")
-@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+@Produces(MediaType.APPLICATION_JSON)
 public class AuthenticationResource {
 
-    @Inject
     private AuthenticationService authenticationService;
+
+    @Inject
+    public AuthenticationResource(@NotNull final AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     @GET
     @Consumes({MediaType.WILDCARD})

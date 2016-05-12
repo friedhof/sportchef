@@ -19,20 +19,15 @@ package ch.sportchef.business.user.control;
 
 import ch.sportchef.business.PersistenceManager;
 import ch.sportchef.business.user.entity.User;
-import ch.sportchef.metrics.healthcheck.UserServiceHealthCheck;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import org.junit.Rule;
+import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.needle4j.annotation.ObjectUnderTest;
-import org.needle4j.junit.NeedleBuilders;
-import org.needle4j.junit.NeedleRule;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import pl.setblack.airomem.core.SimpleController;
 import pl.setblack.airomem.core.VoidCommand;
 
-import javax.inject.Inject;
 import javax.ws.rs.core.SecurityContext;
 import java.io.Serializable;
 import java.security.Principal;
@@ -43,7 +38,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,34 +48,15 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest(PersistenceManager.class)
 public class UserServiceTest {
 
-    @Rule
-    public NeedleRule needleRule = NeedleBuilders.needleMockitoRule().build();
-
-    @ObjectUnderTest(postConstruct = true)
-    private UserService userService; // used only for postConstruct test
-
-    @Inject
-    private HealthCheckRegistry healthCheckRegistryMock;
-
-    @Test
-    public void postConstruct() {
-        // arrange
-
-        // act
-
-        // assert
-        verify(healthCheckRegistryMock, times(1)).register(
-                eq(UserService.class.getName()),
-                any(UserServiceHealthCheck.class));
-    }
-
     @Test
     public void create() {
         // arrange
         final SimpleController<Serializable> simpleControllerMock = mock(SimpleController.class);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(lifecycleEnvironment, healthCheckRegistryMock);
         final User userToCreate = User.builder()
                 .firstName("John")
                 .lastName("Doe")
@@ -102,7 +77,9 @@ public class UserServiceTest {
         final SimpleController<Serializable> simpleControllerMock = mock(SimpleController.class);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(lifecycleEnvironment, healthCheckRegistryMock);
         final User userToUpdate = User.builder()
                 .firstName("John")
                 .lastName("Doe")
@@ -125,7 +102,9 @@ public class UserServiceTest {
         when(simpleControllerMock.readOnly()).thenReturn(userRepositoryMock);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(lifecycleEnvironment, healthCheckRegistryMock);
 
         // act
         userService.findByUserId(1L);
@@ -143,7 +122,9 @@ public class UserServiceTest {
         when(simpleControllerMock.readOnly()).thenReturn(userRepositoryMock);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(lifecycleEnvironment, healthCheckRegistryMock);
 
         // act
         userService.findByEmail("john.doe@sportchef.ch");
@@ -161,7 +142,9 @@ public class UserServiceTest {
         when(simpleControllerMock.readOnly()).thenReturn(userRepositoryMock);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(lifecycleEnvironment, healthCheckRegistryMock);
 
         // act
         userService.findAll();
@@ -177,7 +160,9 @@ public class UserServiceTest {
         final SimpleController<Serializable> simpleControllerMock = mock(SimpleController.class);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(lifecycleEnvironment, healthCheckRegistryMock);
 
         // act
         userService.delete(1L);
@@ -201,7 +186,9 @@ public class UserServiceTest {
         when(simpleControllerMock.readOnly()).thenReturn(userRepositoryMock);
         mockStatic(PersistenceManager.class);
         when(PersistenceManager.createSimpleController(any(), any())).thenReturn(simpleControllerMock);
-        final UserService userService = new UserService();
+        final LifecycleEnvironment lifecycleEnvironment = mock(LifecycleEnvironment.class);
+        final HealthCheckRegistry healthCheckRegistryMock = mock(HealthCheckRegistry.class);
+        final UserService userService = new UserService(lifecycleEnvironment, healthCheckRegistryMock);
 
         // act
         final Optional<User> authenticatedUser = userService.getAuthenticatedUser(securityContextMock);

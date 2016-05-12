@@ -18,7 +18,6 @@
 package ch.sportchef.business;
 
 import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.NonNls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.setblack.airomem.core.SimpleController;
@@ -36,7 +35,6 @@ public class PersistenceManager {
 
     private static final Path DATA_DIRECTORY;
 
-    @NonNls
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceManager.class);
 
     static {

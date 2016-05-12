@@ -20,9 +20,9 @@ package ch.sportchef.business.user.boundary;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -35,13 +35,16 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 
-@Stateless
 @Path("users")
-@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+@Produces(MediaType.APPLICATION_JSON)
 public class UsersResource {
 
-    @Inject
     private UserService userService;
+
+    @Inject
+    public UsersResource(@NotNull final UserService userService) {
+        this.userService = userService;
+    }
 
     @POST
     public Response save(@Valid final User user, @Context final UriInfo info) {

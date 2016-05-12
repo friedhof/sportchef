@@ -1,0 +1,106 @@
+<!--
+    SportChef – Sports Competition Management Software
+    Copyright (C) 2015, 2016 Marcus Fihlon
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<link rel="import" href="../../bower_components/polymer/polymer.html"/>
+<link rel="import" href="../../bower_components/paper-button/paper-button.html"/>
+<link rel="import" href="../sportchef-jquery/sportchef-jquery.html"/>
+<link rel="import" href="../sportchef-i18n/sportchef-i18n.html"/>
+<link rel="import" href="../sportchef-imprint/sportchef-imprint.html"/>
+<link rel="import" href="../sportchef-login/sportchef-login.html"/>
+
+<dom-module id="sportchef-layout-header">
+    <template>
+        <style>
+            #btn-logout {
+                background-color: #b30209;
+            }
+        </style>
+
+        <sportchef-imprint></sportchef-imprint>
+        <sportchef-login></sportchef-login>
+
+        <header class="nav-header">
+            <img src="/img/logo_sportchef_50x50.png" width="50px" height="50px" id="logo" rel="icon"
+                 alt="SportChef Logo"/>
+
+            <h1 id="title"><a href="#">SportChef</a></h1>
+            <nav class="vertical-nav">
+                <div class="nav-trigger" onclick="toggleNav(this);">
+                    <iron-icon icon="icons:menu" class="menu-burger"></iron-icon>
+                </div>
+                <div class="nav-collapse">
+                    <ul class="main-nav">
+                        <li><a href="../../events.html" id="nav-events" data-i18n="sportchef-layout-header.menu.events">Events</a>
+                        </li>
+                        <li><a href="#" id="nav-imprint">Imprint</a></li>
+                    </ul>
+                    <paper-button id="btn-login" class="button button-login hidden">Login
+                    </paper-button>
+                    <paper-button id="btn-logout" class="button button-logout hidden">Logout
+                    </paper-button>
+                </div>
+            </nav>
+        </header>
+    </template>
+
+
+    <script>
+        function toggleNav(button) {
+            $(button).siblings('.nav-collapse').slideToggle();
+        }
+
+        // register a new element called sportchef-layout-header
+        Polymer({
+            is: "sportchef-layout-header",
+            properties: {
+                page: {
+                    type: String,
+                    value: ''
+                }
+            },
+            ready: function() {
+                var activeNav = document.getElementById('nav-' + this.page);
+                if (activeNav !== null && typeof activeNav !== 'undefined') {
+                    activeNav.classList.add('active');
+                }
+
+                $('#btn-login').click(function() {
+                    document.getElementById('dialog-login').open();
+                });
+
+                $('#btn-logout').click(function() {
+                    sessionStorage.removeItem("token");
+                    $('#btn-login').show();
+                    $('#btn-logout').hide();
+                });
+
+                $('#nav-imprint').click(function() {
+                    document.getElementById('dialog-imprint').open();
+                });
+
+                var token = sessionStorage.getItem("token");
+                if (token !== null && typeof token !== 'undefined') {
+                    $('#btn-login').hide();
+                    $('#btn-logout').show();
+                } else {
+                    $('#btn-login').show();
+                    $('#btn-logout').hide();
+                }
+            }
+        });
+    </script>
+</dom-module>

@@ -21,9 +21,9 @@ import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -37,16 +37,19 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-@Stateless
 @Path("events")
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class EventsResource {
 
-    @Inject
     private EventService eventService;
+    private EventImageService eventImageService;
 
     @Inject
-    private EventImageService eventImageService;
+    public EventsResource(@NotNull final EventService eventService,
+                          @NotNull final EventImageService eventImageService) {
+        this.eventService = eventService;
+        this.eventImageService = eventImageService;
+    }
 
     @POST
     public Response save(@Valid final Event event, @Context final UriInfo info) {
