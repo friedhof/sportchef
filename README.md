@@ -5,7 +5,7 @@
 
 **Sports Competition Management Software with a modern and fast architecture. Java based backend with a RESTful JSON API and a HTML 5 client with a modern UI.**
 
-*Copyright (C) 2015 Marcus Fihlon*
+*Copyright (C) 2015, 2016 Marcus Fihlon*
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -19,11 +19,11 @@ You should have received a copy of the GNU Affero General Public License along w
 
 The *SportChef* docker image is available on DockerHub. To run *SportChef*, you have to specify a port mapping to map the ports of the application server inside the container (8080) to a port on your machine (e.g. 80) and you have to specify a folder on your machine to store the permanent data. The complete docker call looks like this:
 
-`docker run -p [local port]:8080 -v [local data path]:/opt/jboss/.sportchef -it mcpringle/sportchef`
+`docker run -p [local port]:8080 -v [local data path]:/root/.sportchef -it mcpringle/sportchef`
 
 Example:
 
-`docker run -p 80:8080 -v /home/mcpringle/.sportchef:/opt/jboss/.sportchef -it mcpringle/sportchef`
+`docker run -p 80:8080 -v /home/mcpringle/.sportchef:/root/.sportchef -it mcpringle/sportchef`
 
 ## Using Application Server
 
