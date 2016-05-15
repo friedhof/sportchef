@@ -54,6 +54,11 @@ public class ConfigurationTest {
     }
 
     @Test
+    public void getTokenExpirationTime() {
+        assertThat(configuration.getTokenExpirationTime(), is(480));
+    }
+
+    @Test
     public void getAdminPassword() {
         assertThat(configuration.getAdminPassword(), is("test.admin.password"));
     }

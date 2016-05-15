@@ -101,6 +101,7 @@ public class AuthenticationServiceTest {
     private Configuration createConfigurationMock() {
         final Configuration configurationMock = mock(Configuration.class);
         when(configurationMock.getTokenSigningKey()).thenReturn("This is a Mock!");
+        when(configurationMock.getTokenExpirationTime()).thenReturn(1);
         when(configurationMock.getSMTPServer()).thenReturn("localhost");
         when(configurationMock.getSMTPPort()).thenReturn(4444);
         when(configurationMock.getSMTPUser()).thenReturn("test");

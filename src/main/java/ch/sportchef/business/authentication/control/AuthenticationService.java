@@ -55,7 +55,6 @@ public class AuthenticationService {
     private static final int MINIMAL_CHALLENGE_LENGTH = 5;
     private static final int MAXIMAL_CHALLENGE_LENGTH = 10;
     private static final int TRESHOLD_FOR_COMPLEXITY_INCREASE = 20;
-    private static final long TOKEN_EXPIRATION_TIME_IN_MS = 8 * 60 * 60 * 1000; // 8 hours
     private static final int MAXIMAL_WRONG_CHALENGE_TRIES = 10;
 
     private UserService userService;
@@ -135,16 +134,17 @@ public class AuthenticationService {
     }
 
     private String generateToken(@NotNull final String email) {
+        final Configuration configuration = configurationService.getConfiguration();
+        final String tokenSigningKey = configuration.getTokenSigningKey();
+        final Integer tokenExpirationTime = configuration.getTokenExpirationTime();
+
         final Date now = new Date();
-        final Date exp = new Date(now.getTime() + TOKEN_EXPIRATION_TIME_IN_MS);
+        final Date exp = new Date(now.getTime() + tokenExpirationTime * 60 * 1000);
 
         final Claims claims = Jwts.claims();
         claims.setIssuedAt(now);
         claims.setExpiration(exp);
         claims.put("email", email); //NON-NLS
-
-        final Configuration configuration = configurationService.getConfiguration();
-        final String tokenSigningKey = configuration.getTokenSigningKey();
 
         return Jwts.builder()
                 .setClaims(claims)
