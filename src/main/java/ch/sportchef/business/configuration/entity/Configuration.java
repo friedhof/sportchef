@@ -27,6 +27,7 @@ import java.util.Properties;
 public class Configuration {
 
     private static final String TOKEN_SIGNING_KEY = "token.signing.key";
+    private static final String TOKEN_EXPIRATION_TIME = "token.expiration.time";
 
     private static final String ADMIN_PASSWORD_KEY = "admin.password";
     private static final String ADMIN_FIRSTNAME_KEY = "admin.firstname";
@@ -42,6 +43,10 @@ public class Configuration {
 
     public String getTokenSigningKey() {
         return properties.getProperty(TOKEN_SIGNING_KEY);
+    }
+
+    public Integer getTokenExpirationTime() {
+        return Integer.valueOf(properties.getProperty(TOKEN_EXPIRATION_TIME));
     }
 
     public String getAdminPassword() {
