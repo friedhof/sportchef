@@ -27,6 +27,7 @@ class ConfigurationServiceHealthCheck extends HealthCheck {
     private final ConfigurationService configurationService;
 
     ConfigurationServiceHealthCheck(@NotNull final ConfigurationService configurationService) {
+        super();
         this.configurationService = configurationService;
     }
 

@@ -28,6 +28,7 @@ class EventServiceHealthCheck extends HealthCheck {
     private final EventService eventService;
 
     EventServiceHealthCheck(@NotNull final EventService eventService) {
+        super();
         this.eventService = eventService;
     }
 

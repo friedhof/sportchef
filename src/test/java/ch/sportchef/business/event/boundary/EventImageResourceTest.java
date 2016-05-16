@@ -172,6 +172,7 @@ public class EventImageResourceTest {
         private final ByteArrayInputStream inputStream;
 
         ServletInputStreamMock(@NotNull final ByteArrayInputStream inputStream) {
+            super();
             this.inputStream = inputStream;
         }
 

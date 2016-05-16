@@ -27,6 +27,7 @@ class AuthenticationServiceHealthCheck extends HealthCheck {
     private final AuthenticationService authenticationService;
 
     AuthenticationServiceHealthCheck(@NotNull final AuthenticationService authenticationService) {
+        super();
         this.authenticationService = authenticationService;
     }
 

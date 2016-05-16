@@ -28,6 +28,7 @@ class UserServiceHealthCheck extends HealthCheck {
     private final UserService userService;
 
     UserServiceHealthCheck(@NotNull final UserService userService) {
+        super();
         this.userService = userService;
     }
 
