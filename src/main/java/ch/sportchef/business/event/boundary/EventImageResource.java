@@ -82,7 +82,7 @@ public class EventImageResource {
 
         try (final BufferedInputStream inputStream = new BufferedInputStream(request.getInputStream(), 8192)) {
             final MultipartStream multipartStream = new MultipartStream(inputStream, boundary, 8192, null);
-            boolean nextPart = multipartStream.skipPreamble();
+            final boolean nextPart = multipartStream.skipPreamble();
             //noinspection LoopStatementThatDoesntLoop
             while (nextPart) {
                 multipartStream.readHeaders(); // don't remove, strips headers off
