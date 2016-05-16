@@ -40,7 +40,7 @@ import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 @Produces(MediaType.TEXT_HTML)
 public class AdminResource {
 
-    private ConfigurationService configurationService;
+    private final ConfigurationService configurationService;
 
     @Inject
     public AdminResource(@NotNull final ConfigurationService configurationService) {

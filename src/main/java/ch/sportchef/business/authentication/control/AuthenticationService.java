@@ -57,10 +57,9 @@ public class AuthenticationService {
     private static final int TRESHOLD_FOR_COMPLEXITY_INCREASE = 20;
     private static final int MAXIMAL_WRONG_CHALENGE_TRIES = 10;
 
-    private UserService userService;
-    private ConfigurationService configurationService;
-
-    private Cache<String, Challenge> challengeCache;
+    private final UserService userService;
+    private final ConfigurationService configurationService;
+    private final Cache<String, Challenge> challengeCache;
 
     @Inject
     public AuthenticationService(@NotNull final UserService userService,

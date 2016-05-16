@@ -35,9 +35,8 @@ import java.util.Optional;
 
 public class UserResource {
 
-    private long userId;
-
-    private UserService userService;
+    private final long userId;
+    private final UserService userService;
 
     public UserResource(final long userId, final UserService userService) {
         this.userId = userId;

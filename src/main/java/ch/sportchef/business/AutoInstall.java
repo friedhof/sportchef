@@ -35,10 +35,10 @@ import java.util.Optional;
 
 public class AutoInstall {
 
-    private ConfigurationService configurationService;
-    private UserService userService;
-    private EventService eventService;
-    private EventImageService eventImageService;
+    private final ConfigurationService configurationService;
+    private final UserService userService;
+    private final EventService eventService;
+    private final EventImageService eventImageService;
 
     @Inject
     public AutoInstall(@NotNull final ConfigurationService configurationService,

@@ -41,8 +41,8 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class EventsResource {
 
-    private EventService eventService;
-    private EventImageService eventImageService;
+    private final EventService eventService;
+    private final EventImageService eventImageService;
 
     @Inject
     public EventsResource(@NotNull final EventService eventService,

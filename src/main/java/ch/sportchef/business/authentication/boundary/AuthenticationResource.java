@@ -38,7 +38,7 @@ import java.util.Optional;
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthenticationResource {
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     @Inject
     public AuthenticationResource(@NotNull final AuthenticationService authenticationService) {

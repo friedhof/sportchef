@@ -39,7 +39,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class UsersResource {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Inject
     public UsersResource(@NotNull final UserService userService) {

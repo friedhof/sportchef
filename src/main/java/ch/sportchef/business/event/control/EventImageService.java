@@ -44,8 +44,8 @@ public class EventImageService {
     private static final int IMAGE_HEIGHT = 200;
     private static final int IMAGE_WIDTH = 350;
 
-    private EventService eventService;
-    private File imageUploadPath;
+    private final EventService eventService;
+    private final File imageUploadPath;
 
     @Inject
     public EventImageService(@NotNull final EventService eventService) {

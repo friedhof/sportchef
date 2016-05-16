@@ -33,7 +33,7 @@ import javax.validation.constraints.NotNull;
 @Metered(name = "Metered: ConfigurationService")
 public class ConfigurationService {
 
-    private ConfigurationRepository configurationRepository;
+    private final ConfigurationRepository configurationRepository;
 
     @Inject
     public ConfigurationService(@NotNull final ConfigurationRepository configurationRepository,
