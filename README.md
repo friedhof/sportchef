@@ -94,6 +94,10 @@ If you are a contributor and you are missing on this list, please add your entry
 |    v1.2 | End of May 2016       | work in progress |
 |    v1.3 | 2016/Q3               | planning         |
 
+## Throughput
+
+[![Throughput Graph](https://graphs.waffle.io/McPringle/sportchef/throughput.svg)](https://waffle.io/McPringle/sportchef/metrics/throughput)
+
 ## Overview of issues
 
 We use [Waffle.io](http://waffle.io/McPringle/sportchef) for a really useful overview of our issues. Our issues can have one of five states. The states are:
