@@ -222,13 +222,17 @@ public class EventImageResourceTest {
         }
 
         @Override
-        public synchronized void mark(final int readlimit) {
-            inputStream.mark(readlimit);
+        public void mark(final int readlimit) {
+            synchronized (inputStream) {
+                inputStream.mark(readlimit);
+            }
         }
 
         @Override
-        public synchronized void reset() throws IOException {
-            inputStream.reset();
+        public void reset() throws IOException {
+            synchronized (inputStream) {
+                inputStream.reset();
+            }
         }
 
         @Override
