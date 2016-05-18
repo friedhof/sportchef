@@ -48,13 +48,17 @@ public class AuthenticationResource {
     @GET
     @Consumes({MediaType.WILDCARD})
     public Response requestChallenge(@QueryParam("email") final String email) {
+        final Response response;
+
         if (email == null || email.trim().isEmpty()) {
-            return Response.status(Status.BAD_REQUEST).build();
+            response = Response.status(Status.BAD_REQUEST).build();
+        } else {
+            response = authenticationService.requestChallenge(email) ?
+                    Response.ok().build() :
+                    Response.status(Status.NOT_FOUND).build();
         }
 
-        return authenticationService.requestChallenge(email) ?
-                Response.ok().build() :
-                Response.status(Status.NOT_FOUND).build();
+        return response;
     }
 
     @POST

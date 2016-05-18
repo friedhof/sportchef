@@ -74,14 +74,19 @@ public class AuthenticationService {
     }
 
     public boolean requestChallenge(@NotNull final String email) {
+        final boolean success;
+
         final Optional<User> user = userService.findByEmail(email);
         if (user.isPresent()) {
             final Challenge challenge = generateChallenge();
             challengeCache.put(email, challenge);
             sendChallenge(email, challenge);
-            return true;
+            success = true;
+        } else {
+            success = false;
         }
-        return false;
+
+        return success;
     }
 
     private Challenge generateChallenge() {
@@ -119,17 +124,19 @@ public class AuthenticationService {
 
     public Optional<String> validateChallenge(@NotNull final String email,
                                               @NotNull final String challengeValue) {
+        Optional<String> challenge = Optional.empty();
+
         final Challenge cachedChallenge = challengeCache.getIfPresent(email);
         if (cachedChallenge != null) {
             if (challengeValue.equals(cachedChallenge.getChallenge()) && cachedChallenge.getTries() < MAXIMAL_WRONG_CHALENGE_TRIES) {
                 challengeCache.invalidate(email);
-                return Optional.of(generateToken(email));
+                challenge = Optional.of(generateToken(email));
             } else {
                 cachedChallenge.increaseTries();
             }
         }
 
-        return Optional.empty();
+        return challenge;
     }
 
     private String generateToken(@NotNull final String email) {

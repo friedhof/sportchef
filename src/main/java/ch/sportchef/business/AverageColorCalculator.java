@@ -73,9 +73,8 @@ public class AverageColorCalculator {
                 if (averageBlue > 0) averageBlue--;
                 averageColor = averageRed + averageGreen + averageBlue;
             }
-            return new Color(averageRed, averageGreen, averageBlue);
         }
 
-        return color;
+        return new Color(averageRed, averageGreen, averageBlue);
     }
 }

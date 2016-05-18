@@ -33,12 +33,16 @@ class ConfigurationServiceHealthCheck extends HealthCheck {
 
     @Override
     protected Result check() {
+        Result result = Result.unhealthy("Unknown error");
+
         try {
             final Configuration configuration = configurationService.getConfiguration();
-            return configuration != null ? Result.healthy() : Result.unhealthy("Can't access configuration!");
+            result = configuration != null ? Result.healthy() : Result.unhealthy("Can't access configuration!");
         } catch (final Throwable error) {
-            return Result.unhealthy(error.getMessage());
+            result = Result.unhealthy(error.getMessage());
         }
+
+        return result;
     }
 
 }

@@ -34,12 +34,16 @@ class UserServiceHealthCheck extends HealthCheck {
 
     @Override
     protected Result check() {
+        Result result = Result.unhealthy("Unknown error");
+
         try {
             final List<User> users = userService.findAll();
-            return users != null ? Result.healthy() : Result.unhealthy("Can't access users!");
+            result = users != null ? Result.healthy() : Result.unhealthy("Can't access users!");
         } catch (final Throwable error) {
-            return Result.unhealthy(error.getMessage());
+            result = Result.unhealthy(error.getMessage());
         }
+
+        return result;
     }
 
 }

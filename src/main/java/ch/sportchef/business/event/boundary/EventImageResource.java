@@ -61,22 +61,28 @@ public class EventImageResource {
     @GET
     @Produces({"image/png"})
     public Response getImage() throws URISyntaxException, IOException {
+        Response response;
+
         try {
             final byte[] image = eventImageService.getImage(eventId);
-            return Response.ok().entity((StreamingOutput) stream -> {
+            response = Response.ok().entity((StreamingOutput) stream -> {
                 stream.write(image);
                 stream.flush();
             }).build();
         } catch (final NotFoundException e) {
             // no image found, redirecting to placeholder image
             final URI location = new URI(IMAGE_PLACEHOLDER);
-            return Response.temporaryRedirect(location).build();
+            response = Response.temporaryRedirect(location).build();
         }
+
+        return response;
     }
 
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadImage(@Context final HttpServletRequest request) throws IOException, ServletException {
+        Response response = Response.status(BAD_REQUEST).build();
+
         final String contentType = request.getContentType();
         final byte[] boundary = contentType.substring(contentType.indexOf("boundary=") + 9).getBytes(); //NON-NLS
 
@@ -91,12 +97,13 @@ public class EventImageResource {
                     multipartStream.readBodyData(outputStream);
                     final byte[] image = outputStream.toByteArray();
                     eventImageService.uploadImage(eventId, image);
-                    return Response.ok().build();
+                    response = Response.ok().build();
+                    break;
                 }
             }
         }
 
-        return Response.status(BAD_REQUEST).build();
+        return response;
     }
 
     @DELETE

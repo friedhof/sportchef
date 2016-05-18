@@ -33,13 +33,17 @@ class AuthenticationServiceHealthCheck extends HealthCheck {
 
     @Override
     protected Result check() {
+        Result result = Result.unhealthy("Unknown error");
+
         try {
             final Optional<String> token = authenticationService.validateChallenge("foo@bar", "foobar");
-            return token.isPresent() ? Result.healthy() :
+            result = token.isPresent() ? Result.healthy() :
                     Result.unhealthy("Problems in AuthenticationService: Can't validate challenge!");
         } catch (final Throwable error) {
-            return Result.unhealthy(error.getMessage());
+            result = Result.unhealthy(error.getMessage());
         }
+
+        return result;
     }
 
 }
