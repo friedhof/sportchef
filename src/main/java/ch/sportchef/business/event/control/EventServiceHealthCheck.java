@@ -39,7 +39,7 @@ class EventServiceHealthCheck extends HealthCheck {
         try {
             final List<Event> events = eventService.findAll();
             result = events != null ? Result.healthy() : Result.unhealthy("Can't access events!");
-        } catch (final Throwable error) {
+        } catch (@SuppressWarnings("PMD.AvoidCatchingThrowable") final Throwable error) {
             result = Result.unhealthy(error.getMessage());
         }
 

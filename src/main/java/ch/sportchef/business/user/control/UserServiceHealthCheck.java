@@ -39,7 +39,7 @@ class UserServiceHealthCheck extends HealthCheck {
         try {
             final List<User> users = userService.findAll();
             result = users != null ? Result.healthy() : Result.unhealthy("Can't access users!");
-        } catch (final Throwable error) {
+        } catch (@SuppressWarnings("PMD.AvoidCatchingThrowable") final Throwable error) {
             result = Result.unhealthy(error.getMessage());
         }
 

@@ -38,7 +38,7 @@ class ConfigurationServiceHealthCheck extends HealthCheck {
         try {
             final Configuration configuration = configurationService.getConfiguration();
             result = configuration != null ? Result.healthy() : Result.unhealthy("Can't access configuration!");
-        } catch (final Throwable error) {
+        } catch (@SuppressWarnings("PMD.AvoidCatchingThrowable") final Throwable error) {
             result = Result.unhealthy(error.getMessage());
         }
 
