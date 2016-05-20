@@ -46,6 +46,7 @@ public class AverageColorCalculator {
 
         for (columnCount = 0; columnCount < image.getWidth(); columnCount++) {
             for (rowCount = 0; rowCount < image.getHeight(); pixelCount++) {
+                @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops") // color is immutable
                 final Color color = new Color(image.getRGB(columnCount, rowCount++));
                 red += color.getRed();
                 green += color.getGreen();
