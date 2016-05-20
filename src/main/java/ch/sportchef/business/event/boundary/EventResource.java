@@ -69,6 +69,7 @@ public class EventResource {
     }
 
     @DELETE
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public Response delete() {
         find(); // only delete existing events
         try {
