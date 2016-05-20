@@ -86,7 +86,7 @@ public class EventImageResource {
             final MultipartStream multipartStream = new MultipartStream(inputStream, boundary, 8192, null);
             final boolean nextPart = multipartStream.skipPreamble();
             //noinspection LoopStatementThatDoesntLoop
-            while (nextPart) {
+            if (nextPart) {
                 multipartStream.readHeaders(); // don't remove, strips headers off
                 //noinspection NestedTryStatement
                 try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)) {
@@ -94,7 +94,6 @@ public class EventImageResource {
                     final byte[] image = outputStream.toByteArray();
                     eventImageService.uploadImage(eventId, image);
                     response = Response.ok().build();
-                    break;
                 }
             }
         }
