@@ -28,17 +28,22 @@ class UserServiceHealthCheck extends HealthCheck {
     private final UserService userService;
 
     UserServiceHealthCheck(@NotNull final UserService userService) {
+        super();
         this.userService = userService;
     }
 
     @Override
     protected Result check() {
+        Result result = Result.unhealthy("Unknown error");
+
         try {
             final List<User> users = userService.findAll();
-            return users != null ? Result.healthy() : Result.unhealthy("Can't access users!");
-        } catch (final Throwable error) {
-            return Result.unhealthy(error.getMessage());
+            result = users != null ? Result.healthy() : Result.unhealthy("Can't access users!");
+        } catch (@SuppressWarnings("PMD.AvoidCatchingThrowable") final Throwable error) {
+            result = Result.unhealthy(error.getMessage());
         }
+
+        return result;
     }
 
 }

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 public class AuthenticationResponseFilterTest {
 
-    private AuthenticationResponseFilter authenticationResponseFilter = new AuthenticationResponseFilter();
+    private final AuthenticationResponseFilter authenticationResponseFilter = new AuthenticationResponseFilter();
 
     @Test
     public void filterWithSuccess() {

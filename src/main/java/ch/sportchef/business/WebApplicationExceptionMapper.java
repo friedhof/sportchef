@@ -32,7 +32,7 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
     public Response toResponse(@NotNull final WebApplicationException e) {
         // If the message did not come with a status, we'll default to an internal
         // server error status.
-        int status = e.getResponse() == null ? 500 : e.getResponse().getStatus();
+        final int status = e.getResponse() == null ? 500 : e.getResponse().getStatus();
 
         // Get a nice human readable message for our status code if the exception
         // doesn't already have a message

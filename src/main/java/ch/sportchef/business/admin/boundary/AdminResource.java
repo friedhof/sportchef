@@ -40,7 +40,7 @@ import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 @Produces(MediaType.TEXT_HTML)
 public class AdminResource {
 
-    private ConfigurationService configurationService;
+    private final ConfigurationService configurationService;
 
     @Inject
     public AdminResource(@NotNull final ConfigurationService configurationService) {
@@ -49,23 +49,27 @@ public class AdminResource {
 
     @GET
     public Response getAdminPage(@QueryParam("access-code") final String accessCode) throws IOException {
+        final Response response;
+
         final Configuration configuration = configurationService.getConfiguration();
         final String password = configuration.getAdminPassword();
         if (accessCode == null | password == null || password.trim().isEmpty() || !password.trim().equals(accessCode.trim())) {
-            return Response.status(FORBIDDEN).build();
-        }
+            response = Response.status(FORBIDDEN).build();
+        } else {
+            final InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("admin.html");
+            final StringBuilder stringBuilder = new StringBuilder();
 
-        final InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("admin.html");
-        final StringBuilder stringBuilder = new StringBuilder();
-
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
+            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, UTF_8))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
             }
+
+            response = Response.ok(stringBuilder.toString()).build();
         }
 
-        return Response.ok(stringBuilder.toString()).build();
+        return response;
     }
 
 }

@@ -69,7 +69,7 @@ public class EventImageResourceTest {
     public void setup() {
         eventServiceMock = mock(EventService.class);
         eventImageServiceMock = mock(EventImageService.class);
-        eventImageResource = new EventImageResource(1L, eventServiceMock, eventImageServiceMock);
+        eventImageResource = new EventImageResource(1L, eventImageServiceMock);
     }
 
     private byte[] readTestImage() throws IOException {
@@ -172,6 +172,7 @@ public class EventImageResourceTest {
         private final ByteArrayInputStream inputStream;
 
         ServletInputStreamMock(@NotNull final ByteArrayInputStream inputStream) {
+            super();
             this.inputStream = inputStream;
         }
 
@@ -221,13 +222,17 @@ public class EventImageResourceTest {
         }
 
         @Override
-        public synchronized void mark(final int readlimit) {
-            inputStream.mark(readlimit);
+        public void mark(final int readlimit) {
+            synchronized (inputStream) {
+                inputStream.mark(readlimit);
+            }
         }
 
         @Override
-        public synchronized void reset() throws IOException {
-            inputStream.reset();
+        public void reset() throws IOException {
+            synchronized (inputStream) {
+                inputStream.reset();
+            }
         }
 
         @Override

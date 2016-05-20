@@ -69,8 +69,9 @@ public class EventResource {
     }
 
     @DELETE
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public Response delete() {
-        final Event event = find(); // only delete existing events
+        find(); // only delete existing events
         try {
             eventImageService.deleteImage(eventId);
         } catch (final NotFoundException e) {
@@ -83,6 +84,6 @@ public class EventResource {
     @Path("image")
     public EventImageResource image() {
         find(); // only existing events can have images
-        return new EventImageResource(eventId, eventService, eventImageService);
+        return new EventImageResource(eventId, eventImageService);
     }
 }

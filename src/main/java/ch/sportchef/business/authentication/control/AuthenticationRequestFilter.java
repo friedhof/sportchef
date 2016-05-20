@@ -35,7 +35,7 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationRequestFilter implements ContainerRequestFilter {
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     @Inject
     public AuthenticationRequestFilter(@NotNull final AuthenticationService authenticationService) {

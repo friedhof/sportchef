@@ -27,7 +27,7 @@ import lombok.ToString;
 public class Challenge {
 
     private final String challenge;
-    private int tries = 0;
+    private int tries;
 
     public void increaseTries() {
         tries++;

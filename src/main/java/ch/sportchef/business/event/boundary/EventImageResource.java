@@ -18,7 +18,6 @@
 package ch.sportchef.business.event.boundary;
 
 import ch.sportchef.business.event.control.EventImageService;
-import ch.sportchef.business.event.control.EventService;
 import org.apache.commons.fileupload.MultipartStream;
 
 import javax.servlet.ServletException;
@@ -47,56 +46,59 @@ public class EventImageResource {
     private static final String IMAGE_PLACEHOLDER = "http://placehold.it/350x200"; //NON-NLS
 
     private final Long eventId;
-    private final EventService eventService;
     private final EventImageService eventImageService;
 
     public EventImageResource(@NotNull final Long eventId,
-                              @NotNull final EventService eventService,
                               @NotNull final EventImageService eventImageService) {
         this.eventId = eventId;
-        this.eventService = eventService;
         this.eventImageService = eventImageService;
     }
 
     @GET
     @Produces({"image/png"})
     public Response getImage() throws URISyntaxException, IOException {
+        Response response;
+
         try {
             final byte[] image = eventImageService.getImage(eventId);
-            return Response.ok().entity((StreamingOutput) stream -> {
+            response = Response.ok().entity((StreamingOutput) stream -> {
                 stream.write(image);
                 stream.flush();
             }).build();
         } catch (final NotFoundException e) {
             // no image found, redirecting to placeholder image
             final URI location = new URI(IMAGE_PLACEHOLDER);
-            return Response.temporaryRedirect(location).build();
+            response = Response.temporaryRedirect(location).build();
         }
+
+        return response;
     }
 
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadImage(@Context final HttpServletRequest request) throws IOException, ServletException {
+        Response response = Response.status(BAD_REQUEST).build();
+
         final String contentType = request.getContentType();
         final byte[] boundary = contentType.substring(contentType.indexOf("boundary=") + 9).getBytes(); //NON-NLS
 
         try (final BufferedInputStream inputStream = new BufferedInputStream(request.getInputStream(), 8192)) {
             final MultipartStream multipartStream = new MultipartStream(inputStream, boundary, 8192, null);
-            boolean nextPart = multipartStream.skipPreamble();
+            final boolean nextPart = multipartStream.skipPreamble();
             //noinspection LoopStatementThatDoesntLoop
-            while (nextPart) {
+            if (nextPart) {
                 multipartStream.readHeaders(); // don't remove, strips headers off
                 //noinspection NestedTryStatement
                 try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(8192)) {
                     multipartStream.readBodyData(outputStream);
                     final byte[] image = outputStream.toByteArray();
                     eventImageService.uploadImage(eventId, image);
-                    return Response.ok().build();
+                    response = Response.ok().build();
                 }
             }
         }
 
-        return Response.status(BAD_REQUEST).build();
+        return response;
     }
 
     @DELETE
