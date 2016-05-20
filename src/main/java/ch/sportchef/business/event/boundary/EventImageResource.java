@@ -18,7 +18,6 @@
 package ch.sportchef.business.event.boundary;
 
 import ch.sportchef.business.event.control.EventImageService;
-import ch.sportchef.business.event.control.EventService;
 import org.apache.commons.fileupload.MultipartStream;
 
 import javax.servlet.ServletException;
@@ -47,14 +46,11 @@ public class EventImageResource {
     private static final String IMAGE_PLACEHOLDER = "http://placehold.it/350x200"; //NON-NLS
 
     private final Long eventId;
-    private final EventService eventService;
     private final EventImageService eventImageService;
 
     public EventImageResource(@NotNull final Long eventId,
-                              @NotNull final EventService eventService,
                               @NotNull final EventImageService eventImageService) {
         this.eventId = eventId;
-        this.eventService = eventService;
         this.eventImageService = eventImageService;
     }
 

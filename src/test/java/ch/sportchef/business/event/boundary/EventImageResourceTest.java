@@ -69,7 +69,7 @@ public class EventImageResourceTest {
     public void setup() {
         eventServiceMock = mock(EventService.class);
         eventImageServiceMock = mock(EventImageService.class);
-        eventImageResource = new EventImageResource(1L, eventServiceMock, eventImageServiceMock);
+        eventImageResource = new EventImageResource(1L, eventImageServiceMock);
     }
 
     private byte[] readTestImage() throws IOException {

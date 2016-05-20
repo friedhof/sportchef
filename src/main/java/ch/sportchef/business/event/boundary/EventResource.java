@@ -83,6 +83,6 @@ public class EventResource {
     @Path("image")
     public EventImageResource image() {
         find(); // only existing events can have images
-        return new EventImageResource(eventId, eventService, eventImageService);
+        return new EventImageResource(eventId, eventImageService);
     }
 }
