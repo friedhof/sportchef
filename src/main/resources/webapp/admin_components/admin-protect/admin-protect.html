@@ -33,7 +33,7 @@
     <script>
         function enterAdminArea() {
             var formData = $('#admin-protect-form').serialize();
-            var adminURL = '/sportchef/api/admin?' + formData;
+            var adminURL = '/api/admin?' + formData;
             $.ajax({
                 url: adminURL
             })

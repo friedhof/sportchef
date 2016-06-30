@@ -28,7 +28,7 @@
         <paper-card heading="Delete Events" data-i18n="admin-eventlist.heading" data-i18n-attribute="heading">
             <div class="card-content">
                 <paper-listbox>
-                    <iron-ajax auto url="/sportchef/api/events" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
+                    <iron-ajax auto url="/api/events" handle-as="json" last-response="{{ajaxResponse}}"></iron-ajax>
                     <template is="dom-repeat" items="[[ajaxResponse]]">
                         <paper-item id="paper-item-{{item.eventId}}">
                             {{item.title}}
@@ -49,7 +49,7 @@
             if (confirm('Are you sure you want delete event #' + eventId + ' "' + eventTitle + '"?')) {
                 $.ajax({
                     method: 'DELETE',
-                    url: '/sportchef/api/events/' + eventId
+                    url: '/api/events/' + eventId
                 })
                 .error(function(jqXHR, textStatus, errorThrown){
                     alert(textStatus);
