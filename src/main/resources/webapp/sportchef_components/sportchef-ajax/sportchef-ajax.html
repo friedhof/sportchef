@@ -24,7 +24,6 @@
     </template>
 
     <script>
-        // register a new element called sportchef-events
         Polymer({
             is: "sportchef-ajax",
             generateHeaders: function(){
@@ -51,7 +50,7 @@
                 },
                 contentType: {
                     type: String,
-                    value: null // "application/json" for auto json encoding
+                    value: "application/json"
                 },
                 body: {
                     type: Object,
