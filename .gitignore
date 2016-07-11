@@ -1,4 +1,7 @@
 .idea
+.settings
+.classpath
+.project
 sportchef.iml
 target
 doc/sportchef_technical_documentation.aux
