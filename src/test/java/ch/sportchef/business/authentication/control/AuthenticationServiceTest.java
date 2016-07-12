@@ -95,7 +95,9 @@ public class AuthenticationServiceTest {
 
     @After
     public void tearDown() {
-        smtpServer.stop();
+        if (smtpServer != null) {
+            smtpServer.stop();
+        }
     }
 
     private Configuration createConfigurationMock() {
