@@ -1,5 +1,8 @@
 .DS_Store
 .idea
+.settings
+.classpath
+.project
 sportchef.iml
 target
 dependency-reduced-pom.xml

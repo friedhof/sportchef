@@ -16,22 +16,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
-<link rel="import" href="../sportchef-ajax/sportchef-ajax.html" />
-<link rel="import" href="../sportchef-event/sportchef-event.html" />
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html" />
 
-<dom-module id="sportchef-events">
+<dom-module id="sportchef-ajax">
     <template>
-        <sportchef-ajax api-url="/api/events" ajax-response="{{ajaxResponse}}"></sportchef-ajax>
-        <!-- TODO: handle ajax errors -->
-        <template is="dom-repeat" items="[[ajaxResponse]]">
-            <sportchef-event event="{{item}}"></sportchef-event>
-        </template>
+        <iron-ajax auto url="[[apiUrl]]" handle-as="json" last-response="{{ajaxResponse}}" last-error="{{ajaxError}}" headers="[[generateHeaders()]]" content-type="[[contentType]]" body="[[body]]"></iron-ajax>
     </template>
 
     <script>
-        // register a new element called sportchef-events
         Polymer({
-            is: "sportchef-events",
+            is: "sportchef-ajax",
             generateHeaders: function(){
                 var headers = {};
                 var token = sessionStorage.getItem("token");
@@ -39,6 +33,29 @@
                     headers.Token = token;
                 }
                 return headers;
+            },
+            properties: {
+                apiUrl: {
+                    type: String
+                },
+                ajaxResponse: {
+                    type: Object,
+                    notify: true,
+                    readonly: true
+                },
+                ajaxError: {
+                    type: Object,
+                    notify: true,
+                    readonly: true
+                },
+                contentType: {
+                    type: String,
+                    value: "application/json"
+                },
+                body: {
+                    type: Object,
+                    value: null
+                }
             }
         });
     </script>
