@@ -49,7 +49,6 @@ input[type=checkbox] {
 }
 
 .nav-header {
-    z-index:          400;
     background-color: #3c4143;
     color:            #e5e8e6;
     padding:          0 8% 0 4%;
