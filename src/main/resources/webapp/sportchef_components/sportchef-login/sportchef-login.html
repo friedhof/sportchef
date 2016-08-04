@@ -85,11 +85,16 @@
                 url: "/api/authentication",
                 cache: false,
                 success: function(data, textStatus, jqXHR ) {
-                    $("#authenticateMessage")
-                            .removeClass("error")
-                            .html();
                     var token = jqXHR.getResponseHeader("Token");
                     sessionStorage.setItem("token", token);
+                    $("#email").val("");
+                    $("#challengeRequestMessage")
+                            .removeClass("success error")
+                            .html("Step 1: Enter your email address above and request a challenge.");
+                    $("#challenge").val("");
+                    $("#authenticateMessage")
+                            .removeClass("success error")
+                            .html("Step 2: Check your email and enter the challenge below.");
                     document.getElementById("dialog-login").close();
                     $('#btn-login').hide();
                     $('#btn-logout').show();
