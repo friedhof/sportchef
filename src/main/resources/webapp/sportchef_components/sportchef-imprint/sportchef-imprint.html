@@ -32,7 +32,7 @@
             }
         </style>
 
-        <iron-ajax auto url="/imprint.md" handle-as="text" last-response="{{imprint}}"></iron-ajax>
+        <iron-ajax auto url="/api/imprint" handle-as="text" last-response="{{imprint}}"></iron-ajax>
         <paper-dialog id="dialog-imprint" modal>
             <paper-dialog-scrollable class="can-scroll">
                 <marked-element markdown$="{{imprint}}">

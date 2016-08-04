@@ -23,6 +23,7 @@ import ch.sportchef.business.WebApplicationExceptionMapper;
 import ch.sportchef.business.admin.boundary.AdminResource;
 import ch.sportchef.business.authentication.boundary.AuthenticationResource;
 import ch.sportchef.business.event.boundary.EventsResource;
+import ch.sportchef.business.imprint.boundary.ImprintResource;
 import ch.sportchef.business.user.boundary.UsersResource;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
@@ -106,6 +107,7 @@ public class SportChefApplication extends Application<SportChefConfiguration> {
         jersey.register(injector.getInstance(AdminResource.class));
         jersey.register(injector.getInstance(AuthenticationResource.class));
         jersey.register(injector.getInstance(EventsResource.class));
+        jersey.register(injector.getInstance(ImprintResource.class));
         jersey.register(injector.getInstance(UsersResource.class));
     }
 
