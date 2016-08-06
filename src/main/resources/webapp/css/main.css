@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-@import url(https://fonts.googleapis.com/css?family=Roboto:300,400,500);
+@import url(https://fonts.googleapis.com/css?family=Lekton:700|Roboto:300,400,500);
 
 body {
     font-family: 'Roboto', sans-serif;
@@ -195,7 +195,8 @@ paper-button.sportchef-layout-header {
 #title {
     display:        inline-block;
     vertical-align: middle;
-    font-weight:    300;
+    font-family:    'Lekton', sans-serif;
+    font-weight:    700;
     margin:         0 35px 0 0;
     padding:        0;
     float:          left;
@@ -203,7 +204,7 @@ paper-button.sportchef-layout-header {
 
 #title a {
     padding:         5px;
-    color:           #e5e8e6;
+    color:           #b1b3b4;
     text-decoration: none;
     margin-top:      20px;
     display:         block;
