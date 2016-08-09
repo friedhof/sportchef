@@ -26,8 +26,11 @@
     <template>
         <style>
             paper-dialog {
-                width: 500px;
-                height: 300px;
+                width: 400px;
+                height: 400px;
+            }
+            .message {
+                display: none;
             }
             .success {
                 color: green;
@@ -39,17 +42,12 @@
 
         <paper-dialog id="dialog-login" modal>
             <h2>Login</h2>
-            <div>
-                <gold-email-input id="email" autofocus required auto-validate></gold-email-input>
-                <div id="challengeRequestMessage">Step 1: Enter your email address above and request a challenge.</div>
-                <div id="authenticateMessage">Step 2: Check your email and enter the challenge below.</div>
-                <paper-input id="challenge" type="password" label="Challenge" />
-            </div>
-            <div class="buttons">
-                <paper-button dialog-dismiss>Cancel</paper-button>
-                <paper-button onClick="requestChallenge();">Request Challenge</paper-button>
-                <paper-button onClick="authenticate();">Authenticate</paper-button>
-            </div>
+            <gold-email-input id="email" label="1. Email" autofocus required auto-validate></gold-email-input>
+            <div id="challengeRequestMessage" class="message"></div>
+            <paper-button id="requestChallengeButton" onclick="requestChallenge();">Request Challenge</paper-button>
+            <paper-input id="challenge" label="2. Challenge" disabled></paper-input>
+            <div id="authenticateMessage" class="message"></div>
+            <paper-button id="authenticationButton" onclick="authenticate();" disabled>Authenticate</paper-button>
         </paper-dialog>
     </template>
 
@@ -63,13 +61,19 @@
                     $("#challengeRequestMessage")
                             .removeClass("error")
                             .addClass("success")
-                            .html("A challenge was send to you by email!");
+                            .html("A challenge was send to you by email!")
+                            .show();
+                    $("email").prop('disabled', true);
+                    $("#requestChallengeButton").prop('disabled', true);
+                    $("#challenge").prop('disabled', false);
+                    $("#authenticationButton").prop('disabled', false);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     $("#challengeRequestMessage")
                             .removeClass("success")
                             .addClass("error")
-                            .html(textStatus + ": " + errorThrown);
+                            .html(textStatus + ": " + errorThrown)
+                            .show();
                 }
             });
         }
@@ -88,22 +92,23 @@
                     var token = jqXHR.getResponseHeader("Token");
                     sessionStorage.setItem("token", token);
                     $("#email").val("");
-                    $("#challengeRequestMessage")
-                            .removeClass("success error")
-                            .html("Step 1: Enter your email address above and request a challenge.");
+                    $("#challengeRequestMessage").hide();
                     $("#challenge").val("");
-                    $("#authenticateMessage")
-                            .removeClass("success error")
-                            .html("Step 2: Check your email and enter the challenge below.");
+                    $("#challenge").prop('disabled', true);
+                    $("#authenticationButton").prop('disabled', true);
+                    $("#authenticateMessage").hide();
                     document.getElementById("dialog-login").close();
                     $('#btn-login').hide();
                     $('#btn-logout').show();
+
+
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     $("#authenticateMessage")
                             .removeClass("success")
                             .addClass("error")
-                            .html(textStatus + ": " + errorThrown);
+                            .html(textStatus + ": " + errorThrown)
+                            .show();
                 }
             });
         }
