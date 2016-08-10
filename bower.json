@@ -29,6 +29,6 @@
     "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^1.1.5",
     "paper-input": "PolymerElements/paper-input#^1.1.17",
     "polymer": "Polymer/polymer#~1.6.1",
-    "vaadin-date-picker": "^1.1.2"
+    "vaadin-date-picker": "^1.1.3"
   }
 }
