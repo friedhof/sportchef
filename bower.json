@@ -15,6 +15,7 @@
     "tests"
   ],
   "dependencies": {
+    "app-localize-behavior": "PolymerElements/app-localize-behavior#^0.9.2",
     "file-upload": "~1.7.7",
     "gold-email-input": "PolymerElements/gold-email-input#^1.0.7",
     "iron-ajax": "PolymerElements/iron-ajax#~1.4.3",
