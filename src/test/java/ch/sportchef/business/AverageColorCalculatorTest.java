@@ -17,7 +17,7 @@
  */
 package ch.sportchef.business;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -29,6 +29,7 @@ import java.net.URL;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AverageColorCalculatorTest {
 
@@ -62,13 +63,12 @@ public class AverageColorCalculatorTest {
         }
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test
     public final void testImageColorWithoutImage() {
         // arrange
 
-        // act
-        AverageColorCalculator.getAverageColorAsHex(null);
-
-        // assert
+        // act & assert
+        assertThrows(NullPointerException.class,
+                () -> AverageColorCalculator.getAverageColorAsHex(null));
     }
 }
