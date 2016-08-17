@@ -19,7 +19,7 @@ package ch.sportchef.business.admin.boundary;
 
 import ch.sportchef.business.configuration.control.ConfigurationService;
 import ch.sportchef.business.configuration.entity.Configuration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -30,10 +30,7 @@ import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class AdminResourceTest {
 
