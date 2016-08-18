@@ -19,7 +19,7 @@ package ch.sportchef.business.authentication.boundary;
 
 import ch.sportchef.business.authentication.control.AuthenticationService;
 import ch.sportchef.business.authentication.entity.AuthenticationData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
@@ -27,12 +27,9 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-public class AutenticationResourceTest {
+public class AuthenticationResourceTest {
 
     @Test
     public void requestChallengeWithBadRequest() {
