@@ -19,8 +19,8 @@ package ch.sportchef.business.authentication.control;
 
 import ch.sportchef.business.authentication.entity.Role;
 import ch.sportchef.business.user.entity.User;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
@@ -39,7 +39,7 @@ public class AuthenticationSecurityContextTest {
 
     private AuthenticationSecurityContext authenticationSecurityContext;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final User user = User.builder().email(TEST_EMAIL).build();
 
