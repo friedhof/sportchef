@@ -18,7 +18,7 @@
 package ch.sportchef.business.authentication.control;
 
 import com.codahale.metrics.health.HealthCheck;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
