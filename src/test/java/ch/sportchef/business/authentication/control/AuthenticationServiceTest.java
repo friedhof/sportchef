@@ -26,16 +26,11 @@ import com.dumbster.smtp.MailMessage;
 import com.dumbster.smtp.ServerOptions;
 import com.dumbster.smtp.SmtpServer;
 import com.dumbster.smtp.SmtpServerFactory;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.*;
 import org.apache.commons.mail.EmailException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -49,11 +44,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public class AuthenticationServiceTest {
@@ -72,7 +65,7 @@ public class AuthenticationServiceTest {
     private HealthCheckRegistry healthCheckRegistryMock;
     private SmtpServer smtpServer;
 
-    @Before
+    @BeforeEach
     public void setup() {
         final User testUser = User.builder()
                 .userId(TEST_USER_ID)
@@ -93,7 +86,7 @@ public class AuthenticationServiceTest {
         smtpServer = SmtpServerFactory.startServer(smtpServerOptions);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (smtpServer != null) {
             smtpServer.stop();
@@ -127,29 +120,27 @@ public class AuthenticationServiceTest {
         verify(userServiceMock, times(1)).findByEmail(TEST_USER_EMAIL);
     }
 
-    @Test(expected = MalformedJwtException.class)
+    @Test
     public void validateMalformedToken() {
         // arrange
         final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
-        // act
-        authenticationService.validate(MALFORMED_TOKEN);
-
-        // assert
+        // act & assert
+        assertThrows(MalformedJwtException.class,
+                () -> authenticationService.validate(MALFORMED_TOKEN));
     }
 
-    @Test(expected = SignatureException.class)
+    @Test
     public void validateSignatureToken() {
         // arrange
         final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
-        // act
-        authenticationService.validate(SIGNATURE_TOKEN);
-
-        // assert
+        // act & assert
+        assertThrows(SignatureException.class,
+                () ->authenticationService.validate(SIGNATURE_TOKEN));
     }
 
-    @Test(expected = ExpiredJwtException.class)
+    @Test
     public void validateExpiredToken() {
         // arrange
         final Date now = new Date();
@@ -163,10 +154,9 @@ public class AuthenticationServiceTest {
                 .compact();
         final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
-        // act
-        authenticationService.validate(token);
-
-        // assert
+        // act & assert
+        assertThrows(ExpiredJwtException.class,
+                () -> authenticationService.validate(token));
     }
 
     @Test
@@ -237,13 +227,14 @@ public class AuthenticationServiceTest {
         assertThat(token.isPresent(), is(false));
     }
 
-    @Test(expected = EmailException.class)
+    @Test
     public void requestChallengeWithException() {
         // arrange
         final AuthenticationService authenticationService = new AuthenticationService(userServiceMock, configurationServiceMock, healthCheckRegistryMock);
 
-        // act
-        authenticationService.requestChallenge("@test");
+        // act & assert
+        assertThrows(EmailException.class,
+                () -> authenticationService.requestChallenge("@test"));
     }
 
     private String requestChallenge(@NotNull final AuthenticationService authenticationService) {
