@@ -17,8 +17,8 @@
  */
 package ch.sportchef.business.authentication.entity;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,7 +29,7 @@ public class ChallengeTest {
 
     private Challenge challenge;
 
-    @Before
+    @BeforeEach
     public void before() {
         challenge = new Challenge(TEST_CHALLENGE);
     }
