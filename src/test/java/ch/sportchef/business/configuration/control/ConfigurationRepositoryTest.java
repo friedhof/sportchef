@@ -18,24 +18,22 @@
 package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ConfigurationRepositoryTest {
 
     private static ConfigurationRepository configurationRepository;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws IOException {
         final File dir = Paths.get(System.getProperty("user.home"), ".sportchef").toFile();
         if (!dir.exists()) {
@@ -48,7 +46,7 @@ public class ConfigurationRepositoryTest {
         configurationRepository = new ConfigurationRepository();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         configurationRepository = null;
     }
