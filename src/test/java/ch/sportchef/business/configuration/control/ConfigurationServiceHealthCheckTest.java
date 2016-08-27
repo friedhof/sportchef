@@ -19,7 +19,7 @@ package ch.sportchef.business.configuration.control;
 
 import ch.sportchef.business.configuration.entity.Configuration;
 import com.codahale.metrics.health.HealthCheck;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 public class ConfigurationServiceHealthCheckTest {
 
     @Test
-    public void checkHealthy() throws Exception {
+    public void checkHealthy() {
         // arrange
         final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
         when(configurationServiceMock.getConfiguration()).thenReturn(mock(Configuration.class));
@@ -43,7 +43,7 @@ public class ConfigurationServiceHealthCheckTest {
     }
 
     @Test
-    public void checkUnhealthy() throws Exception {
+    public void checkUnhealthy() {
         // arrange
         final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
         when(configurationServiceMock.getConfiguration()).thenReturn(null);
@@ -57,7 +57,7 @@ public class ConfigurationServiceHealthCheckTest {
     }
 
     @Test
-    public void checkException() throws Exception {
+    public void checkException() {
         // arrange
         final ConfigurationService configurationServiceMock = mock(ConfigurationService.class);
         when(configurationServiceMock.getConfiguration()).thenThrow(new RuntimeException("Test Message"));
