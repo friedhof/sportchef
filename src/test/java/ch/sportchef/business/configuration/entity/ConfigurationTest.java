@@ -17,24 +17,24 @@
  */
 package ch.sportchef.business.configuration.entity;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import static java.lang.Boolean.FALSE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static java.lang.Boolean.FALSE;
 
 public class ConfigurationTest {
 
     private static Configuration configuration;
 
-    @BeforeClass
+    @BeforeAll
     public static void prepareConfiguration() throws IOException {
         final Properties properties = new Properties();
         final InputStream inputStream = Thread.currentThread()
@@ -43,7 +43,7 @@ public class ConfigurationTest {
         configuration = new Configuration(properties);
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanupConfiguration() {
         configuration = null;
     }
