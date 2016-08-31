@@ -20,8 +20,8 @@ package ch.sportchef.business.event.boundary;
 import ch.sportchef.business.event.control.EventImageService;
 import ch.sportchef.business.event.control.EventService;
 import ch.sportchef.business.event.entity.Event;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
@@ -40,12 +40,9 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class EventResourceTest {
 
@@ -53,7 +50,7 @@ public class EventResourceTest {
     private EventService eventServiceMock;
     private EventImageService eventImageServiceMock;
 
-    @Before
+    @BeforeEach
     public void setup() {
         eventServiceMock = mock(EventService.class);
         eventImageServiceMock = mock(EventImageService.class);
@@ -81,14 +78,15 @@ public class EventResourceTest {
         verify(eventServiceMock, times(1)).findByEventId(1L);
     }
 
-    @Test(expected=NotFoundException.class)
+    @Test
     public void findWithNotFound() {
         // arrange
         when(eventServiceMock.findByEventId(1L))
                 .thenReturn(Optional.empty());
 
-        // act
-        eventResource.find();
+        // act & assert
+        assertThrows(NotFoundException.class,
+                () -> eventResource.find());
     }
 
     @Test
@@ -124,7 +122,7 @@ public class EventResourceTest {
         verify(uriBuilderMock, times(1)).build();
     }
 
-    @Test(expected=NotFoundException.class)
+    @Test
     public void updateWithNotFound() {
         // arrange
         final Event testEvent = Event.builder()
@@ -137,11 +135,12 @@ public class EventResourceTest {
         final UriInfo uriInfoMock = mock(UriInfo.class);
         when(eventServiceMock.findByEventId(testEvent.getEventId())).thenReturn(Optional.empty());
 
-        // act
-        eventResource.update(testEvent, uriInfoMock);
+        // act & assert
+        assertThrows(NotFoundException.class,
+                () -> eventResource.update(testEvent, uriInfoMock));
     }
 
-    @Test(expected=ConcurrentModificationException.class)
+    @Test
     public void updateWithConflict() {
         // arrange
         final Event testEvent = Event.builder()
@@ -154,8 +153,9 @@ public class EventResourceTest {
         when(eventServiceMock.findByEventId(testEvent.getEventId())).thenReturn(Optional.of(testEvent));
         when(eventServiceMock.update(anyObject())).thenThrow(new ConcurrentModificationException());
 
-        // act
-        eventResource.update(testEvent, null);
+        // act & assert
+        assertThrows(ConcurrentModificationException.class,
+                () -> eventResource.update(testEvent, null));
     }
 
     @Test
@@ -200,13 +200,14 @@ public class EventResourceTest {
         verify(eventServiceMock, times(1)).findByEventId(testEvent.getEventId());
     }
 
-    @Test(expected=NotFoundException.class)
+    @Test
     public void deleteWithNotFound() {
         // arrange
         when(eventServiceMock.findByEventId(anyObject())).thenReturn(Optional.empty());
 
-        // act
-        eventResource.delete();
+        // act & assert
+        assertThrows(NotFoundException.class,
+                () -> eventResource.delete());
     }
 
     @Test
