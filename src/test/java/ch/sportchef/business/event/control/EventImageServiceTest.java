@@ -18,9 +18,9 @@
 package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.event.entity.Event;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
 import javax.validation.constraints.NotNull;
@@ -35,10 +35,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +49,7 @@ public class EventImageServiceTest {
     private static String tempUserHome;
     private static File imageUploadPath;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws IOException {
         realUserHome = System.getProperty("user.home");
         tempUserHome = Files.createTempDirectory("sportchef-").toString();
@@ -61,7 +60,7 @@ public class EventImageServiceTest {
         imageUploadPath = new File(imageUploadFolder);
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         System.setProperty("user.home", realUserHome);
     }
@@ -105,15 +104,16 @@ public class EventImageServiceTest {
         assertThat(image, is(bytes));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void getImageNotFound() throws IOException {
         // arrange
         final Long eventId = 2L;
         final EventService eventServiceMock = mock(EventService.class);
         final EventImageService eventImageService = new EventImageService(eventServiceMock);
 
-        // act
-        eventImageService.getImage(eventId);
+        // act & assert
+        assertThrows(NotFoundException.class,
+                () -> eventImageService.getImage(eventId));
     }
 
     @Test
@@ -167,14 +167,15 @@ public class EventImageServiceTest {
         assertThat(image, nullValue());
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void deleteImageNotFound() {
         // arrange
         final Long eventId = 6L;
         final EventService eventServiceMock = mock(EventService.class);
         final EventImageService eventImageService = new EventImageService(eventServiceMock);
 
-        // act
-        eventImageService.deleteImage(eventId);
+        // act & assert
+        assertThrows(NotFoundException.class,
+                () -> eventImageService.deleteImage(eventId));
     }
 }
