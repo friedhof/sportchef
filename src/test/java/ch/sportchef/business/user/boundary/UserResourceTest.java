@@ -19,7 +19,7 @@ package ch.sportchef.business.user.boundary;
 
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
@@ -34,11 +34,9 @@ import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class UserResourceTest {
 
@@ -68,15 +66,16 @@ public class UserResourceTest {
         verify(userServiceMock, times(1)).findByUserId(1L);
     }
 
-    @Test(expected=NotFoundException.class)
+    @Test
     public void findWithNotFound() {
         // arrange
         final UserService userServiceMock = mock(UserService.class);
         when(userServiceMock.findByUserId(1L)).thenReturn(Optional.empty());
         final UserResource userResource =  new UserResource(1L, userServiceMock);
 
-        // act
-        userResource.find();
+        // act & assert
+        assertThrows(NotFoundException.class,
+                () -> userResource.find());
     }
 
     @Test
@@ -108,7 +107,7 @@ public class UserResourceTest {
         verify(uriBuilderMock, times(1)).build();
     }
 
-    @Test(expected=NotFoundException.class)
+    @Test
     public void updateWithNotFound() {
         // arrange
         final User testUser = createTestUser();
@@ -116,11 +115,12 @@ public class UserResourceTest {
         when(userServiceMock.findByUserId(1L)).thenReturn(Optional.empty());
         final UserResource userResource =  new UserResource(1L, userServiceMock);
 
-        // act
-        userResource.update(testUser, null);
+        // act & assert
+        assertThrows(NotFoundException.class,
+                () -> userResource.update(testUser, null));
     }
 
-    @Test(expected=ConcurrentModificationException.class)
+    @Test
     public void updateWithConflict() {
         // arrange
         final User testUser = createTestUser();
@@ -129,8 +129,9 @@ public class UserResourceTest {
         when(userServiceMock.update(anyObject())).thenThrow(new ConcurrentModificationException());
         final UserResource userResource =  new UserResource(1L, userServiceMock);
 
-        // act
-        userResource.update(testUser, null);
+        // act & assert
+        assertThrows(ConcurrentModificationException.class,
+                () -> userResource.update(testUser, null));
     }
 
     @Test
@@ -149,15 +150,16 @@ public class UserResourceTest {
         verify(userServiceMock, times(1)).findByUserId(testUser.getUserId());
     }
 
-    @Test(expected=NotFoundException.class)
+    @Test
     public void deleteWithNotFound() {
         // arrange
         final UserService userServiceMock = mock(UserService.class);
         when(userServiceMock.findByUserId(anyObject())).thenReturn(Optional.empty());
         final UserResource userResource =  new UserResource(1L, userServiceMock);
 
-        // act
-        userResource.delete();
+        // act & assert
+        assertThrows(NotFoundException.class,
+                () -> userResource.delete());
     }
 
 }
