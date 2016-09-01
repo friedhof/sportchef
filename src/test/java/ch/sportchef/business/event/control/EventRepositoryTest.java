@@ -18,7 +18,7 @@
 package ch.sportchef.business.event.control;
 
 import ch.sportchef.business.event.entity.Event;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -28,11 +28,9 @@ import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EventRepositoryTest {
 
@@ -64,7 +62,7 @@ public class EventRepositoryTest {
         assertThat(updatedEvent.getVersion(), is(not(equalTo(eventToUpdate.getVersion()))));
     }
 
-    @Test(expected = ConcurrentModificationException.class)
+    @Test
     public void updateWithConflict() {
         // arrange
         final EventRepository eventRepository = new EventRepository();
@@ -76,11 +74,10 @@ public class EventRepositoryTest {
                 .title("changedTitle2")
                 .build();
 
-        // act
+        // act & assert
         eventRepository.update(eventToUpdate1);
-        eventRepository.update(eventToUpdate2);
-
-        // assert
+        assertThrows(ConcurrentModificationException.class,
+                () -> eventRepository.update(eventToUpdate2));
     }
 
     @Test
