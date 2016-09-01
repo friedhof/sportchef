@@ -18,7 +18,7 @@
 package ch.sportchef.business.user.control;
 
 import com.codahale.metrics.health.HealthCheck;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 public class UserServiceHealthCheckTest {
 
     @Test
-    public void checkHealthy() throws Exception {
+    public void checkHealthy() {
         // arrange
         final UserService userServiceMock = mock(UserService.class);
         when(userServiceMock.findAll()).thenReturn(new ArrayList<>(0));
@@ -44,7 +44,7 @@ public class UserServiceHealthCheckTest {
     }
 
     @Test
-    public void checkUnhealthy() throws Exception {
+    public void checkUnhealthy() {
         // arrange
         final UserService userServiceMock = mock(UserService.class);
         when(userServiceMock.findAll()).thenReturn(null);
@@ -58,7 +58,7 @@ public class UserServiceHealthCheckTest {
     }
 
     @Test
-    public void checkException() throws Exception {
+    public void checkException() {
         // arrange
         final UserService userServiceMock = mock(UserService.class);
         when(userServiceMock.findAll()).thenThrow(new RuntimeException("Test Message"));
