@@ -20,7 +20,7 @@ package ch.sportchef.business.user.boundary;
 import ch.sportchef.business.exception.ExpectationFailedException;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Response;
@@ -36,12 +36,9 @@ import static javax.ws.rs.core.Response.Status.OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class UsersResourceTest {
 
@@ -94,7 +91,7 @@ public class UsersResourceTest {
         verify(uriBuilderMock, times(1)).build();
     }
 
-    @Test(expected=ExpectationFailedException.class)
+    @Test
     public void saveWithExpectationFailed() {
         // arrange
         final User userToCreate = createJohnDoe(0L);
@@ -103,8 +100,9 @@ public class UsersResourceTest {
                 .when(userServiceMock).create(userToCreate);
         final UsersResource usersResource = new UsersResource(userServiceMock);
 
-        // act
-        usersResource.save(userToCreate, null);
+        // act & assert
+        assertThrows(ExpectationFailedException.class,
+                () -> usersResource.save(userToCreate, null));
     }
 
     @Test
