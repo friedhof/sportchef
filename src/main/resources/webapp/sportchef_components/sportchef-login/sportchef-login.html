@@ -33,7 +33,11 @@
                 background-color: orange;
                 color: white;
             }
-            .center {
+            .title {
+                text-align: center;
+                text-transform: uppercase;
+            }
+            .button-container {
                 text-align: center;
             }
             .message {
@@ -48,15 +52,17 @@
         </style>
 
         <paper-dialog id="dialog-login" modal>
-            <h2>{{localize('login')}}</h2>
+            <div class="title">
+                <h2>{{localize('login')}}</h2>
+            </div>
             <gold-email-input id="email" label="1. {{localize('email')}}" autofocus required auto-validate></gold-email-input>
             <div id="challengeRequestMessage" class="message center"></div>
-            <div class="center">
+            <div class="button-container">
                 <paper-button id="requestChallengeButton" onclick="requestChallenge();">{{localize('requestChallenge')}}</paper-button>
             </div>
             <paper-input id="challenge" label="2. {{localize('challenge')}}" disabled></paper-input>
             <div id="authenticateMessage" class="message center"></div>
-            <div class="center">
+            <div class="button-container">
                 <paper-button id="authenticationButton" onclick="authenticate();" disabled>{{localize('authenticate')}}</paper-button>
             </div>
         </paper-dialog>
