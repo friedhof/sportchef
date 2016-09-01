@@ -17,9 +17,9 @@
  */
 package ch.sportchef.business.event.entity;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -39,7 +39,7 @@ public class EntityTest {
 
     private static Event event;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         event = Event.builder()
                 .eventId(EVENT_ID)
@@ -51,7 +51,7 @@ public class EntityTest {
                 .build();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         event = null;
     }
