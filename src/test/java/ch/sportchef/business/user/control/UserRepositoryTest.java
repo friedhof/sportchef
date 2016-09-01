@@ -2,18 +2,16 @@ package ch.sportchef.business.user.control;
 
 import ch.sportchef.business.exception.ExpectationFailedException;
 import ch.sportchef.business.user.entity.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.validation.constraints.NotNull;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserRepositoryTest {
 
@@ -32,14 +30,15 @@ public class UserRepositoryTest {
         return userRepository.create(baseUser);
     }
 
-    @Test(expected = ExpectationFailedException.class)
+    @Test
     public void createEmailAddressUniqueTest() {
         // arrange
         final UserRepository userRepository = new UserRepository();
 
-        // act
+        // act && assert
         createUser(userRepository);
-        createUser(userRepository);
+        assertThrows(ExpectationFailedException.class,
+                () -> createUser(userRepository));
     }
 
     @Test
@@ -59,7 +58,7 @@ public class UserRepositoryTest {
         assertThat(updatedUser.getVersion(), is(not(equalTo(userToUpdate.getVersion()))));
     }
 
-    @Test(expected = ConcurrentModificationException.class)
+    @Test
     public void updateWithConflict() {
         // arrange
         final UserRepository userRepository = new UserRepository();
@@ -71,11 +70,10 @@ public class UserRepositoryTest {
                 .firstName("Jill")
                 .build();
 
-        // act
+        // act & assert
         userRepository.update(userToUpdate1);
-        userRepository.update(userToUpdate2);
-
-        // assert
+        assertThrows(ConcurrentModificationException.class,
+                () -> userRepository.update(userToUpdate2));
     }
 
     @Test
