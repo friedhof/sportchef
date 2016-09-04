@@ -184,7 +184,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>src/main/resources/webapp/bower_components</directory>
+                            <directory>${project.build.directory}/sportchef/bower_components</directory>
                         </fileset>
                     </filesets>
                 </configuration>
