@@ -33,4 +33,3 @@ cache:
   directories:
   - .autoconf
   - $HOME/.m2
-  - src/main/resources/webapp/bower_components
