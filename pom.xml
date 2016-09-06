@@ -4,7 +4,7 @@
     <groupId>ch.sportchef</groupId>
     <artifactId>sportchef</artifactId>
     <version>1.2-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <licenses>
         <license>
             <name>GNU AFFERO GENERAL PUBLIC LICENSE, Version 3 (AGPL-3.0)</name>
@@ -55,21 +55,15 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.16.10</version>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- ***************** -->
         <!-- * compile scope * -->
         <!-- ***************** -->
         <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-core</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-assets</artifactId>
-            <version>1.0.0</version>
-        </dependency>
         <dependency> <!-- Looks like a dependency version mess with jackson/joda module combination -->
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -100,7 +94,6 @@
             <artifactId>guava</artifactId>
             <version>19.0</version>
         </dependency>
-        <dependency>
             <groupId>pl.setblack</groupId>
             <artifactId>airomem-core</artifactId>
             <version>1.0.5</version>
