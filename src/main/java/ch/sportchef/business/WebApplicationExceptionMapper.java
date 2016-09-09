@@ -17,27 +17,27 @@
  */
 package ch.sportchef.business;
 
-import org.eclipse.jetty.http.HttpStatus;
-
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 import java.util.HashMap;
 
+@Provider
 public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplicationException> {
 
     @Override
-    public Response toResponse(@NotNull final WebApplicationException e) {
+    public Response toResponse(final WebApplicationException e) {
         // If the message did not come with a status, we'll default to an internal
         // server error status.
         final int status = e.getResponse() == null ? 500 : e.getResponse().getStatus();
 
         // Get a nice human readable message for our status code if the exception
         // doesn't already have a message
-        final String msg = e.getMessage() == null ?
-                HttpStatus.getMessage(status) : e.getMessage();
+//        final String msg = e.getMessage() == null ?
+//                HttpStatus.getMessage(status) : e.getMessage();
+        final String msg = e.getMessage();
 
         // Create a JSON response with the provided hashmap
         return Response.status(status)

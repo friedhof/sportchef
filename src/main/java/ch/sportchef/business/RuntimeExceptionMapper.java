@@ -37,7 +37,7 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {
 
     @Override
-    public Response toResponse(@NotNull final RuntimeException exception) {
+    public Response toResponse(final RuntimeException exception) {
         final Error error = searchForError(exception);
         return Response.status(error.getStatus())
                 .type(MediaType.APPLICATION_JSON_TYPE)
