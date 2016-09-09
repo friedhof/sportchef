@@ -44,7 +44,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
 
     // TODO should work with token header, too
     @Override
-    public void filter(@NotNull final ContainerRequestContext requestContext) throws IOException {
+    public void filter(final ContainerRequestContext requestContext) throws IOException {
         final String authHeaderVal = requestContext.getHeaderString("Authorization");
         if (authHeaderVal.startsWith("Bearer")) {
             final String token = authHeaderVal.split(" ")[1];
