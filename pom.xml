@@ -106,6 +106,11 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>2.8.2</version>
+        </dependency>
         <!-- ************** -->
         <!-- * test scope * -->
         <!-- ************** -->
