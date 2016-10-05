@@ -276,42 +276,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.4.11</version>
-                <configuration>
-                    <imageName>mcpringle/${project.artifactId}</imageName>
-                    <baseImage>java</baseImage>
-                    <resources>
-                        <resource>
-                            <targetPath>/data/</targetPath>
-                            <directory>${project.build.directory}</directory>
-                            <include>${project.build.finalName}.jar</include>
-                        </resource>
-                        <resource>
-                            <targetPath>/data/</targetPath>
-                            <directory>${project.build.directory}/..</directory>
-                            <include>sportchef.yaml</include>
-                        </resource>
-                    </resources>
-                    <exposes>
-                        <expose>8080</expose>
-                        <expose>8081</expose>
-                    </exposes>
-                    <cmd>java -jar /data/${project.build.finalName}.jar server /data/sportchef.yaml</cmd>
-                    <imageTags>
-                        <imageTag>${project.version}</imageTag>
-                        <imageTag>latest</imageTag>
-                    </imageTags>
-                    <forceTags>true</forceTags>
-                    <pushImage>false</pushImage>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-            </plugin>
         </plugins>
     </build>
     <properties>

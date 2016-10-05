@@ -10,10 +10,10 @@ before_install:
   - npm install -g bower
 
 after_success:
-  - mvn jacoco:report coveralls:report docker:build
+  - mvn jacoco:report coveralls:report
+  - docker build -t mcpringle/sportchef .
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - export REPO=mcpringle/sportchef
-  - docker push $REPO
+  - docker push mcpringle/sportchef
 
 notifications:
   webhooks:
