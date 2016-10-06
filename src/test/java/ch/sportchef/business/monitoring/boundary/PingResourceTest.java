@@ -1,5 +1,3 @@
-package ch.sportchef.business.monitoring.boundary;
-
 /*
  * SportChef – Sports Competition Management Software
  * Copyright (C) 2016 Marcus Fihlon
@@ -17,6 +15,7 @@ package ch.sportchef.business.monitoring.boundary;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package ch.sportchef.business.monitoring.boundary;
 
 import org.junit.Assert;
 import org.junit.Test;
