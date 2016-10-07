@@ -17,18 +17,24 @@
  */
 package ch.sportchef.business.monitoring.boundary;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class PingResourceTest {
-	
-	@Test
-	public void echo() {
-		
-		PingResource pingResource = new PingResource();
-		String string = "test";
-		Assert.assertEquals(string, pingResource.echo(string));
 
-	}
+    @Test
+    public void echo() {
+        // arrange
+        final PingResource pingResource = new PingResource();
+        final String input = "test";
+
+        // act
+        final String output = pingResource.echo(input);
+
+        // assert
+        assertThat(input, is(output));
+    }
 
 }
