@@ -23,13 +23,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("pings")
+@Path("ping")
 @Produces(MediaType.TEXT_PLAIN)
 public class PingResource {
 	
 	@GET
 	@Path("/echo/{echo}")
-	public String echo(@PathParam("echo") String param) {
+	public String echo(@PathParam("echo") final String param) {
 		return param;
 	}
 }
