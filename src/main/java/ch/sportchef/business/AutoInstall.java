@@ -26,6 +26,9 @@ import ch.sportchef.business.event.entity.Event;
 import ch.sportchef.business.user.control.UserService;
 import ch.sportchef.business.user.entity.User;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -33,6 +36,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+@Singleton
+@Startup
 public class AutoInstall {
 
     private final ConfigurationService configurationService;
@@ -51,7 +56,8 @@ public class AutoInstall {
         this.eventImageService = eventImageService;
     }
 
-    public void install() {
+    @PostConstruct
+    public void startup() {
         createAdminUser();
         createFirstEvent();
     }
