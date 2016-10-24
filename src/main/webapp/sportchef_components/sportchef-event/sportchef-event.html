@@ -100,7 +100,7 @@
             <div class="card-content" style$="background-color: {{event.cssBackgroundColor}};">
                 <h2>{{event.title}}</h2>
                 <div class="bottomFixed">
-                    <span><iron-icon icon="icons:event"></iron-icon> {{event.date}} {{formatTime(event.time)}}</span><br />
+                    <span><iron-icon icon="icons:event"></iron-icon> {{formatDate(event.date)}} {{formatTime(event.time)}}</span><br />
                     <span><iron-icon icon="maps:place"></iron-icon> {{event.location}}</span>
                 </div>
             </div>
@@ -117,9 +117,29 @@
                     type: Object
                 }
             },
+            formatDate: function(date) {
+                var returnValue = date.year + '-';
+                if (date.monthValue < 10) {
+                    returnValue += '0';
+                }
+                returnValue += date.monthValue + '-';
+                if (date.dayOfMonth < 10) {
+                    returnValue += '0';
+                }
+                returnValue += date.dayOfMonth;
+                return returnValue;
+            },
             formatTime: function(time) {
-                var parts = time.split(":");
-                return parts[0] + ":" + parts[1];
+                var returnValue = '';
+                if (time.hour < 10) {
+                    returnValue += '0';
+                }
+                returnValue += time.hour + ':';
+                if (time.minute < 10) {
+                    returnValue += '0';
+                }
+                returnValue += time.minute;
+                return returnValue;
             }
         });
     </script>
