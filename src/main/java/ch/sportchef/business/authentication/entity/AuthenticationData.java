@@ -17,12 +17,25 @@
  */
 package ch.sportchef.business.authentication.entity;
 
+import ch.sportchef.business.authentication.entity.AuthenticationData.AuthenticationDataBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Value;
 
 @Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(toBuilder = true)
+@JsonDeserialize(builder = AuthenticationDataBuilder.class)
 public class AuthenticationData {
 
     private String email;
     private String challenge;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static final class AuthenticationDataBuilder {
+    }
 
 }
