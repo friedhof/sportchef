@@ -83,7 +83,8 @@ public class AuthenticationResourceTest {
         // arrange
         final String email = "foobar@sportchef.ch";
         final String challenge = "12345-abcde";
-        final AuthenticationData authenticationData = new AuthenticationData(email, challenge);
+        final AuthenticationData authenticationData = AuthenticationData.builder()
+                .email(email).challenge(challenge).build();
         final AuthenticationService authenticationServiceMock = mock(AuthenticationService.class);
         when(authenticationServiceMock.validateChallenge(email, challenge)).thenReturn(Optional.empty());
         final AuthenticationResource authenticationResource = new AuthenticationResource(authenticationServiceMock);
@@ -102,7 +103,8 @@ public class AuthenticationResourceTest {
         final String email = "foobar@sportchef.ch";
         final String challenge = "12345-abcde";
         final String token = "valid_token";
-        final AuthenticationData authenticationData = new AuthenticationData(email, challenge);
+        final AuthenticationData authenticationData = AuthenticationData.builder()
+                .email(email).challenge(challenge).build();
         final AuthenticationService authenticationServiceMock = mock(AuthenticationService.class);
         when(authenticationServiceMock.validateChallenge(email, challenge)).thenReturn(Optional.of(token));
         final AuthenticationResource authenticationResource = new AuthenticationResource(authenticationServiceMock);
