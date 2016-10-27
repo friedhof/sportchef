@@ -32,7 +32,7 @@ public class AuthenticationDataTest {
 
     @BeforeEach
     public void setUp() {
-        authenticationData = new AuthenticationData(TEST_EMAIL, TEST_CHALLENGE);
+        authenticationData = AuthenticationData.builder().email(TEST_EMAIL).challenge(TEST_CHALLENGE).build();
     }
 
     @Test
