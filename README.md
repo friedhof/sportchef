@@ -135,7 +135,7 @@ If you fork this repository, GitHub will not keep your fork in sync with this re
 3. Fetch branches and commits from this repository to your local repository:<br/>`git fetch upstream`
 4. If you are not on your local develop branch, check it out:<br/>`git checkout develop`
 5. Merge the changes from this repositories develop branch into your repository):<br/>`git merge upstream/develop`
-7. Push your updated repository to your GitHub fork:<br/>`git push origin develop`
+6. Push your updated repository to your GitHub fork:<br/>`git push origin develop`
 
 If you want to merge changes from a different branch (e.g. `master`, `release`, etc), simply replace the branch name `develop` in the above command line examples with the branch name, you want to merge. 
 
