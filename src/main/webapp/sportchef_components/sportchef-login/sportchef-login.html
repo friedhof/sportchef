@@ -17,119 +17,63 @@
 -->
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 <link rel="import" href="../../bower_components/app-localize-behavior/app-localize-behavior.html" />
-<link rel="import" href="../../bower_components/paper-button/paper-button.html" />
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html" />
-<link rel="import" href="../../bower_components/paper-input/paper-input.html" />
-<link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html" />
-<link rel="import" href="../sportchef-jquery/sportchef-jquery.html" />
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html" />
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html" />
+<link rel="import" href="../../bower_components/paper-tabs/paper-tab.html" />
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html" />
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html" />
+<link rel="import" href="sportchef-login-password.html" />
+<link rel="import" href="sportchef-login-code.html" />
 
 <dom-module id="sportchef-login">
     <template>
         <style>
-            gold-email-input, paper-input {
-                width: 350px;
+            :root {
+                --paper-tabs-selection-bar-color: #ee8802;
             }
-            paper-button {
-                background-color: orange;
-                color: white;
-            }
-            .title {
+
+            h2 {
                 text-align: center;
                 text-transform: uppercase;
             }
-            .button-container {
-                text-align: center;
+
+            .title paper-icon-button {
+                color: rgb(180, 180, 180);
+                position: absolute;
+                right: 18px;
+                top: 18px;
             }
-            .message {
-                display: none;
+
+            paper-dialog {
+                border-radius: 10px;
             }
-            .success {
-                color: green;
-            }
-            .error {
-                color: red;
+
+            paper-tabs {
+                --paper-tabs: {
+                    color: #ee8802;
+                }
             }
         </style>
 
         <paper-dialog id="dialog-login" modal>
             <div class="title">
-                <h2>{{localize('login')}}</h2>
+                <h2>{{localize('dialog_title')}}</h2>
+                <paper-icon-button icon="clear" dialog-dismiss></paper-icon-button>
             </div>
-            <gold-email-input id="email" label="1. {{localize('email')}}" autofocus required auto-validate></gold-email-input>
-            <div id="challengeRequestMessage" class="message center"></div>
-            <div class="button-container">
-                <paper-button id="requestChallengeButton" onclick="requestChallenge();">{{localize('requestChallenge')}}</paper-button>
-            </div>
-            <paper-input id="challenge" label="2. {{localize('challenge')}}" disabled></paper-input>
-            <div id="authenticateMessage" class="message center"></div>
-            <div class="button-container">
-                <paper-button id="authenticationButton" onclick="authenticate();" disabled>{{localize('authenticate')}}</paper-button>
-            </div>
+            <app-localstorage-document key="loginTypeSelection" data="{{loginTypeSelection}}" zero-value="0"></app-localstorage-document>
+            <paper-tabs selected="{{loginTypeSelection}}" noink>
+                <paper-tab>{{localize('tab_password')}}</paper-tab>
+                <paper-tab>{{localize('tab_code')}}</paper-tab>
+            </paper-tabs>
+            <iron-pages selected="{{loginTypeSelection}}">
+                <div><sportchef-login-password></sportchef-login-password></div>
+                <div><sportchef-login-code></sportchef-login-code></div>
+            </iron-pages>
         </paper-dialog>
     </template>
 
     <script>
-        function requestChallenge() {
-            $.ajax({
-                method: "GET",
-                url: "/api/authentication?email=" + $("#email").val(),
-                cache: false,
-                success: function(data, textStatus, jqXHR ) {
-                    $("#challengeRequestMessage")
-                            .removeClass("error")
-                            .addClass("success")
-                            .html("A challenge was send to you by email!")
-                            .show();
-                    $("email").prop('disabled', true);
-                    $("#requestChallengeButton").prop('disabled', true);
-                    $("#challenge").prop('disabled', false);
-                    $("#authenticationButton").prop('disabled', false);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    $("#challengeRequestMessage")
-                            .removeClass("success")
-                            .addClass("error")
-                            .html(textStatus + ": " + errorThrown)
-                            .show();
-                }
-            });
-        }
-
-        function authenticate() {
-            $.ajax({
-                method: "POST",
-                data: JSON.stringify({
-                    "email": $("#email").val(),
-                    "challenge": $("#challenge").val()
-                }),
-                contentType: "application/json",
-                url: "/api/authentication",
-                cache: false,
-                success: function(data, textStatus, jqXHR ) {
-                    var token = jqXHR.getResponseHeader("Token");
-                    sessionStorage.setItem("token", token);
-                    $("#email").val("");
-                    $("#challengeRequestMessage").hide();
-                    $("#challenge").val("");
-                    $("#challenge").prop('disabled', true);
-                    $("#authenticationButton").prop('disabled', true);
-                    $("#authenticateMessage").hide();
-                    document.getElementById("dialog-login").close();
-                    $('#btn-login').hide();
-                    $('#btn-logout').show();
-
-
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    $("#authenticateMessage")
-                            .removeClass("success")
-                            .addClass("error")
-                            .html(textStatus + ": " + errorThrown)
-                            .show();
-                }
-            });
-        }
-
         Polymer({
             is: "sportchef-login",
             behaviors: [
@@ -139,22 +83,16 @@
                 language: {
                     value: 'en'
                 },
+                loginTypeSelection: {
+                    value: 0
+                },
                 resources: {
                     value: function () {
                         return {
-                            'de': {
-                                'authenticate': 'Authentifizieren',
-                                'challenge': 'Login-Code',
-                                'email': 'E-Mail',
-                                'login': 'Anmelden',
-                                'requestChallenge': 'Login-Code anfordern'
-                            },
                             'en': {
-                                'authenticate': 'Authenticate',
-                                'challenge': 'Challenge',
-                                'email': 'Email',
-                                'login': 'Login',
-                                'requestChallenge': 'Request Challenge'
+                                'dialog_title': 'Get Started',
+                                'tab_password': 'Password Login',
+                                'tab_code': 'Get Code'
                             }
                         }
                     }
