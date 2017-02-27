@@ -1,6 +1,6 @@
 /*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2016 Marcus Fihlon
+ * Copyright (C) 2016, 2017 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,7 +22,7 @@ import ch.sportchef.business.user.entity.User;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import pl.setblack.airomem.core.SimpleController;
+import pl.setblack.airomem.core.PersistenceController;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -39,7 +39,7 @@ import java.util.Optional;
 @Metered(name = "Metered: EventService")
 public class UserService {
 
-    private SimpleController<UserRepository> controller;
+    private PersistenceController<UserRepository> controller;
     private HealthCheckRegistry healthCheckRegistry;
 
     @Inject
@@ -49,7 +49,7 @@ public class UserService {
 
     @PostConstruct
     public void setupResources() {
-        controller = PersistenceManager.createSimpleController(User.class, UserRepository::new);
+        controller = PersistenceManager.createController(User.class, UserRepository::new);
         healthCheckRegistry.register("UserService", new UserServiceHealthCheck(this));
     }
 
@@ -67,15 +67,15 @@ public class UserService {
     }
 
     public Optional<User> findByUserId(@NotNull final Long userId) {
-        return controller.readOnly().findByUserId(userId);
+        return controller.query(ctrl -> ctrl.findByUserId(userId));
     }
 
     public Optional<User> findByEmail(@NotNull final String email) {
-        return controller.readOnly().findByEmail(email);
+        return controller.query(ctrl -> ctrl.findByEmail(email));
     }
 
     public List<User> findAll() {
-        return controller.readOnly().findAll();
+        return controller.query(UserRepository::findAll);
     }
 
     public void delete(final Long userId) {

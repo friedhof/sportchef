@@ -1,6 +1,6 @@
 /*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2016 Marcus Fihlon
+ * Copyright (C) 2016, 2017 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,28 +18,31 @@
 package ch.sportchef.business;
 
 import lombok.experimental.UtilityClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pl.setblack.airomem.core.SimpleController;
+import lombok.extern.slf4j.Slf4j;
+import pl.setblack.airomem.core.PersistenceController;
+import pl.setblack.airomem.core.builders.PrevaylerBuilder;
 
-import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Supplier;
 
+@Slf4j
 @UtilityClass
 public class PersistenceManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceManager.class);
-
-    public static <T extends Serializable> SimpleController<T> createSimpleController(
+    public static <T extends Serializable> PersistenceController<T> createController(
             final Class<? extends Serializable> clazz, final Supplier<T> constructor) {
-        final String dir = String.format("%s%s.sportchef%sprevayler%s%s", //NON-NLS
-                System.getProperty("user.home"), //NON-NLS
-                File.separator, File.separator, File.separator,
-                clazz.getName());
-        LOGGER.info("Using persistence store '{}' for entity '{}'.", //NON-NLS
-                dir, clazz.getName());
-        return SimpleController.loadOptional(dir, constructor);
+
+        final String homeDir = System.getProperty("user.home");
+        final Path path = Paths.get(homeDir, ".sportchef", "data", clazz.getName());
+        log.info("Using persistence store '{}' for entity '{}'.", path, clazz.getName());
+
+        return PrevaylerBuilder
+                .<T>newBuilder()
+                .withFolder(path)
+                .useSupplier(constructor)
+                .build();
     }
 
 }

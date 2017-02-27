@@ -1,6 +1,6 @@
 /*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2016 Marcus Fihlon
+ * Copyright (C) 2016, 2017 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,7 +22,7 @@ import ch.sportchef.business.event.entity.Event;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import pl.setblack.airomem.core.SimpleController;
+import pl.setblack.airomem.core.PersistenceController;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -37,7 +37,7 @@ import java.util.Optional;
 @Metered(name = "Metered: EventService")
 public class EventService {
 
-    private SimpleController<EventRepository> controller;
+    private PersistenceController<EventRepository> controller;
     private HealthCheckRegistry healthCheckRegistry;
 
     @Inject
@@ -47,7 +47,7 @@ public class EventService {
 
     @PostConstruct
     public void setupResources() {
-        controller = PersistenceManager.createSimpleController(Event.class, EventRepository::new);
+        controller = PersistenceManager.createController(Event.class, EventRepository::new);
         healthCheckRegistry.register("EventService", new EventServiceHealthCheck(this));
     }
 
@@ -65,11 +65,11 @@ public class EventService {
     }
 
     public Optional<Event> findByEventId(@NotNull final Long eventId) {
-        return controller.readOnly().findByEventId(eventId);
+        return controller.query(ctrl -> ctrl.findByEventId(eventId));
     }
 
     public List<Event> findAll() {
-        return controller.readOnly().findAll();
+        return controller.query(EventRepository::findAll);
     }
 
     public void delete(@NotNull final Long eventId) {

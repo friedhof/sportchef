@@ -1,6 +1,6 @@
 /*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2016 Marcus Fihlon
+ * Copyright (C) 2016, 2017 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static java.lang.Boolean.FALSE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -55,7 +56,8 @@ public class AuthenticationServiceHealthCheckTest {
         final HealthCheck.Result result = healthCheck.check();
 
         // assert
-        assertThat(result, is(HealthCheck.Result.unhealthy("Problems in AuthenticationService: Can't validate challenge!")));
+        assertThat(result.isHealthy(), is(FALSE));
+        assertThat(result.getMessage(), is("Problems in AuthenticationService: Can't validate challenge!"));
     }
 
     @Test
@@ -69,7 +71,8 @@ public class AuthenticationServiceHealthCheckTest {
         final HealthCheck.Result result = healthCheck.check();
 
         // assert
-        assertThat(result, is(HealthCheck.Result.unhealthy("Test Message")));
+        assertThat(result.isHealthy(), is(FALSE));
+        assertThat(result.getMessage(), is("Test Message"));
     }
 
 }
