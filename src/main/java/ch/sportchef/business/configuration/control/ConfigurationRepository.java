@@ -1,6 +1,6 @@
 /*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2015, 2016 Marcus Fihlon
+ * Copyright (C) 2015, 2016, 2017 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -62,8 +62,10 @@ class ConfigurationRepository {
     private static Map<Object, Object> loadCustomConfiguration() {
         final Properties properties = new Properties();
         final File file = Paths.get(System.getProperty("user.home"), ".sportchef", CUSTOM_CONFIGURATION_FILE).toFile();
-        try (final InputStream stream = new FileInputStream(file)) {
-            properties.load(stream);
+        if (file.exists()) {
+            try (final InputStream stream = new FileInputStream(file)) {
+                properties.load(stream);
+            }
         }
 
         return properties;

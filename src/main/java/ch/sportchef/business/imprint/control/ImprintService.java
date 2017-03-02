@@ -1,6 +1,6 @@
 /*
  * SportChef – Sports Competition Management Software
- * Copyright (C) 2016 Marcus Fihlon
+ * Copyright (C) 2016, 2017 Marcus Fihlon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,7 +26,7 @@ public class ImprintService {
 
     public String getImprint() throws IOException {
         final Path path = Paths.get(System.getProperty("user.home"), ".sportchef", "imprint.md");
-        final String markdown = new String(Files.readAllBytes(path));
+        final String markdown = Files.exists(path) ? new String(Files.readAllBytes(path)) : "";
         return markdown;
     }
 
