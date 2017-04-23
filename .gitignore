@@ -1,10 +1,11 @@
 .DS_Store
+.gradle
 .idea
 .settings
 .classpath
 .project
+build
 sportchef.iml
-target
 dependency-reduced-pom.xml
 doc/sportchef_technical_documentation.aux
 doc/sportchef_technical_documentation.lof

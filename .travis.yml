@@ -1,19 +1,39 @@
 language: java
 
+sudo: false
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - '$HOME/.gradle/caches'
+    - '$HOME/.gradle/wrapper'
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+    - '$HOME/.sonar/installs'
+
 jdk:
   - oraclejdk8
 
 services:
   - docker
 
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
 before_install:
   - npm install -g bower
+  - bower install -p
 
 after_success:
-  - mvn jacoco:report coveralls:report
   - docker build -t mcpringle/sportchef .
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
   - docker push mcpringle/sportchef
+  - docker logout
 
 notifications:
   webhooks:
@@ -25,11 +45,10 @@ notifications:
 
 env:
   global:
-  - secure: wasWW/zaDmglU89QBhHZkHjVO6TCqbD8hLCO5F9ypo4o7OJWBphjymDDpxNiag0QArpMQWHRqIRuF3pUXBwgbphaP3nD8n/gOHNqlU09aGOsb7BQI6p5iUeC9cF180tBqedloXQ2wmVN4zQMBKsrQfZmhwzdzp//npCENLLw9Lm5GaUJh5zSrLYKsjZED67FOW/Gyc8qQjINB0bLzRyLFufWntXAy7AM0bDEVsXUMjMg7lKsCyvhxjrt8ik4Y5vFclvtoGUF5RvPiy2/CSWF6S+4lYrinC9eHt1sikNg9Wb/sSI8qJgVlLNUOJ19TQjlJM58cg8ebHTnlYebZ8O7+qPFNDp0uZDOyb1sma5vJ5gm1zbzWnmgzJCw67bR+wSIWbe5kOYV72YXOJJoB1VFsyuXRlrJFM/S/EP6aVQxTHj10IN9s/g6F2BVAPfZdrN1fpAR6BctTryCaNFD+SuWMH5slXxxTLFQorgoCTXGtoRmTmf11V0hnnfep1OeBTEh/xVN53/oADrYSb/5hfr3Yk0KOpf7zAf7kaif7lJDeu+oIaoZ4xGnA2LuwjE0G4YJBXZo2ATfyjFOt46x3MMOam9jWXbnfJZioSQ8yOw97DkIYS8icfylrvvGEHkRnkzMGZCb5yyphDEVMcKd7GfIx0Pr39F3o3xVYxWxNCtBUek=
-  - secure: prmHnwROG44nyXMROH2Zz/V93KKAEUwsyYHQYEwv7O/179TpnBhiwNvxjOcNAiFbGlVS3Nr0w0V9mmV5AVGq29g0pM9hcw47fN/Qzo49qXE3p+hoy+EkHBG22xCsQNW61M3Pqh+6ZFI68lmZnCRtAYVS+yoqfHs3Ov3IKfeDNEBnlRNtV18gi0EBRVpG3st0eGUPQE1sYZLY6urlQ4hlS22GEK8F5ohwIZpCek+0fNdW8PKkJE1srLZbRCxpKe4LZO+w2MZYT+u/PZ0sgWiopY8+XQ914A8mITeHj3fhEDTsu1O3YugrtYWGSUAZ7IFtKb5dsa9kwC/67oupPUqSpdAf8tDOzAGy7YEuBY+HW9im4m6fpZM/thQER65dmtx5k6isloLnqUIjSOp/L4QP7D0gDgIZzehtJxCZ3+O5Kpj/I0607g+knPh46nu+SgRFo7AlRvoDRB2E24uXF/RruDaxqW3/gvCREqj9aAsYUBZtgx2iOQdMpOJwg8zyxjRqLU55wwEF3jZOkwY1O0PXbmuFbFbDSRvCQJ6+HcXoYcYHIo7E2zJxi1KFsq0NPhW6VPnH+/qqSD1r7pbyLcQ3PXDlLPqqlaxEm0dXKMThAduI801HCQMP8STUPMwykGTX8k0O7RwMeXDdKS30d2A/+sXiZHvsJuLmmjwkIxjaLlY=
-  - secure: jO70a8H4//OIPQbVrrFGrUvxvIuwPao1x2fUoEGtzD5aXn6N3o6Lev82dmGuWWnmUu3lkBcNoHPY8HLeNRkKy1z3U4zhNmusPBuAaGltEPdeMg1E4tZoY3OJPy2tl2/BoUU/Ult80BdO2M8/6utCrrvJ6xlMQLpMeEEZJXgzCkAkHQv85e2yvKKOurFvI0GzGjW1k4QUx7GGKtcECBuSDpIQ7V3mwUb2UbsOXa9vgRVCpOQeQHk6QW4EdLb3e44NsDLdAbkIrMu8D3SHf0uP2o/jI8wUQpGvgrbrh90pCt6J+7RHmSbRlCJkowU2JjYNhq8qUBG61wbIvejDXtENCH4krH8Fc5WK5izXzxGObDfGN/DspMuy946wh0PfLSL1/YxKjVPX3498toDKlnMp/Sxsq/ysCuz8fbl+0MLQZoNAhKw25wvIUYNC+nLl0E+9M4ITC9UoFGp6uS81CMRrfZNk7/9CIueQcGIjG5s9T6Bw+NdHGGcgt2jwdjAwd8FF0bX7/SUv65WX+HB0I4BtVrmNLHjGkQCosS0h9RB487ry/0jVT0932VdFONpIHn/y8Z2VIpXknN9S8oA0tk7k/VFuwXjrZAlnJ1mEzhUQvRRT0m8gHCU5fz9xXuE9MURSp0f2+g8TJTrD/pRWFM1q0ZBVyHQkGXdOq/CdXe2UPAM=
+  - secure: wasWW/zaDmglU89QBhHZkHjVO6TCqbD8hLCO5F9ypo4o7OJWBphjymDDpxNiag0QArpMQWHRqIRuF3pUXBwgbphaP3nD8n/gOHNqlU09aGOsb7BQI6p5iUeC9cF180tBqedloXQ2wmVN4zQMBKsrQfZmhwzdzp//npCENLLw9Lm5GaUJh5zSrLYKsjZED67FOW/Gyc8qQjINB0bLzRyLFufWntXAy7AM0bDEVsXUMjMg7lKsCyvhxjrt8ik4Y5vFclvtoGUF5RvPiy2/CSWF6S+4lYrinC9eHt1sikNg9Wb/sSI8qJgVlLNUOJ19TQjlJM58cg8ebHTnlYebZ8O7+qPFNDp0uZDOyb1sma5vJ5gm1zbzWnmgzJCw67bR+wSIWbe5kOYV72YXOJJoB1VFsyuXRlrJFM/S/EP6aVQxTHj10IN9s/g6F2BVAPfZdrN1fpAR6BctTryCaNFD+SuWMH5slXxxTLFQorgoCTXGtoRmTmf11V0hnnfep1OeBTEh/xVN53/oADrYSb/5hfr3Yk0KOpf7zAf7kaif7lJDeu+oIaoZ4xGnA2LuwjE0G4YJBXZo2ATfyjFOt46x3MMOam9jWXbnfJZioSQ8yOw97DkIYS8icfylrvvGEHkRnkzMGZCb5yyphDEVMcKd7GfIx0Pr39F3o3xVYxWxNCtBUek= # docker
+  - secure: prmHnwROG44nyXMROH2Zz/V93KKAEUwsyYHQYEwv7O/179TpnBhiwNvxjOcNAiFbGlVS3Nr0w0V9mmV5AVGq29g0pM9hcw47fN/Qzo49qXE3p+hoy+EkHBG22xCsQNW61M3Pqh+6ZFI68lmZnCRtAYVS+yoqfHs3Ov3IKfeDNEBnlRNtV18gi0EBRVpG3st0eGUPQE1sYZLY6urlQ4hlS22GEK8F5ohwIZpCek+0fNdW8PKkJE1srLZbRCxpKe4LZO+w2MZYT+u/PZ0sgWiopY8+XQ914A8mITeHj3fhEDTsu1O3YugrtYWGSUAZ7IFtKb5dsa9kwC/67oupPUqSpdAf8tDOzAGy7YEuBY+HW9im4m6fpZM/thQER65dmtx5k6isloLnqUIjSOp/L4QP7D0gDgIZzehtJxCZ3+O5Kpj/I0607g+knPh46nu+SgRFo7AlRvoDRB2E24uXF/RruDaxqW3/gvCREqj9aAsYUBZtgx2iOQdMpOJwg8zyxjRqLU55wwEF3jZOkwY1O0PXbmuFbFbDSRvCQJ6+HcXoYcYHIo7E2zJxi1KFsq0NPhW6VPnH+/qqSD1r7pbyLcQ3PXDlLPqqlaxEm0dXKMThAduI801HCQMP8STUPMwykGTX8k0O7RwMeXDdKS30d2A/+sXiZHvsJuLmmjwkIxjaLlY= # docker
+  - secure: jO70a8H4//OIPQbVrrFGrUvxvIuwPao1x2fUoEGtzD5aXn6N3o6Lev82dmGuWWnmUu3lkBcNoHPY8HLeNRkKy1z3U4zhNmusPBuAaGltEPdeMg1E4tZoY3OJPy2tl2/BoUU/Ult80BdO2M8/6utCrrvJ6xlMQLpMeEEZJXgzCkAkHQv85e2yvKKOurFvI0GzGjW1k4QUx7GGKtcECBuSDpIQ7V3mwUb2UbsOXa9vgRVCpOQeQHk6QW4EdLb3e44NsDLdAbkIrMu8D3SHf0uP2o/jI8wUQpGvgrbrh90pCt6J+7RHmSbRlCJkowU2JjYNhq8qUBG61wbIvejDXtENCH4krH8Fc5WK5izXzxGObDfGN/DspMuy946wh0PfLSL1/YxKjVPX3498toDKlnMp/Sxsq/ysCuz8fbl+0MLQZoNAhKw25wvIUYNC+nLl0E+9M4ITC9UoFGp6uS81CMRrfZNk7/9CIueQcGIjG5s9T6Bw+NdHGGcgt2jwdjAwd8FF0bX7/SUv65WX+HB0I4BtVrmNLHjGkQCosS0h9RB487ry/0jVT0932VdFONpIHn/y8Z2VIpXknN9S8oA0tk7k/VFuwXjrZAlnJ1mEzhUQvRRT0m8gHCU5fz9xXuE9MURSp0f2+g8TJTrD/pRWFM1q0ZBVyHQkGXdOq/CdXe2UPAM= # docker
+  - secure: Uc3r33vyq0TCwL9rV22ewnIgbISqU4zBo4lv0xX9DNekjdal9cnehIAN4Vc0ZMlwECM2tJG6skJ0WuP+sdYXCxAPkl2e8t0SyLf190FvoHWhEx/mfV11Eh9iUiOM6W4+FCNHc2O9Voz5I3O21V3oQVXoou1QO3MDhu89+jJPxYpekQZtFpl1FRvvbwOu3K7JsDvYNIyQWGCtBmvGxaL/TCNYE6oPq3atKMC2SLd5p6D8LE335PMPrVtundlJrgoCYz42fv3wsILvmMIigiFJr0PhI6xdClD686nn9UZnl6esFTD4U5Yac7SYHzvgY4LPTTc7pllwV3t6Up1SEuL0asisX4QmTeJHKDgplKmgMgdNRj0/ZEVLltpD5Crdo/i5v8uy4QGKrjZacGwmD88nMBwnTs0JnCcy/cqUMP4Hdg+wanphiAinPNGd6SGXaNTbY8ZMoTSX0gFRgLMlsJiQ9tULzdbEBEPzF/obgPdjfl2g56i08z+bBgAM0jRn5pwUpul89th+0rj6qICA0QfvkgCvTzfqtF21pZOZstufJOv69cI5NkRhM9eeY01sLSdr2fLVqGfTm9UPp86cphPF+7ySlqqRMTIAGlXpkpx6bYYAeAUl8K7m7S7zQ24uEpgCwjUPhOvsUUYSVbOtPxJlgI+0zsQHxuZ+oB8FVzOg20o= # sonarqube
 
-cache:
-  directories:
-  - .autoconf
-  - $HOME/.m2
+script:
+  - ./gradlew --stacktrace --debug check jacocoTestReport # sonarqube -Dsonar.login=$SONAR_TOKEN

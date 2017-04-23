@@ -1,0 +1,114 @@
+/*
+ * SportChef – Sports Competition Management Software
+ * Copyright (C) 2016-2017 Marcus Fihlon
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+group 'ch.fihlon.sportchef'
+version '1.2-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'org.sonarqube'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    ext {
+        fasterxmlVersion = '2.8.7'
+        metricsVersion = '3.2.0'
+        powermockVersion = '1.6.6'
+    }
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
+    }
+}
+
+war {
+    archiveName 'sportchef.war'
+}
+
+jacocoTestReport {
+    group = 'Reporting'
+    description = 'Generate Jacoco coverage reports after running tests.'
+    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+
+sonarqube {
+    properties {
+        property 'sonar.host.url', 'https://sonarqube.com'
+        property 'sonar.projectKey', 'mcpringle:sportchef'
+        property 'sonar.projectName', 'SportChef'
+        property 'sonar.projectVersion', '1.2'
+        property 'sonar.sources', 'src/main'
+        property 'sonar.java.source', '8'
+        property 'sonar.sourceEncoding', 'UTF-8'
+        property 'sonar.junit.reportsPath', 'build/test-results/test'
+        property 'sonar.jacoco.reportPaths', 'build/jacoco/test.exec'
+        property 'sonar.github.repository', 'McPringle/sportchef'
+        property 'sonar.links.homepage', 'https://www.sportchef.ch/'
+        property 'sonar.links.ci', 'https://travis-ci.org/McPringle/sportchef'
+        property 'sonar.links.scm', 'https://github.com/McPringle/sportchef'
+        property 'sonar.links.issue', 'https://github.com/McPringle/sportchef/issues'
+        property 'sonar.exclusions', 'src/main/webapp/bower_components/**'
+    }
+}
+
+dependencies {
+    providedCompile (
+            'javax:javaee-api:7.0',
+            'org.projectlombok:lombok:1.16.14'
+    )
+    compile (
+            "io.dropwizard.metrics:metrics-core:$metricsVersion",
+            "io.dropwizard.metrics:metrics-annotation:$metricsVersion",
+            "io.dropwizard.metrics:metrics-healthchecks:$metricsVersion",
+            "io.dropwizard.metrics:metrics-jvm:$metricsVersion",
+            'pl.setblack:airomem-core:1.1.0',
+            'io.jsonwebtoken:jjwt:0.7.0',
+            'org.apache.commons:commons-email:1.4',
+            'commons-fileupload:commons-fileupload:1.3.2',
+            "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:$fasterxmlVersion",
+            "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$fasterxmlVersion",
+            'com.google.code.findbugs:jsr305:3.0.2', // sonarqube
+            'commons-logging:commons-logging:1.2' // sonarqube
+    )
+    testCompile (
+            'org.junit.jupiter:junit-jupiter-api:5.0.0-M3',
+            'org.hamcrest:hamcrest-all:1.3',
+            'org.mockito:mockito-all:1.10.19',
+            "org.powermock:powermock-core:$powermockVersion",
+            "org.powermock:powermock-module-junit4:$powermockVersion",
+            "org.powermock:powermock-api-mockito:$powermockVersion",
+            'com.bitmechanic:dumbster:1.9.0.2',
+            'org.lucee:commons-httpclient:3.1',
+            'org.glassfish.jersey.core:jersey-common:2.25.1' // Fixes ClassNotFoundException: org.glassfish.jersey.internal.RuntimeDelegateImpl
+    )
+}
