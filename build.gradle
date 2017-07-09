@@ -43,7 +43,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
     }
 }
 
